@@ -10,99 +10,34 @@ using ReactiveUI;
 using SharpAudio;
 using SharpAudio.Codec;
 using Id3;
-using Avalonia.Media.Imaging;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Collections.ObjectModel;
 
 namespace Symphony.ViewModels
 {
-    public static class TagExtensions
-    {
-        public static IBitmap LoadAlbumCover(this Id3Tag tag)
-        {
-            var cover = tag.Pictures.FirstOrDefault(x => x.PictureType == Id3.Frames.PictureType.FrontCover);
-
-            if (cover != null)
-            {
-                using (var ms = new MemoryStream(cover.PictureData))
-                {
-                    try
-                    {
-                        return new Bitmap(ms);
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-    }
-
-
-    public class Track
-    {
-        public string Title { get; set; }
-
-        public Album Album { get; set; }
-
-        public string Path { get; set; }
-    }
-
-    public class Album : IComparable<Album>
-    {
-        public Album()
-        {
-            Tracks = new List<Track>();
-        }
-
-        public string Title { get; set; }
-
-        public List<Track> Tracks { get; set; }
-
-        public IBitmap Bitmap { get; set; }
-
-        public int CompareTo([AllowNull] Album other)
-        {
-            return Title.CompareTo(other.Title);
-        }
-    }
-
     public class MainWindowViewModel : ViewModelBase
     {
         private TrackStatusViewModel _trackStatus;
-        private Dictionary<string, Album> _albums;
-        private ObservableCollection<IBitmap> _albumCovers;
-
-        public ObservableCollection<IBitmap> AlbumCovers
-        {
-            get { return _albumCovers; }
-            set { this.RaiseAndSetIfChanged(ref _albumCovers, value); }
-        }
+        private Dictionary<string, Album> _albumsDictionary;
+        private ObservableCollection<Album> _albums;
+        private Album _selectedAlbum;
+        private AudioEngine _audioEngine;
+        private SoundStream _soundStream;
+        private bool _sliderClicked;
+        private double _seekPosition;
 
         public MainWindowViewModel()
         {
-            _albums = new Dictionary<string, Album>();
+            _albumsDictionary = new Dictionary<string, Album>();
             TrackStatus = new TrackStatusViewModel();
-            AlbumCovers = new ObservableCollection<IBitmap>();
+            Albums = new ObservableCollection<Album>();
 
-            this._audioEngine = AudioEngine.CreateDefault();
+            _audioEngine = AudioEngine.CreateDefault();
 
             if (_audioEngine == null)
             {
                 throw new Exception("Failed to create an audio backend!");
             }
-
-            this.WhenAnyValue(x => x.TargetFile)
-                 .DistinctUntilChanged()
-                .Subscribe(x => this.TargetFile = x);
-
-            //TargetFile = @"C:\Users\danwa\OneDrive\Music\Music\Elton John\Greatest Hits (1970-2002) [3CD]\01 your song.mp3";
-            TargetFile = @"C:\Users\danwa\OneDrive\Music\Music\Arctic Monkeys\Arctic Monkeys  Essentials\1-15 Black Treacle.mp3";
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
@@ -111,7 +46,37 @@ namespace Symphony.ViewModels
 
         public ReactiveCommand<Unit, Unit> PlayCommand { get; }
 
-        public async Task ScanMusicFolder(string path)
+        public ObservableCollection<Album> Albums
+        {
+            get { return _albums; }
+            set { this.RaiseAndSetIfChanged(ref _albums, value); }
+        }
+
+        public Album SelectedAlbum
+        {
+            get { return _selectedAlbum; }
+            set { this.RaiseAndSetIfChanged(ref _selectedAlbum, value); }
+        }
+
+        public TrackStatusViewModel TrackStatus
+        {
+            get { return _trackStatus; }
+            set { this.RaiseAndSetIfChanged(ref _trackStatus, value); }
+        }
+
+        public bool SliderClicked
+        {
+            get => _sliderClicked;
+            set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
+        }
+
+        public double SeekPosition
+        {
+            get => _seekPosition;
+            set { SliderChangedManually(value); }
+        }
+
+        private async Task ScanMusicFolder(string path)
         {
             foreach (var directory in Directory.EnumerateDirectories(path))
             {
@@ -131,7 +96,7 @@ namespace Symphony.ViewModels
                         continue;
                     }
 
-                    if (!_albums.ContainsKey(tag.Album))
+                    if (!_albumsDictionary.ContainsKey(tag.Album))
                     {
                         var album = new Album();
 
@@ -143,21 +108,33 @@ namespace Symphony.ViewModels
                             Title = tag.Title
                         });
 
-                        album.Bitmap = tag.LoadAlbumCover();
+                        album.Cover = tag.LoadAlbumCover();
 
-                        _albums[tag.Album] = album;
+                        _albumsDictionary[tag.Album] = album;
 
-                        AlbumCovers.Add(album.Bitmap);
+                        if (album.Cover != null)
+                        {
+                            Albums.Add(album);
+
+                            if (SelectedAlbum is null)
+                            {
+                                SelectedAlbum = album;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        public async Task DoPlay()
+        private async Task DoPlay()
         {
-            _soundStream = new SoundStream(File.OpenRead(TargetFile), _audioEngine);
+            _soundStream?.Dispose();
 
-            TrackStatus.LoadTrack(_soundStream, TargetFile);
+            var targetTrack = SelectedAlbum.Tracks.FirstOrDefault().Path;
+
+            _soundStream = new SoundStream(File.OpenRead(targetTrack), _audioEngine);
+
+            TrackStatus.LoadTrack(_soundStream, targetTrack);
 
             _soundStream.Play();
         }
@@ -172,29 +149,6 @@ namespace Symphony.ViewModels
             //_soundStream.TrySeek(z);
         }
 
-        private string _targetFile;
-
-        public string TargetFile
-        {
-            get => _targetFile;
-            set => this.RaiseAndSetIfChanged(ref _targetFile, value, nameof(TargetFile));
-        }
-
-        public bool SliderClicked
-        {
-            get => _sliderClicked;
-            set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
-        }
-
-        private AudioEngine _audioEngine;
-        private SoundStream _soundStream;
-
-        public double SeekPosition
-        {
-            get => _seekPosition;
-            set { SliderChangedManually(value); }
-        }
-
         private double ValidValuesOnly(double value)
         {
             if (double.IsInfinity(value) || double.IsNaN(value))
@@ -202,17 +156,6 @@ namespace Symphony.ViewModels
                 return 0;
             }
             else return Math.Clamp(value, 0d, 1000d);
-        }
-
-        private bool _sliderClicked;
-        private double _seekPosition;
-
-
-
-        public TrackStatusViewModel TrackStatus
-        {
-            get { return _trackStatus; }
-            set { this.RaiseAndSetIfChanged(ref _trackStatus, value); }
         }
     }
 }
