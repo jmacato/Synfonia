@@ -197,7 +197,18 @@ namespace Symphony.ViewModels
 
             TrackStatus.LoadTrack(_soundStream, targetTrack);
 
+            _soundStream.WhenAnyValue(x => x.IsPlaying)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    if (!x)
+                    {
+                        ForwardCommand.Execute();
+                    }
+                });
+
             _soundStream.Play();
+
         }
 
         public void SliderChangedManually(double value)

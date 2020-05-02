@@ -69,25 +69,27 @@ namespace Symphony.ViewModels
             using (var file = TagLib.File.Create(path))
             {
                 AlbumCover = file.Tag.LoadAlbumCover();
+
+                AlbumCoverVisible = true;
+
+                Artist = file.Tag.AlbumArtists.FirstOrDefault();
+
+                TrackTitle = file.Tag.Title;
+
+                Duration = file.Properties.Duration;
+
+                CurrentTime = FormatTimeSpan(Duration / 2);
+
+                track.WhenAnyValue(x => x.Position)
+                    .Subscribe(x =>
+                    {
+                        CurrentTime = FormatTimeSpan(x);
+                    });
+
+                track.WhenAnyValue(x => x.Position)
+                            .ObserveOn(RxApp.MainThreadScheduler)
+                            .Subscribe(x => Position = ((x.TotalSeconds) / Duration.TotalSeconds) * 100);
             }
-
-            AlbumCoverVisible = true;
-
-            Artist = track.Metadata.Artists.FirstOrDefault();
-
-            TrackTitle = track.Metadata.Title;
-
-            Duration = track.Duration;
-
-            track.WhenAnyValue(x => x.Position)
-                .Subscribe(x =>
-                {
-                    CurrentTime = FormatTimeSpan(x);
-                });
-
-            track.WhenAnyValue(x => x.Position)
-                        .ObserveOn(RxApp.MainThreadScheduler)
-                        .Subscribe(x => Position = ((x.TotalSeconds) / Duration.TotalSeconds) * 100);
         }
     }
 }
