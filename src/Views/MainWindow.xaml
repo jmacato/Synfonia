@@ -1,25 +1,23 @@
-<Window xmlns="https://github.com/avaloniaui" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-    xmlns:vm="clr-namespace:Symphony.ViewModels;assembly=Symphony" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" 
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity" 
-    xmlns:b="clr-namespace:Symphony.Behaviors;assembly=Symphony" 
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:Symphony.ViewModels;assembly=Symphony"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+    xmlns:b="clr-namespace:Symphony.Behaviors;assembly=Symphony"
+    xmlns:local="clr-namespace:Symphony.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, Auto">
-        <Grid ColumnDefinitions="*,Auto" Grid.RowSpan="1">
-            <TextBox Grid.ColumnSpan="1" Text="{Binding TargetFile}"/>
-            <Button Grid.Column="1" Grid.ColumnSpan="1" Height="60" Width="60" Command="{Binding DoPlay}"/>
-        </Grid>
-        <Grid Grid.Row="1" Grid.RowSpan="1">
-
-            <c:SeekSlider Value="{Binding Position, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" Minimum="0" Maximum="1.0"/>
-        </Grid>
-    </Grid>
-
+  <DockPanel LastChildFill="True">
+    <DockPanel DockPanel.Dock="Top" LastChildFill="True" Background="LightGray" Height="80">
+      <local:AudioControlPanel DockPanel.Dock="Left" />
+      <local:VolumeControlView DockPanel.Dock="Right" />
+      <local:TrackStatusView />
+    </DockPanel>
+    <local:CollectionExplorerView />
+  </DockPanel>
 </Window>
