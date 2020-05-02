@@ -1,9 +1,6 @@
-﻿using Avalonia.Media.Imaging;
-using Id3;
-using ReactiveUI;
+﻿using ReactiveUI;
 using SharpAudio.Codec;
 using System;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -69,19 +66,9 @@ namespace Symphony.ViewModels
 
         public void LoadTrack(SoundStream track, string path)
         {
-            using (var file = new Mp3(path))
+            using (var file = TagLib.File.Create(path))
             {
-                var tag = file.GetTag(Id3TagFamily.Version2X);
-
-                var cover = tag.Pictures.FirstOrDefault(x => x.PictureType == Id3.Frames.PictureType.FrontCover);
-
-                if (cover != null)
-                {
-                    using (var ms = new MemoryStream(cover.PictureData))
-                    {
-                        AlbumCover = new Bitmap(ms);
-                    }
-                }
+                AlbumCover = file.Tag.LoadAlbumCover();
             }
 
             AlbumCoverVisible = true;

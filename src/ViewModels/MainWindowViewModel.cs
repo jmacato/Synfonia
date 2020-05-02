@@ -1,17 +1,14 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReactiveUI;
+﻿using ReactiveUI;
 using SharpAudio;
 using SharpAudio.Codec;
-using Id3;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Symphony.ViewModels
 {
@@ -87,9 +84,9 @@ namespace Symphony.ViewModels
             {
                 Console.WriteLine($"Processing file: {file}");
 
-                using (var mp3 = new Mp3(file))
+                using (var tagFile = TagLib.File.Create(file))
                 {
-                    var tag = mp3.GetTag(Id3TagFamily.Version2X);
+                    var tag = tagFile.Tag;
 
                     if (tag is null)
                     {
