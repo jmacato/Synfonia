@@ -14,10 +14,9 @@
     <Grid RowDefinitions="Auto, Auto">
         <Grid ColumnDefinitions="*,Auto" Grid.RowSpan="1">
             <TextBox Grid.ColumnSpan="1" Text="{Binding TargetFile}"/>
-            <Button Grid.Column="1" Grid.ColumnSpan="1" Height="60" Width="60" Command="{Binding DoPlay}"/>
+            <Button Grid.Column="1" Grid.ColumnSpan="1" Height="60" Width="60" Command="{Binding PlayCommand}"/>
         </Grid>
         <Grid Grid.Row="1" Grid.RowSpan="1">
-
             <c:SeekSlider Value="{Binding Position, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" Minimum="0" Maximum="1.0"/>
         </Grid>
     </Grid>

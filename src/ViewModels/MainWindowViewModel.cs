@@ -27,12 +27,10 @@ namespace Symphony.ViewModels
                  .DistinctUntilChanged()
                 .Subscribe(x => this.TargetFile = x);
 
-
-
-            // PlayCommand = ReactiveCommand.CreateFromTask(DoPlay); //this.WhenAnyValue(x => x.TargetFile).Select(x => !string.IsNullOrEmpty(x) && !string.IsNullOrWhiteSpace(x)));
+            PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
         }
 
-        // public readonly ReactiveCommand<Unit, Unit> PlayCommand;
+        public ReactiveCommand<Unit, Unit> PlayCommand { get; }
 
         public async Task DoPlay()
         {
@@ -44,9 +42,6 @@ namespace Symphony.ViewModels
                         .Do(x => _position = x.TotalSeconds / Duration.TotalSeconds)
                         .Do(x => this.RaisePropertyChanged(nameof(Position)))
                         .Subscribe();
-
-
-
             _soundStream.Play();
         }
 
@@ -56,11 +51,9 @@ namespace Symphony.ViewModels
             if (!_soundStream.IsPlaying) return;
 
             var x = ValidValuesOnly(value);
-            var z = TimeSpan.FromSeconds(x  * Duration.TotalSeconds);
+            var z = TimeSpan.FromSeconds(x * Duration.TotalSeconds);
             _soundStream.TrySeek(z);
         }
-
-        public string Greeting => "Hello World!";
 
         private string _targetFile;
 
