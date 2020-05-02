@@ -45,9 +45,13 @@ namespace Symphony.ViewModels
                     if (_currentTrackIndex > 0)
                     {
                         _currentTrackIndex--;
-
-                        await DoPlay();
                     }
+                    else
+                    {
+                        _currentTrackIndex = _currentAlbum.Tracks.Count - 1;
+                    }
+
+                    await DoPlay();
                 }
             });
 
@@ -58,9 +62,13 @@ namespace Symphony.ViewModels
                     if (_currentTrackIndex < _currentAlbum.Tracks.Count - 1)
                     {
                         _currentTrackIndex++;
-
-                        await DoPlay();
                     }
+                    else
+                    {
+                        _currentTrackIndex = 0;
+                    }
+
+                    await DoPlay();
                 }
             });
 
