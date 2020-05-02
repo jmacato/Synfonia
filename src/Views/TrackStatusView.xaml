@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
+             x:Class="Symphony.Views.TrackStatusView">
+  <Panel>
+    <DockPanel>
+      <ProgressBar DockPanel.Dock="Bottom" Minimum="0" Value="{Binding Position}" Maximum="100" MinHeight="0" Foreground="#565656" Background="#CCCCCC" Margin="0" Height="6" />
+      <DockPanel LastChildFill="True" Background="White">
+        <Panel>
+          <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
+        </Panel>
+        <Panel DockPanel.Dock="Right" Width="80" />
+        <Panel>
+          <StackPanel VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="20" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding CurrentTime}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
+          </StackPanel>
+        </Panel>
+      </DockPanel>
+    </DockPanel>
+
+  </Panel>
+</UserControl>

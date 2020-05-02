@@ -1,66 +1,104 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReactiveUI;
+﻿using ReactiveUI;
 using SharpAudio;
 using SharpAudio.Codec;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Symphony.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private TrackStatusViewModel _trackStatus;
+        private Dictionary<string, Album> _albumsDictionary;
+        private ObservableCollection<Album> _albums;
+        private Album _selectedAlbum;
+        private AudioEngine _audioEngine;
+        private SoundStream _soundStream;
+        private bool _sliderClicked;
+        private double _seekPosition;
+        private Album _currentAlbum;
+        private int _currentTrackIndex;
+
         public MainWindowViewModel()
         {
-            this._audioEngine = AudioEngine.CreateDefault();
+            _albumsDictionary = new Dictionary<string, Album>();
+            TrackStatus = new TrackStatusViewModel();
+            Albums = new ObservableCollection<Album>();
+
+            _audioEngine = AudioEngine.CreateDefault();
 
             if (_audioEngine == null)
             {
                 throw new Exception("Failed to create an audio backend!");
             }
 
-            this.WhenAnyValue(x => x.TargetFile)
-                 .DistinctUntilChanged()
-                .Subscribe(x => this.TargetFile = x);
+            BackCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                if (_currentAlbum != null)
+                {
+                    if (_currentTrackIndex > 0)
+                    {
+                        _currentTrackIndex--;
+                    }
+                    else
+                    {
+                        _currentTrackIndex = _currentAlbum.Tracks.Count - 1;
+                    }
+
+                    await DoPlay();
+                }
+            });
+
+            ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                if (_currentAlbum != null)
+                {
+                    if (_currentTrackIndex < _currentAlbum.Tracks.Count - 1)
+                    {
+                        _currentTrackIndex++;
+                    }
+                    else
+                    {
+                        _currentTrackIndex = 0;
+                    }
+
+                    await DoPlay();
+                }
+            });
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
+
+            ScanMusicFolder(@"C:\Users\danwa\OneDrive\Music\Music\");
         }
+
+        public ReactiveCommand<Unit, Unit> BackCommand { get; }
 
         public ReactiveCommand<Unit, Unit> PlayCommand { get; }
 
-        public async Task DoPlay()
-        {
-            this._soundStream = new SoundStream(File.OpenRead(TargetFile), _audioEngine);
+        public ReactiveCommand<Unit, Unit> ForwardCommand { get; }
 
-            _soundStream.WhenAnyValue(x => x.Position)
-                        .ObserveOn(RxApp.MainThreadScheduler)
-                        .Do(x => this.Duration = _soundStream.Duration)
-                        .Do(x => _position = x.TotalSeconds / Duration.TotalSeconds)
-                        .Do(x => this.RaisePropertyChanged(nameof(Position)))
-                        .Subscribe();
-            _soundStream.Play();
+        public ObservableCollection<Album> Albums
+        {
+            get { return _albums; }
+            set { this.RaiseAndSetIfChanged(ref _albums, value); }
         }
 
-        public void SliderChangedManually(double value)
+        public Album SelectedAlbum
         {
-            if (_soundStream is null) return;
-            if (!_soundStream.IsPlaying) return;
-
-            var x = ValidValuesOnly(value);
-            var z = TimeSpan.FromSeconds(x * Duration.TotalSeconds);
-            _soundStream.TrySeek(z);
+            get { return _selectedAlbum; }
+            set { this.RaiseAndSetIfChanged(ref _selectedAlbum, value); }
         }
 
-        private string _targetFile;
-
-        public string TargetFile
+        public TrackStatusViewModel TrackStatus
         {
-            get => _targetFile;
-            set => this.RaiseAndSetIfChanged(ref _targetFile, value, nameof(TargetFile));
+            get { return _trackStatus; }
+            set { this.RaiseAndSetIfChanged(ref _trackStatus, value); }
         }
 
         public bool SliderClicked
@@ -69,21 +107,121 @@ namespace Symphony.ViewModels
             set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
         }
 
-        private AudioEngine _audioEngine;
-        private SoundStream _soundStream;
-
-        private double _position = 0.0d;
-
-        public double Position
-        {
-            get => _position;
-            set => this.RaiseAndSetIfChanged(ref _position, value, nameof(Position));
-        }
-
         public double SeekPosition
         {
             get => _seekPosition;
             set { SliderChangedManually(value); }
+        }
+
+        private async Task ScanMusicFolder(string path)
+        {
+            foreach (var directory in Directory.EnumerateDirectories(path))
+            {
+                await ScanMusicFolder(directory);
+            }
+
+            foreach (var file in Directory.EnumerateFiles(path, "*.mp3")
+                //.Concat(Directory.EnumerateFiles(path, "*.m4a"))
+                )
+            {
+                Console.WriteLine($"Processing file: {file}");
+
+                using (var tagFile = TagLib.File.Create(file))
+                {
+                    var tag = tagFile.Tag;
+
+                    if (tag is null)
+                    {
+                        continue;
+                    }
+
+                    if (!_albumsDictionary.ContainsKey(tag.Album))
+                    {
+                        var album = new Album();
+
+                        album.Artist = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
+                        album.Title = tag.Album;
+                        album.Tracks.Add(new Track
+                        {
+                            Album = album,
+                            Path = file,
+                            Title = tag.Title
+                        });
+
+                        album.Cover = tag.LoadAlbumCover();
+
+                        _albumsDictionary[tag.Album] = album;
+
+                        if (album.Cover != null)
+                        {
+                            Albums.Add(album);
+
+                            if (SelectedAlbum is null)
+                            {
+                                SelectedAlbum = album;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _albumsDictionary[tag.Album].Tracks.Add(new Track
+                        {
+                            Album = _albumsDictionary[tag.Album],
+                            Path = file,
+                            Title = tag.Title
+                        });
+                    }
+                }
+            }
+        }
+
+        private async Task DoPlay()
+        {
+            if (_soundStream != null && _soundStream.IsPlaying)
+            {
+                _soundStream?.Stop();
+
+                await Task.Delay(50);
+
+                _soundStream?.Dispose();
+
+                await Task.Delay(100);
+            }
+
+            if (_currentAlbum != SelectedAlbum)
+            {
+                _currentAlbum = SelectedAlbum;
+                _currentTrackIndex = 0;
+            }
+
+            var targetTrack = _currentAlbum.Tracks[_currentTrackIndex].Path;
+
+            _soundStream = new SoundStream(File.OpenRead(targetTrack), _audioEngine);
+
+            TrackStatus.LoadTrack(_soundStream, targetTrack);
+
+            _soundStream.WhenAnyValue(x => x.IsPlaying)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    if (!x)
+                    {
+                        ForwardCommand.Execute();
+                    }
+                });
+
+            _soundStream.Play();
+
+        }
+
+        public void SliderChangedManually(double value)
+        {
+            if (_soundStream is null) return;
+            if (!_soundStream.IsPlaying) return;
+
+            var x = ValidValuesOnly(value);
+            //var z = TimeSpan.FromSeconds(x * Duration.TotalSeconds);
+            //_soundStream.TrySeek(z);
         }
 
         private double ValidValuesOnly(double value)
@@ -94,17 +232,5 @@ namespace Symphony.ViewModels
             }
             else return Math.Clamp(value, 0d, 1000d);
         }
-
-        private TimeSpan _duration;
-        private bool _sliderClicked;
-        private double _seekPosition;
-
-        public TimeSpan Duration
-        {
-            get => _duration;
-            private set => this.RaiseAndSetIfChanged(ref _duration, value, nameof(Duration));
-        }
-
-
     }
 }

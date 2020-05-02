@@ -1,6 +1,4 @@
-﻿using System;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia;
 using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
 
@@ -17,8 +15,13 @@ namespace Symphony
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .LogToDebug()
-                .UseReactiveUI();
+            .UsePlatformDetect()
+            .UseSkia()
+            .With(new Win32PlatformOptions { AllowEglInitialization = true, UseDeferredRendering = true })
+            .With(new X11PlatformOptions { UseGpu = true, WmClass = "Symphony" })
+            .With(new AvaloniaNativePlatformOptions { UseDeferredRendering = true, UseGpu = true })
+            .With(new MacOSPlatformOptions { ShowInDock = true })
+                .UseReactiveUI()
+                .LogToDebug();
     }
 }
