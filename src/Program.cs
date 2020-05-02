@@ -15,9 +15,13 @@ namespace Symphony
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
-                .UsePlatformDetect()
+            .UsePlatformDetect()
+            .UseSkia()
+            .With(new Win32PlatformOptions { AllowEglInitialization = true, UseDeferredRendering = true })
+            .With(new X11PlatformOptions { UseGpu = true, WmClass = "Symphony" })
+            .With(new AvaloniaNativePlatformOptions { UseDeferredRendering = true, UseGpu = true })
+            .With(new MacOSPlatformOptions { ShowInDock = true })
                 .UseReactiveUI()
-                .LogToDebug()
-                .UseReactiveUI();
+                .LogToDebug();
     }
 }
