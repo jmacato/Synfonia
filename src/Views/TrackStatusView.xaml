@@ -12,10 +12,13 @@
           <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="avares://Symphony/Assets/album_cover_mock.PNG" />
         </Panel>
         <Panel DockPanel.Dock="Right" Width="80" />
-        <StackPanel VerticalAlignment="Center">
-          <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="20" FontFamily="Segoe UI" />
-          <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
-        </StackPanel>
+        <Panel>
+          <StackPanel VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="20" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding CurrentTime}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
+          </StackPanel>
+        </Panel>
       </DockPanel>
     </DockPanel>
 

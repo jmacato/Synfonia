@@ -13,6 +13,7 @@ namespace Symphony.ViewModels
         private TimeSpan _duration;
         private double _position = 0.0d;
         private bool _albumCoverVisible;
+        private string _currentTime;
 
         public bool AlbumCoverVisible
         {
@@ -44,6 +45,17 @@ namespace Symphony.ViewModels
             set => this.RaiseAndSetIfChanged(ref _position, value);
         }
 
+        public string CurrentTime
+        {
+            get { return _currentTime; }
+            set { this.RaiseAndSetIfChanged(ref _currentTime, value); }
+        }
+
+        private string FormatTimeSpan(TimeSpan x)
+        {
+            return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}:{(x.Milliseconds / 100):0}";
+        }
+
         public void LoadTrack(SoundStream track)
         {
             AlbumCoverVisible = true;
@@ -55,8 +67,14 @@ namespace Symphony.ViewModels
             Duration = track.Duration;
 
             track.WhenAnyValue(x => x.Position)
+                .Subscribe(x =>
+                {
+                    CurrentTime = FormatTimeSpan(x);
+                });
+
+            track.WhenAnyValue(x => x.Position)
                         .ObserveOn(RxApp.MainThreadScheduler)
-                        .Subscribe(x => Position = ((x.TotalSeconds / 250) / Duration.TotalSeconds) * 100);
+                        .Subscribe(x => Position = ((x.TotalSeconds) / Duration.TotalSeconds) * 100);
         }
     }
 }
