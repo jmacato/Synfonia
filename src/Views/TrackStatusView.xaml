@@ -9,7 +9,7 @@
       <ProgressBar DockPanel.Dock="Bottom" Minimum="0" Value="{Binding Position}" Maximum="100" MinHeight="0" Foreground="#565656" Background="#CCCCCC" Margin="0" Height="6" />
       <DockPanel LastChildFill="True" Background="White">
         <Panel>
-          <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="avares://Symphony/Assets/album_cover_mock.PNG" />
+          <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
         </Panel>
         <Panel DockPanel.Dock="Right" Width="80" />
         <Panel>

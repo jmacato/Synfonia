@@ -1,6 +1,9 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Media.Imaging;
+using Id3;
+using ReactiveUI;
 using SharpAudio.Codec;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -14,6 +17,14 @@ namespace Symphony.ViewModels
         private double _position = 0.0d;
         private bool _albumCoverVisible;
         private string _currentTime;
+        private object _albumCover;
+
+        public object AlbumCover
+        {
+            get { return _albumCover; }
+            set { this.RaiseAndSetIfChanged(ref _albumCover, value); }
+        }
+
 
         public bool AlbumCoverVisible
         {
@@ -56,8 +67,23 @@ namespace Symphony.ViewModels
             return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}:{(x.Milliseconds / 100):0}";
         }
 
-        public void LoadTrack(SoundStream track)
+        public void LoadTrack(SoundStream track, string path)
         {
+            using (var file = new Mp3(path))
+            {
+                var tag = file.GetTag(Id3TagFamily.Version2X);
+
+                var cover = tag.Pictures.FirstOrDefault(x => x.PictureType == Id3.Frames.PictureType.FrontCover);
+
+                if (cover != null)
+                {
+                    using (var ms = new MemoryStream(cover.PictureData))
+                    {
+                        AlbumCover = new Bitmap(ms);
+                    }
+                }
+            }
+
             AlbumCoverVisible = true;
 
             Artist = track.Metadata.Artists.FirstOrDefault();

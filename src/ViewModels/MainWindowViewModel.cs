@@ -42,9 +42,7 @@ namespace Symphony.ViewModels
         {
             _soundStream = new SoundStream(File.OpenRead(TargetFile), _audioEngine);
 
-
-
-            TrackStatus.LoadTrack(_soundStream);
+            TrackStatus.LoadTrack(_soundStream, TargetFile);
 
             _soundStream.Play();
         }
