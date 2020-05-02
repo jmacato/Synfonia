@@ -27,6 +27,8 @@ namespace Symphony.ViewModels
                  .DistinctUntilChanged()
                 .Subscribe(x => this.TargetFile = x);
 
+            TargetFile = @"C:\Users\danwa\OneDrive\Music\Music\Elton John\Greatest Hits (1970-2002) [3CD]\01 your song.mp3";
+
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
         }
 
@@ -34,14 +36,14 @@ namespace Symphony.ViewModels
 
         public async Task DoPlay()
         {
-            this._soundStream = new SoundStream(File.OpenRead(TargetFile), _audioEngine);
+            _soundStream = new SoundStream(File.OpenRead(TargetFile), _audioEngine);
+
+            Duration = _soundStream.Duration;
 
             _soundStream.WhenAnyValue(x => x.Position)
                         .ObserveOn(RxApp.MainThreadScheduler)
-                        .Do(x => this.Duration = _soundStream.Duration)
-                        .Do(x => _position = x.TotalSeconds / Duration.TotalSeconds)
-                        .Do(x => this.RaisePropertyChanged(nameof(Position)))
-                        .Subscribe();
+                        .Subscribe(x => Position = ((x.TotalSeconds / 250) / Duration.TotalSeconds) * 100);
+
             _soundStream.Play();
         }
 
