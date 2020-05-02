@@ -14,8 +14,12 @@ namespace Symphony.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private TrackStatusViewModel _trackStatus;
+
         public MainWindowViewModel()
         {
+            TrackStatus = new TrackStatusViewModel();
+
             this._audioEngine = AudioEngine.CreateDefault();
 
             if (_audioEngine == null)
@@ -38,11 +42,9 @@ namespace Symphony.ViewModels
         {
             _soundStream = new SoundStream(File.OpenRead(TargetFile), _audioEngine);
 
-            Duration = _soundStream.Duration;
 
-            _soundStream.WhenAnyValue(x => x.Position)
-                        .ObserveOn(RxApp.MainThreadScheduler)
-                        .Subscribe(x => Position = ((x.TotalSeconds / 250) / Duration.TotalSeconds) * 100);
+
+            TrackStatus.LoadTrack(_soundStream);
 
             _soundStream.Play();
         }
@@ -53,8 +55,8 @@ namespace Symphony.ViewModels
             if (!_soundStream.IsPlaying) return;
 
             var x = ValidValuesOnly(value);
-            var z = TimeSpan.FromSeconds(x * Duration.TotalSeconds);
-            _soundStream.TrySeek(z);
+            //var z = TimeSpan.FromSeconds(x * Duration.TotalSeconds);
+            //_soundStream.TrySeek(z);
         }
 
         private string _targetFile;
@@ -74,14 +76,6 @@ namespace Symphony.ViewModels
         private AudioEngine _audioEngine;
         private SoundStream _soundStream;
 
-        private double _position = 0.0d;
-
-        public double Position
-        {
-            get => _position;
-            set => this.RaiseAndSetIfChanged(ref _position, value, nameof(Position));
-        }
-
         public double SeekPosition
         {
             get => _seekPosition;
@@ -97,16 +91,15 @@ namespace Symphony.ViewModels
             else return Math.Clamp(value, 0d, 1000d);
         }
 
-        private TimeSpan _duration;
         private bool _sliderClicked;
         private double _seekPosition;
 
-        public TimeSpan Duration
+
+
+        public TrackStatusViewModel TrackStatus
         {
-            get => _duration;
-            private set => this.RaiseAndSetIfChanged(ref _duration, value, nameof(Duration));
+            get { return _trackStatus; }
+            set { this.RaiseAndSetIfChanged(ref _trackStatus, value); }
         }
-
-
     }
 }

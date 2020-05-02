@@ -17,7 +17,7 @@
     <DockPanel DockPanel.Dock="Top" LastChildFill="True" Background="LightGray" Height="80">
       <local:AudioControlPanel DockPanel.Dock="Left" />
       <local:VolumeControlView DockPanel.Dock="Right" />
-      <local:TrackStatusView />
+      <local:TrackStatusView DataContext="{Binding TrackStatus}" />
     </DockPanel>
     <local:CollectionExplorerView />
   </DockPanel>
