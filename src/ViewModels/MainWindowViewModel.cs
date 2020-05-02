@@ -22,6 +22,8 @@ namespace Symphony.ViewModels
         private SoundStream _soundStream;
         private bool _sliderClicked;
         private double _seekPosition;
+        private Album _currentAlbum;
+        private int _currentTrackIndex;
 
         public MainWindowViewModel()
         {
@@ -36,12 +38,42 @@ namespace Symphony.ViewModels
                 throw new Exception("Failed to create an audio backend!");
             }
 
+            BackCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                if (_currentAlbum != null)
+                {
+                    if (_currentTrackIndex > 0)
+                    {
+                        _currentTrackIndex--;
+
+                        await DoPlay();
+                    }
+                }
+            });
+
+            ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                if (_currentAlbum != null)
+                {
+                    if (_currentTrackIndex < _currentAlbum.Tracks.Count - 1)
+                    {
+                        _currentTrackIndex++;
+
+                        await DoPlay();
+                    }
+                }
+            });
+
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
             ScanMusicFolder(@"C:\Users\danwa\OneDrive\Music\Music\");
         }
 
+        public ReactiveCommand<Unit, Unit> BackCommand { get; }
+
         public ReactiveCommand<Unit, Unit> PlayCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> ForwardCommand { get; }
 
         public ObservableCollection<Album> Albums
         {
@@ -119,15 +151,39 @@ namespace Symphony.ViewModels
                             }
                         }
                     }
+                    else
+                    {
+                        _albumsDictionary[tag.Album].Tracks.Add(new Track
+                        {
+                            Album = _albumsDictionary[tag.Album],
+                            Path = file,
+                            Title = tag.Title
+                        });
+                    }
                 }
             }
         }
 
         private async Task DoPlay()
         {
-            _soundStream?.Dispose();
+            if (_soundStream != null && _soundStream.IsPlaying)
+            {
+                _soundStream?.Stop();
 
-            var targetTrack = SelectedAlbum.Tracks.FirstOrDefault().Path;
+                await Task.Delay(50);
+
+                _soundStream?.Dispose();
+
+                await Task.Delay(100);
+            }
+
+            if (_currentAlbum != SelectedAlbum)
+            {
+                _currentAlbum = SelectedAlbum;
+                _currentTrackIndex = 0;
+            }
+
+            var targetTrack = _currentAlbum.Tracks[_currentTrackIndex].Path;
 
             _soundStream = new SoundStream(File.OpenRead(targetTrack), _audioEngine);
 
