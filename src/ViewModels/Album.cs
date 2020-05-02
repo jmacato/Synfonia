@@ -14,6 +14,8 @@ namespace Symphony.ViewModels
 
         public string Title { get; set; }
 
+        public string Artist { get; set; }
+
         public List<Track> Tracks { get; set; }
 
         public IBitmap Cover { get; set; }

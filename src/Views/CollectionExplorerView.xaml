@@ -7,12 +7,16 @@
   <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}">
     <ListBox.ItemsPanel>
       <ItemsPanelTemplate>
-        <WrapPanel MaxWidth="1100" HorizontalAlignment="Center" />
+        <WrapPanel MaxWidth="1000" HorizontalAlignment="Center" />
       </ItemsPanelTemplate>
     </ListBox.ItemsPanel>
     <ListBox.ItemTemplate>
       <DataTemplate>
-        <Image Margin="5" Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+        <StackPanel Margin="15" Spacing="8">
+          <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+          <TextBlock MaxWidth="200"  TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" FontFamily="Segoe UI" />
+          <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858" FontFamily="Segoe UI" />
+        </StackPanel>
       </DataTemplate>
     </ListBox.ItemTemplate>
   </ListBox>

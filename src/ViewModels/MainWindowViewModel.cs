@@ -120,7 +120,9 @@ namespace Symphony.ViewModels
                 await ScanMusicFolder(directory);
             }
 
-            foreach (var file in Directory.EnumerateFiles(path, "*.mp3"))
+            foreach (var file in Directory.EnumerateFiles(path, "*.mp3")
+                //.Concat(Directory.EnumerateFiles(path, "*.m4a"))
+                )
             {
                 Console.WriteLine($"Processing file: {file}");
 
@@ -137,6 +139,7 @@ namespace Symphony.ViewModels
                     {
                         var album = new Album();
 
+                        album.Artist = tag.AlbumArtists.FirstOrDefault();
                         album.Title = tag.Album;
                         album.Tracks.Add(new Track
                         {
