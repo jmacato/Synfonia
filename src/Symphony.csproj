@@ -18,7 +18,8 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.9.9" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.9" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="*" />
-    
-    <ProjectReference Include="../SharpAudio/src/SharpAudio.Codec/SharpAudio.Codec.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpAudio\src\SharpAudio.Codec\SharpAudio.Codec.csproj" />
   </ItemGroup>
 </Project>
