@@ -6,7 +6,8 @@
     xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:b="clr-namespace:Symphony.Behaviors;assembly=Symphony"
     xmlns:local="clr-namespace:Symphony.Views"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony"
+        HasSystemDecorations="False">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
