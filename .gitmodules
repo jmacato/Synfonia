@@ -1,0 +1,4 @@
+[submodule "SharpAudio"]
+	path = SharpAudio
+	url = https://github.com/jmacato/SharpAudio
+	branch = x
