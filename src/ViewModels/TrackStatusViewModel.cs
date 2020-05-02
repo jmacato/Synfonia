@@ -78,8 +78,6 @@ namespace Symphony.ViewModels
 
                 Duration = file.Properties.Duration;
 
-                CurrentTime = FormatTimeSpan(Duration / 2);
-
                 track.WhenAnyValue(x => x.Position)
                     .Subscribe(x =>
                     {
