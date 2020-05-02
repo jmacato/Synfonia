@@ -72,7 +72,7 @@ namespace Symphony.ViewModels
 
                 AlbumCoverVisible = true;
 
-                Artist = file.Tag.AlbumArtists.FirstOrDefault();
+                Artist = file.Tag.AlbumArtists.Concat(file.Tag.Artists).FirstOrDefault();
 
                 TrackTitle = file.Tag.Title;
 

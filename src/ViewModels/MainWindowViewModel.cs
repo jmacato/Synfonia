@@ -139,7 +139,7 @@ namespace Symphony.ViewModels
                     {
                         var album = new Album();
 
-                        album.Artist = tag.AlbumArtists.FirstOrDefault();
+                        album.Artist = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
                         album.Title = tag.Album;
                         album.Tracks.Add(new Track
                         {
