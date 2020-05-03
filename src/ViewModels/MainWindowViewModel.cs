@@ -75,7 +75,7 @@ namespace Symphony.ViewModels
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanMusicFolder(@"c:\users\danwa\OneDrive\Music\Music");
+            ScanMusicFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
         }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
