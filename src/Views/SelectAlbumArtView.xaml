@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Symphony.Views.SelectAlbumArtView" IsVisible="{Binding IsVisible, Mode=TwoWay}">
   <i:Interaction.Behaviors>
-    <behaviors:HideWhenClickedOutsideBehavior TargetVisual="{Binding #PART_MainPanel}" />
+    <behaviors:HideWhenClickedOutsideBehavior HitTarget="{Binding #PART_MainPanel}" />
   </i:Interaction.Behaviors>
   <Panel Background="#77000000">
     <ListBox x:Name="PART_MainPanel" Height="320" Items="{Binding Covers}" SelectedItem="{Binding SelectedCover}" VerticalAlignment="Bottom">

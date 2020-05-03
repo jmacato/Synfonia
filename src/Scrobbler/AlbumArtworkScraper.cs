@@ -42,8 +42,9 @@ namespace Symphony.Scrobbler
             options.Add(FuzzyStringComparisonOptions.UseLongestCommonSubsequence);
             options.Add(FuzzyStringComparisonOptions.UseLongestCommonSubstring);
 
-            return albums.Albums.Where(x => x.CollectionName != null && albumName.ApproximatelyEquals(x.CollectionName, FuzzyStringComparisonTolerance.Strong, options.ToArray()))
-                .Concat(albums.Albums.Where(x => x.CollectionName != null && !x.CollectionName.Contains(albumName)))
+            var bestMatches = albums.Albums.Where(x => x.CollectionName != null && albumName.ApproximatelyEquals(x.CollectionName, FuzzyStringComparisonTolerance.Strong, options.ToArray())).ToList();
+
+            return bestMatches.Concat(albums.Albums.Where(x => x.CollectionName != null && !bestMatches.Contains(x)))
                 .Concat(albums.Albums.Where(x => x.CollectionName is null))
                 .Where(x => !string.IsNullOrWhiteSpace(x.ArtworkUrl100))
                 .Select(x => new ArtworkData
