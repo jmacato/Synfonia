@@ -21,7 +21,7 @@
     </DockPanel>
     <Panel>
       <local:CollectionExplorerView />
-      <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" VerticalAlignment="Bottom" Height="320" />
+      <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
     </Panel>
   </DockPanel>
 </Window>

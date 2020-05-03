@@ -11,6 +11,19 @@ namespace Symphony.Behaviors
     public class HideWhenClickedOutsideBehavior : Behavior<Visual>
     {
         private IDisposable _disposable;
+        private IVisual _targetVisual;
+
+        public static readonly DirectProperty<HideWhenClickedOutsideBehavior, IVisual> TargetVisualProperty =
+            AvaloniaProperty.RegisterDirect<HideWhenClickedOutsideBehavior, IVisual>(
+                nameof(TargetVisual),
+                o => o.TargetVisual,
+                (o, v) => o.TargetVisual = v);
+
+        public IVisual TargetVisual
+        {
+            get { return _targetVisual; }
+            set { SetAndRaise(TargetVisualProperty, ref _targetVisual, value); }
+        }
 
         protected override void OnAttached()
         {
@@ -34,9 +47,11 @@ namespace Symphony.Behaviors
             {
                 if (AssociatedObject.IsVisible)
                 {
+                    var target = TargetVisual ?? AssociatedObject;
+
                     var hit = toplevel.InputHitTest(ee.GetCurrentPoint(null).Position);
 
-                    if (!AssociatedObject.IsVisualAncestorOf(hit))
+                    if (!target.IsVisualAncestorOf(hit))
                     {
                         AssociatedObject.IsVisible = false;
                     }

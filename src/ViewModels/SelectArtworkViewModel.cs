@@ -37,6 +37,10 @@ namespace Symphony.ViewModels
 
                     IsVisible = false;
                 });
+
+            this.WhenAnyValue(x => x.IsVisible)
+                .Where(x => !x)
+                .Subscribe(_ => _cancellationTokenSource?.Cancel());
         }
 
         public ObservableCollection<CoverViewModel> Covers
@@ -73,6 +77,13 @@ namespace Symphony.ViewModels
                 var scraper = new AlbumArtworkScraper();
 
                 var artworkDatas = await scraper.GetPossibleAlbumArt("uk", album.Artist, album.Title);
+
+                if (artworkDatas == null)
+                {
+                    IsVisible = false;
+
+                    return;
+                }
 
                 foreach (var artworkData in artworkDatas)
                 {
