@@ -74,7 +74,7 @@ namespace Symphony.ViewModels
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanMusicFolder(@"/Users/dan/Music");
+            ScanMusicFolder(@"c:\users\danwa\TestMusic\");
         }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
@@ -135,7 +135,7 @@ namespace Symphony.ViewModels
                         continue;
                     }
 
-                    if(tag.Album is null)
+                    if (tag.Album is null)
                     {
                         tag.Album = "Unknown Album";
                     }
@@ -157,14 +157,11 @@ namespace Symphony.ViewModels
 
                         _albumsDictionary[tag.Album] = album;
 
-                        if (album.Cover != null)
-                        {
-                            Albums.Add(album);
+                        Albums.Add(album);
 
-                            if (SelectedAlbum is null)
-                            {
-                                SelectedAlbum = album;
-                            }
+                        if (SelectedAlbum is null)
+                        {
+                            SelectedAlbum = album;
                         }
                     }
                     else
