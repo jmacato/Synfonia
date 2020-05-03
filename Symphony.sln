@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpAudio", "SharpAudio\sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpAudio.ALBinding", "SharpAudio\src\SharpAudio.ALBinding\SharpAudio.ALBinding.csproj", "{567BA33F-1203-42A2-82F4-54D1D8E5836C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunesSearch.Library", "iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj", "{A4C0E485-A36C-473C-8987-2C298481936C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{567BA33F-1203-42A2-82F4-54D1D8E5836C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{567BA33F-1203-42A2-82F4-54D1D8E5836C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{567BA33F-1203-42A2-82F4-54D1D8E5836C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C0E485-A36C-473C-8987-2C298481936C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C0E485-A36C-473C-8987-2C298481936C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C0E485-A36C-473C-8987-2C298481936C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C0E485-A36C-473C-8987-2C298481936C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
