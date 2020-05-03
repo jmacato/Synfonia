@@ -45,16 +45,24 @@ namespace Symphony.ViewModels
                 {
                     if (_currentTrackIndex > 0)
                     {
+                        _trackChanged = true;
                         _currentTrackIndex--;
                     }
                     else
                     {
-                        _currentTrackIndex = _currentAlbum.Tracks.Count - 1;
+                        return;
                     }
+
+                    if (_soundStream != null && _soundStream.IsPlaying)
+                    {
+                        _soundStream.Stop();
+                        _soundStream = null;
+                    }
+
 
                     await DoPlay();
                 }
-            });
+            }, this.WhenAnyValue(x => x.SelectedAlbum).Select(x => x?.Tracks.Count > 1));
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -62,18 +70,30 @@ namespace Symphony.ViewModels
                 {
                     if (_currentTrackIndex < _currentAlbum.Tracks.Count - 1)
                     {
+                        _trackChanged = true;
                         _currentTrackIndex++;
                     }
                     else
                     {
-                        _currentTrackIndex = 0;
+                        return;
                     }
+
+
+                    if (_soundStream != null && _soundStream.IsPlaying)
+                    {
+                        _soundStream.Stop();
+                        _soundStream = null;
+                    }
+
 
                     await DoPlay();
                 }
-            });
+            }, this.WhenAnyValue(x => x.SelectedAlbum).Select(x => x?.Tracks.Count > 1));
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
+
+            this.WhenAnyValue(x => x.SelectedAlbum)
+                .Subscribe(x => _trackChanged = true);
 
             ScanMusicFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
         }
@@ -114,7 +134,7 @@ namespace Symphony.ViewModels
             set { SliderChangedManually(value); }
         }
 
-        static List<string> SupportedFileExtensions = new List<string>()
+        private static readonly List<string> SupportedFileExtensions = new List<string>()
         {
             "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff",
             "amb", "amr", "aob", "ape", "au", "awb", "caf", "dts", "dsf", "dff", "flac", "it", "kar",
@@ -122,6 +142,8 @@ namespace Symphony.ViewModels
             "oga", "ogg", "oma", "opus", "qcp", "ra", "rmi", "s3m", "sid", "spx", "tak", "thd", "tta",
             "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
         };
+
+        private bool _trackChanged;
 
         private async Task ScanMusicFolder(string path)
         {
@@ -136,7 +158,7 @@ namespace Symphony.ViewModels
             {
                 if (!SupportedFileExtensions.Any(x => $".{x}" == Path.GetExtension(file).ToLower()))
                     continue;
-                    
+
                 Debug.WriteLine($"Processing file: {file}");
 
                 try
@@ -198,15 +220,16 @@ namespace Symphony.ViewModels
 
         private async Task DoPlay()
         {
-            if (_soundStream != null && _soundStream.IsPlaying)
+
+            if (_trackChanged)
             {
                 _soundStream?.Stop();
-
-                await Task.Delay(50);
-
-                _soundStream?.Dispose();
-
-                await Task.Delay(100);
+                _trackChanged = false;
+            }
+            else
+            {
+                _soundStream?.PlayPause();
+                return;
             }
 
             if (_currentAlbum != SelectedAlbum)
@@ -221,7 +244,7 @@ namespace Symphony.ViewModels
 
             TrackStatus.LoadTrack(_soundStream, targetTrack);
 
-            _soundStream.Play();
+            _soundStream.PlayPause();
         }
 
         public void SliderChangedManually(double value)
