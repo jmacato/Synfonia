@@ -14,8 +14,8 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.999-cibuild0007050-beta" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="00.9.999-cibuild0007050-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.999-cibuild*" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="00.9.999-cibuild*" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
