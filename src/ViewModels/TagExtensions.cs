@@ -10,7 +10,7 @@ namespace Symphony.ViewModels
     {
         public static IBitmap LoadAlbumCover(this TagLib.Tag tag)
         {
-            var cover = tag.Pictures.FirstOrDefault(x => x.Type == TagLib.PictureType.FrontCover);
+            var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
 
             if (cover != null)
             {
