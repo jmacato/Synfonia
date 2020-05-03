@@ -21,7 +21,6 @@ namespace Symphony.Converters
             Color.Parse("#0C76C0"),
             Color.Parse("#B444C0"),
             Color.Parse("#E5A708"),
-            Color.Parse("#875B1E"),
             Color.Parse("#E3412A")
         };
 
@@ -30,7 +29,7 @@ namespace Symphony.Converters
             if (value is string s)
             {
                 uint selector = s.Select(x => (uint)x)
-                                 .Aggregate((x, y) => x ^ y) % 12;
+                                 .Aggregate((x, y) => x ^ y) % (uint)XMB_Colors.Length;
 
                 return new LinearGradientBrush()
                 {

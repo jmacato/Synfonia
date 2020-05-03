@@ -1,13 +1,8 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
-             x:Class="Symphony.Views.TrackStatusView">
+﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100" x:Class="Symphony.Views.TrackStatusView">
   <Panel>
-    <DockPanel>
-      <ProgressBar DockPanel.Dock="Bottom" Minimum="0" Value="{Binding Position}" Maximum="100" MinHeight="0" Foreground="#565656" Background="#CCCCCC" Margin="0" Height="6" />
-      <DockPanel LastChildFill="True" Background="White">
+    <Grid RowDefinitions="*,Auto">
+      <DockPanel Grid.RowSpan="1" LastChildFill="True" Background="White">
         <Panel>
           <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
         </Panel>
@@ -20,7 +15,7 @@
           </StackPanel>
         </Panel>
       </DockPanel>
-    </DockPanel>
-
+      <c:SeekSlider Grid.Row="1" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
+    </Grid>
   </Panel>
 </UserControl>

@@ -136,12 +136,25 @@ namespace Symphony.Controls
                 (o, v) => o.SeekValue = v, 0d);
 
         private double _SeekValue;
-        private bool IsSeeking;
 
         public double SeekValue
         {
             get { return _SeekValue; }
             set { SetAndRaise(SeekValueProperty, ref _SeekValue, value); }
+        }
+
+        public static readonly DirectProperty<SeekSlider, bool> IsSeekingProperty =
+            AvaloniaProperty.RegisterDirect<SeekSlider, bool>(
+                nameof(IsSeeking),
+                o => o.IsSeeking,
+                (o, v) => o.IsSeeking = v, false);
+
+        private bool _IsSeeking;
+
+        public bool IsSeeking
+        {
+            get { return _IsSeeking; }
+            set { SetAndRaise(IsSeekingProperty, ref _IsSeeking, value); }
         }
 
         private void ChangeValueBy(double by)
@@ -174,8 +187,7 @@ namespace Symphony.Controls
         /// <param name="e"></param>
         protected virtual void OnThumbDragDelta(VectorEventArgs e)
         {
-            Thumb thumb = e.Source as Thumb;
-            if (thumb != null && _track?.Thumb == thumb)
+            if (e.Source is Thumb thumb && _track?.Thumb == thumb)
             {
                 MoveToNextTick(_track.Value);
             }
@@ -197,9 +209,7 @@ namespace Symphony.Controls
         /// <param name="value">Value that want to snap to closest Tick.</param>
         private void MoveToNextTick(double value)
         {
-            var tmp = SnapToTick(Math.Max(Minimum, Math.Min(Maximum, value)));
-            if (!IsSeeking)
-                Value = tmp;
+            Value = SnapToTick(Math.Max(Minimum, Math.Min(Maximum, value)));
         }
 
         /// <summary>
