@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,9 +45,12 @@ namespace Symphony.Scrobbler
 
                     var artworkUri = album.ArtworkUrl100.Replace("100x100bb", "1000x1000bb");
 
-                    using (var client = new WebClient())
+                    HttpClientHandler clientHandler = new HttpClientHandler();
+                    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+                    using (var client = new HttpClient(clientHandler))
                     {
-                        var data = await client.DownloadDataTaskAsync(artworkUri);
+                        var data = await client.GetByteArrayAsync(artworkUri);
 
                         return data;
                     }
