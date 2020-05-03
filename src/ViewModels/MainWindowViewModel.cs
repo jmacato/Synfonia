@@ -43,7 +43,7 @@ namespace Symphony.ViewModels
                     }
                     else
                     {
-                        return;
+                        _currentTrackIndex = _currentAlbum.Tracks.Count - 1;
                     }
 
                     if (_soundStream != null && _soundStream.IsPlaying)
@@ -67,9 +67,8 @@ namespace Symphony.ViewModels
                     }
                     else
                     {
-                        return;
+                        _currentTrackIndex = 0;
                     }
-
 
                     if (_soundStream != null && _soundStream.IsPlaying)
                     {
@@ -127,14 +126,9 @@ namespace Symphony.ViewModels
             {
                 _currentAlbum = CollectionExplorer.SelectedAlbum;
                 _currentTrackIndex = 0;
+            }
 
-                _soundStream?.Stop();
-            }
-            else
-            {
-                _soundStream?.PlayPause();
-                return;
-            }
+            _soundStream?.Stop();
 
             var targetTrack = _currentAlbum.Tracks[_currentTrackIndex].Path;
 
