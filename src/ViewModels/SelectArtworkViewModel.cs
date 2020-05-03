@@ -19,7 +19,7 @@ namespace Symphony.ViewModels
         private CancellationTokenSource _cancellationTokenSource;
         private AsyncLock _lock = new AsyncLock();
         private CoverViewModel _selectedCover;
-        private Album _currentAlbum;
+        private AlbumViewModel _currentAlbum;
 
         public SelectArtworkViewModel()
         {
@@ -61,7 +61,7 @@ namespace Symphony.ViewModels
             set { this.RaiseAndSetIfChanged(ref _isVisible, value); }
         }
 
-        public async Task QueryAlbumCoverAsync(Album album)
+        public async Task QueryAlbumCoverAsync(AlbumViewModel album)
         {
             _cancellationTokenSource?.Cancel();
 
