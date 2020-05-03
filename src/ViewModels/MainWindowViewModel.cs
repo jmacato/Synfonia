@@ -74,7 +74,7 @@ namespace Symphony.ViewModels
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanMusicFolder(@"C:\Users\danwa\OneDrive\Music\Music\");
+            ScanMusicFolder(@"/Users/dan/Music");
         }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
@@ -200,18 +200,7 @@ namespace Symphony.ViewModels
 
             TrackStatus.LoadTrack(_soundStream, targetTrack);
 
-            _soundStream.WhenAnyValue(x => x.IsPlaying)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x =>
-                {
-                    if (!x)
-                    {
-                        ForwardCommand.Execute();
-                    }
-                });
-
             _soundStream.Play();
-
         }
 
         public void SliderChangedManually(double value)
