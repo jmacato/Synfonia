@@ -44,6 +44,11 @@ namespace Symphony.ViewModels
                 }
                 else
                 {
+                    if (_trackList is null)
+                    {
+                        return;
+                    }
+
                     if (_currentTrack is null)
                     {
                         await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
@@ -55,6 +60,11 @@ namespace Symphony.ViewModels
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
             {
+                if (_trackList is null)
+                {
+                    return;
+                }
+
                 if (_currentTrackIndex < _trackList.Tracks.Count - 1)
                 {
                     _currentTrackIndex++;
@@ -71,6 +81,11 @@ namespace Symphony.ViewModels
 
             BackCommand = ReactiveCommand.CreateFromTask(async () =>
             {
+                if (_trackList is null)
+                {
+                    return;
+                }
+
                 if (_currentTrackIndex > 0)
                 {
                     _currentTrackIndex--;
@@ -152,7 +167,7 @@ namespace Symphony.ViewModels
             if (_isPlaying)
             {
                 _isPlaying = false;
-                _soundStream.Pause();
+                _soundStream.PlayPause();
 
                 await Task.Delay(100);
             }
