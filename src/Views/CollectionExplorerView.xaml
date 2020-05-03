@@ -13,7 +13,7 @@
     <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
   <Panel>
-    <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
+    <ListBox AutoScrollToSelectedItem="False" Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
       <ListBox.ContextMenu>
         <ContextMenu>
           <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
