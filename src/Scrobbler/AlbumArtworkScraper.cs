@@ -19,6 +19,11 @@ namespace Symphony.Scrobbler
 
             var foundArtist = artists.Artists.FirstOrDefault();
 
+            if (foundArtist is null)
+            {
+                return null;
+            }
+
             var albums = await searchManager.GetAlbumsByArtistIdAsync(foundArtist.ArtistId);
 
             foreach (var album in albums.Albums)
