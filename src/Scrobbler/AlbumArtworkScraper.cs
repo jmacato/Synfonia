@@ -27,33 +27,20 @@ namespace Symphony.Scrobbler
 
             var albums = await searchManager.GetAlbumsByArtistIdAsync(foundArtist.ArtistId);
 
-            foreach (var album in albums.Albums)
+            var album = albums.Albums.FirstOrDefault(x => x.CollectionName != null && x.CollectionName.Contains(albumName) && !string.IsNullOrWhiteSpace(x.ArtworkUrl100));
+
+            if (album != null)
             {
-                if (album.CollectionViewUrl != null)
+                var artworkUri = album.ArtworkUrl100.Replace("100x100bb", "1000x1000bb");
+
+                HttpClientHandler clientHandler = new HttpClientHandler();
+                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+                using (var client = new HttpClient(clientHandler))
                 {
-                    Debug.WriteLine(album.CollectionViewUrl);
-                }
+                    var data = await client.GetByteArrayAsync(artworkUri);
 
-                if (album.ArtistViewUrl != null)
-                {
-                    Debug.WriteLine(album.ArtistViewUrl);
-                }
-
-                if (album.ArtworkUrl100 != null)
-                {
-                    Debug.WriteLine(album.ArtworkUrl100);
-
-                    var artworkUri = album.ArtworkUrl100.Replace("100x100bb", "1000x1000bb");
-
-                    HttpClientHandler clientHandler = new HttpClientHandler();
-                    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-
-                    using (var client = new HttpClient(clientHandler))
-                    {
-                        var data = await client.GetByteArrayAsync(artworkUri);
-
-                        return data;
-                    }
+                    return data;
                 }
             }
 

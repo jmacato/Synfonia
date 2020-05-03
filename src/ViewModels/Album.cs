@@ -23,12 +23,29 @@ namespace Symphony.ViewModels
 
                 var data = await scraper.DownloadArtwork("uk", Artist, Title);
 
-                //TagLib.File.Create()
-
-
-                using (var ms = new MemoryStream(data))
+                if (data != null)
                 {
-                    Cover = new Bitmap(ms);
+                    using (var ms = new MemoryStream(data))
+                    {
+                        Cover = new Bitmap(ms);
+                    }
+
+                    foreach (var track in Tracks)
+                    {
+                        using (var tagFile = TagLib.File.Create(track.Path))
+                        {
+                            tagFile.Tag.Pictures = new TagLib.Picture[]
+                            {
+                                new TagLib.Picture(new TagLib.ByteVector(data, data.Length))
+                                {
+                                     Type = TagLib.PictureType.FrontCover,
+                                     MimeType = "image/jpeg"
+                                }
+                            };
+
+                            tagFile.Save();
+                        }
+                    }
                 }
             });
         }
