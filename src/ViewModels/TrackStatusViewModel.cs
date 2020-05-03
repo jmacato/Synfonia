@@ -20,6 +20,16 @@ namespace Symphony.ViewModels
         private bool _isSeekbarActive = true;
         private string _status;
 
+        public TrackStatusViewModel()
+        {
+            this.WhenAnyValue(x => x.SeekPosition)
+                .Skip(1)
+                .Subscribe(x =>
+                {
+                    MainWindowViewModel.Instance.DiscChanger.Seek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
+                });
+        }
+
         public object AlbumCover
         {
             get { return _albumCover; }
@@ -95,13 +105,18 @@ namespace Symphony.ViewModels
         {
             CurrentTime = FormatTimeSpan(time);
 
-            Position = time.TotalSeconds / Duration.TotalSeconds;
+            if (!IsTrackSeeking)
+            {
+                Position = time.TotalSeconds / Duration.TotalSeconds;
+            }
         }
 
         public void LoadTrack(Track track)
         {
             using (var file = TagLib.File.Create(track.Path))
             {
+                SeekPosition = 0;
+
                 AlbumCover = file.Tag.LoadAlbumCover();
 
                 AlbumCoverVisible = true;
@@ -111,15 +126,6 @@ namespace Symphony.ViewModels
                 TrackTitle = file.Tag.Title;
 
                 Duration = file.Properties.Duration;
-
-                //this.WhenAnyValue(x => x.SeekPosition)
-                //    .Subscribe(x =>
-                //    {
-                //        Console.WriteLine($"SeekPos {x}");
-                //        track.TrySeek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
-                //    });
-
-
             }
         }
     }

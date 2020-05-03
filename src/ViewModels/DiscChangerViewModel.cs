@@ -129,6 +129,14 @@ namespace Symphony.ViewModels
             }
         }
 
+        public void Seek(TimeSpan seektime)
+        {
+            if (_isPlaying)
+            {
+                _soundStream.TrySeek(seektime);
+            }
+        }
+
         public void Play()
         {
             if (!_isPlaying && _soundStream != null)
