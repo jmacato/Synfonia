@@ -24,10 +24,12 @@ namespace Symphony.ViewModels
 
         private ObservableCollection<AlbumViewModel> _albums;
         private AlbumViewModel _selectedAlbum;
+        private SelectArtworkViewModel _selectArtwork;
 
         public CollectionExplorerViewModel()
         {
             Albums = new ObservableCollection<AlbumViewModel>();
+            SelectArtwork = new SelectArtworkViewModel();
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -42,6 +44,12 @@ namespace Symphony.ViewModels
 
                 MainWindowViewModel.Instance.TrackStatus.Status = "";
             });
+        }
+
+        public SelectArtworkViewModel SelectArtwork
+        {
+            get { return _selectArtwork; }
+            set { this.RaiseAndSetIfChanged(ref _selectArtwork, value); }
         }
 
         public ObservableCollection<AlbumViewModel> Albums

@@ -1,46 +1,55 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.CollectionExplorerView">
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Symphony.Views"
+             xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Symphony.Views.CollectionExplorerView">
   <UserControl.Resources>
     <converters:IsNullConverter x:Key="IsNullConverter" />
     <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
-  <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
-    <ListBox.ContextMenu>
-      <ContextMenu>
-        <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
-      </ContextMenu>
-    </ListBox.ContextMenu>
-    <ListBox.ItemsPanel>
-      <ItemsPanelTemplate>
-        <WrapPanel MaxWidth="1000" HorizontalAlignment="Center" />
-      </ItemsPanelTemplate>
-    </ListBox.ItemsPanel>
-    <ListBox.ItemTemplate>
-      <DataTemplate>
-        <StackPanel Margin="15" Spacing="8">
-          <Panel Width="200" MinHeight="200">
-            <Panel.ContextMenu>
-              <ContextMenu>
-                <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
-              </ContextMenu>
-            </Panel.ContextMenu>
-            <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
-            <Panel Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
-              <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <DrawingPresenter.Drawing>
-                  <DrawingGroup>
-                    <DrawingGroup.Children>
-                      <GeometryDrawing Brush="White" Geometry="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17S7.79 21 10 21 14 19.21 14 17V7H18V3H12Z" />
-                    </DrawingGroup.Children>
-                  </DrawingGroup>
-                </DrawingPresenter.Drawing>
-              </DrawingPresenter>
+  <Panel>
+    <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
+      <ListBox.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
+        </ContextMenu>
+      </ListBox.ContextMenu>
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel MaxWidth="1000" HorizontalAlignment="Center" />
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Margin="15" Spacing="8">
+            <Panel Width="200" MinHeight="200">
+              <Panel.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
+                </ContextMenu>
+              </Panel.ContextMenu>
+              <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+              <Panel Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
+                <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
+                  <DrawingPresenter.Drawing>
+                    <DrawingGroup>
+                      <DrawingGroup.Children>
+                        <GeometryDrawing Brush="White" Geometry="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17S7.79 21 10 21 14 19.21 14 17V7H18V3H12Z" />
+                      </DrawingGroup.Children>
+                    </DrawingGroup>
+                  </DrawingPresenter.Drawing>
+                </DrawingPresenter>
+              </Panel>
             </Panel>
-          </Panel>
-          <TextBlock MaxWidth="200"  TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" FontFamily="Segoe UI" />
-          <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858" FontFamily="Segoe UI" />
-        </StackPanel>
-      </DataTemplate>
-    </ListBox.ItemTemplate>
-  </ListBox>
+            <TextBlock MaxWidth="200"  TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" FontFamily="Segoe UI" />
+            <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858" FontFamily="Segoe UI" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
+  </Panel>
 </UserControl>

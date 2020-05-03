@@ -18,14 +18,12 @@ namespace Symphony.ViewModels
         private double _seekPosition;
         private AlbumViewModel _currentAlbum;
         private int _currentTrackIndex;
-        private SelectArtworkViewModel _selectArtwork;
 
         public static MainWindowViewModel Instance { get; set; }
 
         public MainWindowViewModel()
         {
             TrackStatus = new TrackStatusViewModel();
-            SelectArtwork = new SelectArtworkViewModel();
             CollectionExplorer = new CollectionExplorerViewModel();
 
             _audioEngine = AudioEngine.CreateDefault();
@@ -121,11 +119,7 @@ namespace Symphony.ViewModels
             set { SliderChangedManually(value); }
         }
 
-        public SelectArtworkViewModel SelectArtwork
-        {
-            get { return _selectArtwork; }
-            set { this.RaiseAndSetIfChanged(ref _selectArtwork, value); }
-        }
+
 
         private async Task DoPlay()
         {

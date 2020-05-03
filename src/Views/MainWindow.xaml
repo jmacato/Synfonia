@@ -19,9 +19,6 @@
       <local:VolumeControlView DockPanel.Dock="Right" />
       <local:TrackStatusView DataContext="{Binding TrackStatus}" />
     </DockPanel>
-    <Panel>
-      <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
-      <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
-    </Panel>
+    <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
   </DockPanel>
 </Window>

@@ -79,6 +79,8 @@ namespace Symphony.ViewModels
 
                 Covers.Clear();
 
+                IsVisible = true;
+
                 SelectedCover = null;
                 _currentAlbum = album;
 

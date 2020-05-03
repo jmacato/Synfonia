@@ -22,14 +22,7 @@ namespace Symphony.ViewModels
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                MainWindowViewModel.Instance.SelectArtwork.IsVisible = true;
-
-                await MainWindowViewModel.Instance.SelectArtwork.QueryAlbumCoverAsync(this);
-                /*var scraper = new AlbumArtworkScraper();
-
-                var data = await scraper.DownloadArtwork("uk", Artist, Title);
-
-                */
+                await MainWindowViewModel.Instance.CollectionExplorer.SelectArtwork.QueryAlbumCoverAsync(this);
             });
         }
 
