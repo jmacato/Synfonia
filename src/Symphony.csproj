@@ -25,6 +25,7 @@
     <PackageReference Include="FuzzyString.Standard" Version="1.1.1" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.9.999-*" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\SelectAlbumArtView.xaml">
