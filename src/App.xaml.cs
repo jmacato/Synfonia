@@ -11,6 +11,8 @@ namespace Symphony
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            Name = "Synfonia";
         }
 
         public override void OnFrameworkInitializationCompleted()
