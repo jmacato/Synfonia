@@ -7,21 +7,19 @@ using Avalonia.Media;
 
 namespace Symphony.Converters
 {
-    public class DefaultBGImageConverter : IValueConverter
+    public class AlbumTitleToPlaceholderConverter : IValueConverter
     {
-        static Color[] XMB_Colors = new Color[]
+        static (Color StartColor, Color EndColor)[] PlaceholderColors = new (Color, Color)[]
         {
-            Color.Parse("#CBCBCB"),
-            Color.Parse("#D8BF1A"),
-            Color.Parse("#6DB217"),
-            Color.Parse("#E17E9A"),
-            Color.Parse("#178816"),
-            Color.Parse("#9A61C8"),
-            Color.Parse("#02CDC7"),
-            Color.Parse("#0C76C0"),
-            Color.Parse("#B444C0"),
-            Color.Parse("#E5A708"),
-            Color.Parse("#E3412A")
+            (Color.Parse("#38ADAE"),Color.Parse("#CD295A")),
+            (Color.Parse("#F1EAB9"),Color.Parse("#FF8C8C")),
+            (Color.Parse("#C6EA8D"),Color.Parse("#FE90AF")),
+            (Color.Parse("#EA8D8D"),Color.Parse("#A890FE")),
+            (Color.Parse("#D8B5FF"),Color.Parse("#1EAE98")),
+            (Color.Parse("#FF61D2"),Color.Parse("#FE9090")),
+            (Color.Parse("#BFF098"),Color.Parse("#6FD6FF")),
+            (Color.Parse("#4E65FF"),Color.Parse("#92EFFD")),
+            (Color.Parse("#A9F1DF"),Color.Parse("#FFBBBB")),
         };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -29,7 +27,7 @@ namespace Symphony.Converters
             if (value is string s)
             {
                 uint selector = s.Select(x => (uint)x)
-                                 .Aggregate((x, y) => x ^ y) % (uint)XMB_Colors.Length;
+                                 .Aggregate((x, y) => x ^ y) % (uint)PlaceholderColors.Length;
 
                 return new LinearGradientBrush()
                 {
@@ -37,8 +35,8 @@ namespace Symphony.Converters
                     EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
                     GradientStops = new GradientStops()
                     {
-                        new GradientStop(Colors.DarkGray, 0),
-                        new GradientStop(XMB_Colors[selector], 1),
+                        new GradientStop(PlaceholderColors[selector].StartColor, 0),
+                        new GradientStop(PlaceholderColors[selector].EndColor, 1),
                     }
                 };
             }
