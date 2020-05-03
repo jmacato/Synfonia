@@ -12,11 +12,11 @@
             <Track.IncreaseButton>
               <RepeatButton Name="PART_IncreaseButton" Classes="repeattrack" />
             </Track.IncreaseButton>
-            <Thumb Name="thumb" Margin="-6,0,0,0">
+            <Thumb Name="thumb">
               <Thumb.Template>
                 <ControlTemplate>
-                  <Grid >
-                    <Rectangle Width="12" Height="6" Fill="#AEAEAE" />
+                  <Grid Margin="-9,0,0,0">
+                    <Rectangle Width="18" Height="6" Fill="#AEAEAE" />
                   </Grid>
                 </ControlTemplate>
               </Thumb.Template>

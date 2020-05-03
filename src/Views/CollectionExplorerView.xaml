@@ -2,7 +2,7 @@
 xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.CollectionExplorerView">
   <UserControl.Resources>
     <converters:IsNullConverter x:Key="IsNullConverter" />
-    <converters:DefaultBGImageConverter x:Key="DefaultBGImageConverter" />
+    <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
   <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
     <ListBox.ItemsPanel>
@@ -20,7 +20,7 @@ xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony" mc:Ignora
               </ContextMenu>
             </Panel.ContextMenu>
             <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
-            <Panel Background="{Binding Title, Converter={StaticResource DefaultBGImageConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
+            <Panel Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
               <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <DrawingPresenter.Drawing>
                   <DrawingGroup>
