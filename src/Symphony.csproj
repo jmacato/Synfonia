@@ -14,9 +14,22 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="Views\SelectAlbumArtView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Views\SelectAlbumArtView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="0.9.999-cibuild0007050-beta" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="00.9.999-cibuild0007050-beta" />
+    <PackageReference Include="FuzzyString.Standard" Version="1.1.1" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\SelectAlbumArtView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj" />

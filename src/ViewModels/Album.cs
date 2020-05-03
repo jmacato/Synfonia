@@ -6,6 +6,8 @@ using ReactiveUI;
 using Symphony.Scrobbler;
 using System.Reactive;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Symphony.ViewModels
 {
@@ -19,9 +21,25 @@ namespace Symphony.ViewModels
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                var scraper = new AlbumArtworkScraper();
+                MainWindowViewModel.Instance.SelectArtwork.IsVisible = true;
+
+                await MainWindowViewModel.Instance.SelectArtwork.QueryAlbumCoverAsync(this);
+                /*var scraper = new AlbumArtworkScraper();
 
                 var data = await scraper.DownloadArtwork("uk", Artist, Title);
+
+                */
+            });
+        }
+
+        public async Task UpdateCoverArt(string url)
+        {
+            var clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            using (var client = new HttpClient(clientHandler))
+            {
+                var data = await client.GetByteArrayAsync(url);
 
                 if (data != null)
                 {
@@ -47,7 +65,7 @@ namespace Symphony.ViewModels
                         }
                     }
                 }
-            });
+            }
         }
 
         public string Title { get; set; }

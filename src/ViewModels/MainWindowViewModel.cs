@@ -25,12 +25,16 @@ namespace Symphony.ViewModels
         private double _seekPosition;
         private Album _currentAlbum;
         private int _currentTrackIndex;
+        private SelectArtworkViewModel _selectArtwork;
+
+        public static MainWindowViewModel Instance { get; set; }
 
         public MainWindowViewModel()
         {
             _albumsDictionary = new Dictionary<string, Album>();
             TrackStatus = new TrackStatusViewModel();
             Albums = new ObservableCollection<Album>();
+            SelectArtwork = new SelectArtworkViewModel();
 
             _audioEngine = AudioEngine.CreateDefault();
 
@@ -112,6 +116,12 @@ namespace Symphony.ViewModels
         {
             get => _seekPosition;
             set { SliderChangedManually(value); }
+        }
+
+        public SelectArtworkViewModel SelectArtwork
+        {
+            get { return _selectArtwork; }
+            set { this.RaiseAndSetIfChanged(ref _selectArtwork, value); }
         }
 
         private async Task ScanMusicFolder(string path)
