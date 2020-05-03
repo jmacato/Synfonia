@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
@@ -11,7 +10,7 @@ namespace Symphony.Behaviors
     public class HideWhenClickedOutsideBehavior : Behavior<Control>
     {
         private IDisposable _disposable;
-        private Control _targetVisual;
+        private Control _hitTarget;
 
         public static readonly DirectProperty<HideWhenClickedOutsideBehavior, Control> HitTargetProperty =
             AvaloniaProperty.RegisterDirect<HideWhenClickedOutsideBehavior, Control>(
@@ -21,8 +20,8 @@ namespace Symphony.Behaviors
 
         public Control HitTarget
         {
-            get { return _targetVisual; }
-            set { SetAndRaise(HitTargetProperty, ref _targetVisual, value); }
+            get { return _hitTarget; }
+            set { SetAndRaise(HitTargetProperty, ref _hitTarget, value); }
         }
 
         protected override void OnAttached()

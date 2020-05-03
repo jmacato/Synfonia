@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Symphony.Views"
              xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:b="clr-namespace:Symphony.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Symphony.Views.CollectionExplorerView">
   <UserControl.Resources>
@@ -26,8 +28,12 @@
         <DataTemplate>
           <StackPanel Margin="15" Spacing="8">
             <Panel Width="200" MinHeight="200">
+              <i:Interaction.Behaviors>
+                <b:CommandOnDoubleClickBehavior Command="{Binding LoadAlbumCommand}" />
+              </i:Interaction.Behaviors>
               <Panel.ContextMenu>
                 <ContextMenu>
+                  <MenuItem Header="Play" Command="{Binding LoadAlbumCommand}" />
                   <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
                 </ContextMenu>
               </Panel.ContextMenu>

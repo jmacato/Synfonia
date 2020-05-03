@@ -68,7 +68,7 @@ namespace Symphony.ViewModels
 
         private void LoadAlbum(Album albumEntry, string artistName)
         {
-            var album = new AlbumViewModel();
+            var album = new AlbumViewModel(albumEntry);
 
             album.Artist = artistName;
             album.Title = albumEntry.Title;

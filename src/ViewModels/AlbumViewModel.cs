@@ -15,16 +15,39 @@ namespace Symphony.ViewModels
     public class AlbumViewModel : ViewModelBase, IComparable<AlbumViewModel>
     {
         private IBitmap _cover;
+        private Album _album;
 
-        public AlbumViewModel()
+        public AlbumViewModel(Album album)
         {
+            _album = album;
             Tracks = new List<TrackViewModel>();
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 await MainWindowViewModel.Instance.CollectionExplorer.SelectArtwork.QueryAlbumCoverAsync(this);
             });
+
+            LoadAlbumCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await MainWindowViewModel.Instance.DiscChanger.LoadTrackList(_album);
+            });
         }
+
+        public string Title { get; set; }
+
+        public string Artist { get; set; }
+
+        public List<TrackViewModel> Tracks { get; set; }
+
+        public IBitmap Cover
+        {
+            get { return _cover; }
+            set { this.RaiseAndSetIfChanged(ref _cover, value); }
+        }
+
+        public ReactiveCommand<Unit, Unit> GetArtworkCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> LoadAlbumCommand { get; }
 
         public async Task UpdateCoverArt(string url)
         {
@@ -61,20 +84,6 @@ namespace Symphony.ViewModels
                 }
             }
         }
-
-        public string Title { get; set; }
-
-        public string Artist { get; set; }
-
-        public List<TrackViewModel> Tracks { get; set; }
-
-        public IBitmap Cover
-        {
-            get { return _cover; }
-            set { this.RaiseAndSetIfChanged(ref _cover, value); }
-        }
-
-        public ReactiveCommand<Unit, Unit> GetArtworkCommand { get; }
 
         public int CompareTo([AllowNull] AlbumViewModel other)
         {

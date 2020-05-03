@@ -1,12 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="clr-namespace:Symphony.ViewModels;assembly=Symphony"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:b="clr-namespace:Symphony.Behaviors;assembly=Symphony"
-    xmlns:local="clr-namespace:Symphony.Views"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Symphony.ViewModels;assembly=Symphony"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
+        xmlns:local="clr-namespace:Symphony.Views"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony"
         HasSystemDecorations="False">
 
   <Design.DataContext>
@@ -15,7 +14,7 @@
 
   <DockPanel LastChildFill="True">
     <DockPanel DockPanel.Dock="Top" LastChildFill="True" Background="LightGray" Height="80">
-      <local:AudioControlPanel DockPanel.Dock="Left" />
+      <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
       <local:VolumeControlView DockPanel.Dock="Right" />
       <local:TrackStatusView DataContext="{Binding TrackStatus}" />
     </DockPanel>

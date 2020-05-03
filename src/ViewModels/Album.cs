@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Symphony.ViewModels
 {
-    public class Album
+    public class Album : ITrackList
     {
         public const string CollectionName = "albums";
 
@@ -19,6 +19,6 @@ namespace Symphony.ViewModels
         }
 
         [BsonRef(Track.CollectionName)]
-        public List<Track> Tracks { get; set; } = new List<Track>();
+        public IList<Track> Tracks { get; set; } = new List<Track>();
     }
 }

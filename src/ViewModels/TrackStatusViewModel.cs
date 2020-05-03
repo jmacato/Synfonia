@@ -71,7 +71,7 @@ namespace Symphony.ViewModels
         public string CurrentTime
         {
             get { return _currentTime; }
-            set { this.RaiseAndSetIfChanged(ref _currentTime, value); }
+            private set { this.RaiseAndSetIfChanged(ref _currentTime, value); }
         }
 
         public bool IsSeekbarActive
@@ -91,9 +91,16 @@ namespace Symphony.ViewModels
             return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}.{(x.Milliseconds / 100):0}";
         }
 
-        public void LoadTrack(SoundStream track, string path)
+        public void UpdateCurrentPlayTime(TimeSpan time)
         {
-            using (var file = TagLib.File.Create(path))
+            CurrentTime = FormatTimeSpan(time);
+
+            Position = time.TotalSeconds / Duration.TotalSeconds;
+        }
+
+        public void LoadTrack(Track track)
+        {
+            using (var file = TagLib.File.Create(track.Path))
             {
                 AlbumCover = file.Tag.LoadAlbumCover();
 
@@ -105,18 +112,14 @@ namespace Symphony.ViewModels
 
                 Duration = file.Properties.Duration;
 
-                this.WhenAnyValue(x => x.SeekPosition)
-                    .Subscribe(x =>
-                    {
-                        Console.WriteLine($"SeekPos {x}");
-                        track.TrySeek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
-                    });
+                //this.WhenAnyValue(x => x.SeekPosition)
+                //    .Subscribe(x =>
+                //    {
+                //        Console.WriteLine($"SeekPos {x}");
+                //        track.TrySeek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
+                //    });
 
-                track.WhenAnyValue(x => x.Position)
-                            .ObserveOn(RxApp.MainThreadScheduler)
-                            .Do(x => CurrentTime = FormatTimeSpan(x))
-                            .Do(x => { if (!IsTrackSeeking) Position = x.TotalSeconds / Duration.TotalSeconds; })
-                            .Subscribe();
+
             }
         }
     }
