@@ -1,85 +1,17 @@
-﻿using LiteDB;
-using ReactiveUI;
+﻿using ReactiveUI;
 using SharpAudio;
 using SharpAudio.Codec;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Symphony.ViewModels
 {
-    public class Track
-    {
-        public const string CollectionName = "tracks";
-        private string _path;
-        private string _title;
-
-        public int TrackId { get; set; }
-
-        public string Title
-        {
-            get { return Regex.Unescape(_title); }
-            set { _title = value; }
-        }
-
-        public string Path
-        {
-            get { return _path; }
-            set { _path = value; }
-        }
-    }
-
-    public class Album
-    {
-        public const string CollectionName = "albums";
-
-        private string _title;
-
-        public int AlbumId { get; set; }
-
-        public string Title
-        {
-            get => Regex.Unescape(_title);
-            set { _title = value; }
-        }
-
-        [BsonRef(Track.CollectionName)]
-        public List<Track> Tracks { get; set; } = new List<Track>();
-    }
-
-    public class Artist
-    {
-        public const string CollectionName = "artists";
-        private string _name;
-
-        public int ArtistId { get; set; }
-
-        public string Name
-        {
-            get { return Regex.Unescape(_name); }
-            set { _name = value; }
-        }
-
-
-        [BsonRef(Album.CollectionName)]
-        public List<Album> Albums { get; set; } = new List<Album>();
-    }
-
     public class MainWindowViewModel : ViewModelBase
     {
+        private CollectionExplorerViewModel _collectionExplorer;
         private TrackStatusViewModel _trackStatus;
-        private Dictionary<Album, AlbumViewModel> _albumsDictionary;
-        private ObservableCollection<AlbumViewModel> _albums;
-        private AlbumViewModel _selectedAlbum;
         private AudioEngine _audioEngine;
         private SoundStream _soundStream;
         private bool _sliderClicked;
@@ -87,18 +19,14 @@ namespace Symphony.ViewModels
         private AlbumViewModel _currentAlbum;
         private int _currentTrackIndex;
         private SelectArtworkViewModel _selectArtwork;
-        private bool _trackChanged;
-
-
 
         public static MainWindowViewModel Instance { get; set; }
 
         public MainWindowViewModel()
         {
-            _albumsDictionary = new Dictionary<Album, AlbumViewModel>();
             TrackStatus = new TrackStatusViewModel();
-            Albums = new ObservableCollection<AlbumViewModel>();
             SelectArtwork = new SelectArtworkViewModel();
+            CollectionExplorer = new CollectionExplorerViewModel();
 
             _audioEngine = AudioEngine.CreateDefault();
 
@@ -113,7 +41,6 @@ namespace Symphony.ViewModels
                 {
                     if (_currentTrackIndex > 0)
                     {
-                        _trackChanged = true;
                         _currentTrackIndex--;
                     }
                     else
@@ -130,7 +57,7 @@ namespace Symphony.ViewModels
 
                     await DoPlay();
                 }
-            }, this.WhenAnyValue(x => x.SelectedAlbum).Select(x => x?.Tracks.Count > 1));
+            });
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -138,7 +65,6 @@ namespace Symphony.ViewModels
                 {
                     if (_currentTrackIndex < _currentAlbum.Tracks.Count - 1)
                     {
-                        _trackChanged = true;
                         _currentTrackIndex++;
                     }
                     else
@@ -156,31 +82,14 @@ namespace Symphony.ViewModels
 
                     await DoPlay();
                 }
-            }, this.WhenAnyValue(x => x.SelectedAlbum).Select(x => x?.Tracks.Count > 1));
+            });
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
-            {
-                await Task.Run(() => ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Music\\Music"),
-                    (album, artist) =>
-                    {
-                        RxApp.MainThreadScheduler.Schedule(() =>
-                        {
-                            LoadAlbum(album, artist);
-                        });
-                    }));
-
-                TrackStatus.Status = "";
-            });
-
-            this.WhenAnyValue(x => x.SelectedAlbum)
-                .Subscribe(x => _trackChanged = true);
-
-            LoadLibrary();
+            CollectionExplorer.LoadLibrary();
         }
 
-        public ReactiveCommand<Unit, Unit> ScanLibraryCommand { get; }
+
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
 
@@ -188,22 +97,16 @@ namespace Symphony.ViewModels
 
         public ReactiveCommand<Unit, Unit> ForwardCommand { get; }
 
-        public ObservableCollection<AlbumViewModel> Albums
-        {
-            get { return _albums; }
-            set { this.RaiseAndSetIfChanged(ref _albums, value); }
-        }
-
-        public AlbumViewModel SelectedAlbum
-        {
-            get { return _selectedAlbum; }
-            set { this.RaiseAndSetIfChanged(ref _selectedAlbum, value); }
-        }
-
         public TrackStatusViewModel TrackStatus
         {
             get { return _trackStatus; }
             set { this.RaiseAndSetIfChanged(ref _trackStatus, value); }
+        }
+
+        public CollectionExplorerViewModel CollectionExplorer
+        {
+            get { return _collectionExplorer; }
+            set { this.RaiseAndSetIfChanged(ref _collectionExplorer, value); }
         }
 
         public bool SliderClicked
@@ -218,194 +121,25 @@ namespace Symphony.ViewModels
             set { SliderChangedManually(value); }
         }
 
-        private static readonly List<string> SupportedFileExtensions = new List<string>()
-        {
-            "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff",
-            "amb", "amr", "aob", "ape", "au", "awb", "caf", "dts", "dsf", "dff", "flac", "it", "kar",
-            "m4a", "m4b", "m4p", "m5p", "mka", "mlp", "mod", "mpa", "mp1", "mp2", "mp3", "mpc", "mpga", "mus",
-            "oga", "ogg", "oma", "opus", "qcp", "ra", "rmi", "s3m", "sid", "spx", "tak", "thd", "tta",
-            "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
-        };
-
         public SelectArtworkViewModel SelectArtwork
         {
             get { return _selectArtwork; }
             set { this.RaiseAndSetIfChanged(ref _selectArtwork, value); }
         }
 
-        private void LoadAlbum(Album albumEntry, string artistName)
-        {
-            var album = new AlbumViewModel();
-
-            album.Artist = artistName;
-            album.Title = albumEntry.Title;
-
-            album.Tracks = new List<TrackViewModel>();
-
-            album.Tracks.AddRange(albumEntry.Tracks.Select(x => new TrackViewModel
-            {
-                Album = album,
-                Path = x.Path,
-                Title = x.Title
-            }));
-
-            album.Cover = albumEntry.LoadAlbumCover();
-
-            _albumsDictionary[albumEntry] = album;
-
-            Albums.Add(album);
-
-            if (SelectedAlbum is null)
-            {
-                SelectedAlbum = album;
-            }
-        }
-
-
-        private void LoadLibrary()
-        {
-            using (var db = new LiteDatabase("library.db"))
-            {
-                var artistsCollection = db.GetCollection<Artist>(Artist.CollectionName);
-                var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
-                var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
-
-                foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll())
-                {
-                    foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
-                    {
-                        var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
-
-                        LoadAlbum(albumEntry, artistEntry.Name);
-                    }
-                }
-            }
-        }
-
-        private void ScanMusicFolder(string path, Action<Album, string> onAlbumAdded)
-        {
-            foreach (var directory in Directory.EnumerateDirectories(path))
-            {
-                ScanMusicFolder(directory, onAlbumAdded);
-            }
-
-            var files = Directory.EnumerateFiles(path, "*.*");
-
-            using (var db = new LiteDatabase("library.db"))
-            {
-                var artistsCollection = db.GetCollection<Artist>(Artist.CollectionName);
-                var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
-                var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
-
-                foreach (var file in files.Select(x => new FileInfo(x).FullName))
-                {
-                    if (!SupportedFileExtensions.Any(x => $".{x}" == Path.GetExtension(file).ToLower()))
-                        continue;
-
-                    try
-                    {
-                        using (var tagFile = TagLib.File.Create(file))
-                        {
-                            var tag = tagFile.Tag;
-
-                            if (tag is null)
-                            {
-                                continue;
-                            }
-
-                            var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault() ?? "Unknown Artist";
-
-                            var albumName = tag.Album ?? "Unknown Album";
-
-                            var trackName = tag.Title ?? "Unknown Track";
-
-                            // TODO other what to do if we dont know anything about the track, ignore?
-
-                            RxApp.MainThreadScheduler.Schedule(() =>
-                            {
-                                TrackStatus.Status = $"Processing: {artistName}, {albumName}, {trackName}";
-                            });
-
-                            var existingArtist = artistsCollection.FindOne(x => x.Name == artistName.Trim());
-
-                            if (existingArtist is null)
-                            {
-                                existingArtist = new Artist
-                                {
-                                    Name = artistName
-                                };
-
-                                artistsCollection.Insert(existingArtist);
-                            }
-
-                            var existingAlbum = albumsCollection.FindOne(x => x.Title == tag.Album.Trim());
-
-                            bool albumAdded = false;
-
-                            if (existingAlbum is null)
-                            {
-                                albumAdded = true;
-
-                                existingAlbum = new Album
-                                {
-                                    Title = albumName,
-                                };
-
-                                albumsCollection.Insert(existingAlbum);
-
-                                existingArtist.Albums.Add(existingAlbum);
-
-                                artistsCollection.Update(existingArtist);
-                            }
-
-                            var existingTrack = tracksCollection.FindOne(x => x.Path == file);
-
-                            if (existingTrack is null)
-                            {
-                                existingTrack = new Track
-                                {
-                                    Path = new FileInfo(file).FullName,
-                                    Title = trackName
-                                };
-
-                                tracksCollection.Insert(existingTrack);
-
-                                existingAlbum.Tracks.Add(existingTrack);
-
-                                albumsCollection.Update(existingAlbum);
-
-                                if (albumAdded)
-                                {
-                                    onAlbumAdded(existingAlbum, existingArtist.Name);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
-        }
-
         private async Task DoPlay()
         {
-
-            if (_trackChanged)
+            if (_currentAlbum != CollectionExplorer.SelectedAlbum)
             {
+                _currentAlbum = CollectionExplorer.SelectedAlbum;
+                _currentTrackIndex = 0;
+
                 _soundStream?.Stop();
-                _trackChanged = false;
             }
             else
             {
                 _soundStream?.PlayPause();
                 return;
-            }
-
-            if (_currentAlbum != SelectedAlbum)
-            {
-                _currentAlbum = SelectedAlbum;
-                _currentTrackIndex = 0;
             }
 
             var targetTrack = _currentAlbum.Tracks[_currentTrackIndex].Path;

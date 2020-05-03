@@ -20,7 +20,7 @@
       <local:TrackStatusView DataContext="{Binding TrackStatus}" />
     </DockPanel>
     <Panel>
-      <local:CollectionExplorerView />
+      <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
       <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
     </Panel>
   </DockPanel>
