@@ -30,5 +30,22 @@ namespace Symphony.ViewModels
             return null;
         }
 
+        public static IBitmap LoadAlbumCover(this Album album)
+        {
+            var firstTrack = album.Tracks.FirstOrDefault();
+
+            if (firstTrack != null)
+            {
+                using (var file = TagLib.File.Create(firstTrack.Path))
+                {
+                    var tag = file.Tag;
+
+                    return tag.LoadAlbumCover();
+                }
+            }
+
+            return null;
+        }
+
     }
 }

@@ -18,6 +18,7 @@ namespace Symphony.ViewModels
         private double _seekPosition;
         private bool _isTrackSeeking;
         private bool _isSeekbarActive = true;
+        private string _status;
 
         public object AlbumCover
         {
@@ -77,6 +78,12 @@ namespace Symphony.ViewModels
         {
             get => _isSeekbarActive;
             set => this.RaiseAndSetIfChanged(ref _isSeekbarActive, value);
+        }
+
+        public string Status
+        {
+            get { return _status; }
+            set { this.RaiseAndSetIfChanged(ref _status, value); }
         }
 
         private string FormatTimeSpan(TimeSpan x)

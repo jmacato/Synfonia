@@ -5,6 +5,11 @@ xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony" mc:Ignora
     <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
   <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
+    <ListBox.ContextMenu>
+      <ContextMenu>
+        <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
+      </ContextMenu>
+    </ListBox.ContextMenu>
     <ListBox.ItemsPanel>
       <ItemsPanelTemplate>
         <WrapPanel MaxWidth="1000" HorizontalAlignment="Center" />

@@ -8,16 +8,17 @@ using System.Reactive;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LiteDB;
 
 namespace Symphony.ViewModels
 {
-    public class Album : ViewModelBase, IComparable<Album>
+    public class AlbumViewModel : ViewModelBase, IComparable<AlbumViewModel>
     {
         private IBitmap _cover;
 
-        public Album()
+        public AlbumViewModel()
         {
-            Tracks = new List<Track>();
+            Tracks = new List<TrackViewModel>();
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -72,7 +73,7 @@ namespace Symphony.ViewModels
 
         public string Artist { get; set; }
 
-        public List<Track> Tracks { get; set; }
+        public List<TrackViewModel> Tracks { get; set; }
 
         public IBitmap Cover
         {
@@ -82,7 +83,7 @@ namespace Symphony.ViewModels
 
         public ReactiveCommand<Unit, Unit> GetArtworkCommand { get; }
 
-        public int CompareTo([AllowNull] Album other)
+        public int CompareTo([AllowNull] AlbumViewModel other)
         {
             return Title.CompareTo(other.Title);
         }
