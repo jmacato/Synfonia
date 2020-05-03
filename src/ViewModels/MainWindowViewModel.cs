@@ -4,6 +4,7 @@ using SharpAudio.Codec;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -74,7 +75,7 @@ namespace Symphony.ViewModels
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanMusicFolder(@"c:\users\danwa\TestMusic\");
+            ScanMusicFolder(@"c:\users\danwa\OneDrive\Music\Music");
         }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
@@ -124,55 +125,61 @@ namespace Symphony.ViewModels
                 //.Concat(Directory.EnumerateFiles(path, "*.m4a"))
                 )
             {
-                Console.WriteLine($"Processing file: {file}");
+                Debug.WriteLine($"Processing file: {file}");
 
-                using (var tagFile = TagLib.File.Create(file))
+                try
                 {
-                    var tag = tagFile.Tag;
-
-                    if (tag is null)
+                    using (var tagFile = TagLib.File.Create(file))
                     {
-                        continue;
-                    }
+                        var tag = tagFile.Tag;
 
-                    if (tag.Album is null)
-                    {
-                        tag.Album = "Unknown Album";
-                    }
-
-                    if (!_albumsDictionary.ContainsKey(tag.Album))
-                    {
-                        var album = new Album();
-
-                        album.Artist = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
-                        album.Title = tag.Album;
-                        album.Tracks.Add(new Track
+                        if (tag is null)
                         {
-                            Album = album,
-                            Path = file,
-                            Title = tag.Title
-                        });
+                            continue;
+                        }
 
-                        album.Cover = tag.LoadAlbumCover();
-
-                        _albumsDictionary[tag.Album] = album;
-
-                        Albums.Add(album);
-
-                        if (SelectedAlbum is null)
+                        if (tag.Album is null)
                         {
-                            SelectedAlbum = album;
+                            tag.Album = "Unknown Album";
+                        }
+
+                        if (!_albumsDictionary.ContainsKey(tag.Album))
+                        {
+                            var album = new Album();
+
+                            album.Artist = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
+                            album.Title = tag.Album;
+                            album.Tracks.Add(new Track
+                            {
+                                Album = album,
+                                Path = file,
+                                Title = tag.Title
+                            });
+
+                            album.Cover = tag.LoadAlbumCover();
+
+                            _albumsDictionary[tag.Album] = album;
+
+                            Albums.Add(album);
+
+                            if (SelectedAlbum is null)
+                            {
+                                SelectedAlbum = album;
+                            }
+                        }
+                        else
+                        {
+                            _albumsDictionary[tag.Album].Tracks.Add(new Track
+                            {
+                                Album = _albumsDictionary[tag.Album],
+                                Path = file,
+                                Title = tag.Title
+                            });
                         }
                     }
-                    else
-                    {
-                        _albumsDictionary[tag.Album].Tracks.Add(new Track
-                        {
-                            Album = _albumsDictionary[tag.Album],
-                            Path = file,
-                            Title = tag.Title
-                        });
-                    }
+                }
+                catch (Exception)
+                {
                 }
             }
         }
