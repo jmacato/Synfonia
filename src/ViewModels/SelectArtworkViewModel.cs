@@ -40,7 +40,15 @@ namespace Symphony.ViewModels
 
             this.WhenAnyValue(x => x.IsVisible)
                 .Where(x => !x)
-                .Subscribe(_ => _cancellationTokenSource?.Cancel());
+                .Subscribe(async _ =>
+                {
+                    _cancellationTokenSource?.Cancel();
+
+                    using (await _lock.LockAsync())
+                    {
+                        Covers.Clear();
+                    }
+                });
         }
 
         public ObservableCollection<CoverViewModel> Covers
