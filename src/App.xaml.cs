@@ -17,9 +17,10 @@ namespace Symphony
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                MainWindowViewModel.Instance = new MainWindowViewModel();
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = MainWindowViewModel.Instance,
                 };
             }
 
