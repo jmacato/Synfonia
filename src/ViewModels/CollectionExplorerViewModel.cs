@@ -47,8 +47,6 @@ namespace Symphony.ViewModels
                             LoadAlbum(album, artist);
                         });
                     }));
-
-                MainWindowViewModel.Instance.TrackStatus.Status = "";
             });
         }
 

@@ -28,6 +28,14 @@ namespace Symphony.ViewModels
                 {
                     MainWindowViewModel.Instance.DiscChanger.Seek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
                 });
+
+            this.WhenAnyValue(x => x.Status)
+                .Throttle(TimeSpan.FromSeconds(2))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ =>
+                {
+                    Status = "";
+                });
         }
 
         public object AlbumCover
@@ -35,7 +43,6 @@ namespace Symphony.ViewModels
             get { return _albumCover; }
             set { this.RaiseAndSetIfChanged(ref _albumCover, value); }
         }
-
 
         public bool AlbumCoverVisible
         {
