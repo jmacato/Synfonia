@@ -15,7 +15,7 @@ xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" mc:Ignorable="d" d:D
           </StackPanel>
         </Panel>
       </DockPanel>
-      <c:SeekSlider Grid.Row="1" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
+      <c:SeekSlider Grid.Row="1" IsEnabled="{Binding IsSeekbarActive}" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
     </Grid>
   </Panel>
 </UserControl>

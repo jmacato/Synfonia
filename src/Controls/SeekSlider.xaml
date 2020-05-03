@@ -64,7 +64,7 @@
       </Animation>
     </Style.Animations>
   </Style>
-  <Style Selector="c|SeekSlider:not(:pointerover)">
+  <Style Selector="c|SeekSlider">
     <Style.Animations>
       <Animation Duration="0:0:0.25" FillMode="Both" Easing="SineEaseIn">
         <KeyFrame Cue="100%">
@@ -82,7 +82,7 @@
       </Animation>
     </Style.Animations>
   </Style>
-  <Style Selector="c|SeekSlider:not(:pointerover) /template/ Thumb#thumb /template/ Rectangle">
+  <Style Selector="c|SeekSlider /template/ Thumb#thumb /template/ Rectangle">
     <Style.Animations>
       <Animation Duration="0:0:0.1" FillMode="Both" Easing="SineEaseOut">
         <KeyFrame Cue="100%">
