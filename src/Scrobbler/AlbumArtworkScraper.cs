@@ -1,0 +1,54 @@
+﻿using iTunesSearch.Library;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Symphony.Scrobbler
+{
+    public class AlbumArtworkScraper
+    {
+        public async Task<byte[]> DownloadArtwork(string country, string artist, string albumName)
+        {
+            var searchManager = new iTunesSearchManager();
+
+            var artists = await searchManager.GetSongArtistsAsync(artist);
+
+            var foundArtist = artists.Artists.FirstOrDefault();
+
+            var albums = await searchManager.GetAlbumsByArtistIdAsync(foundArtist.ArtistId);
+
+            foreach (var album in albums.Albums)
+            {
+                if (album.CollectionViewUrl != null)
+                {
+                    Debug.WriteLine(album.CollectionViewUrl);
+                }
+
+                if (album.ArtistViewUrl != null)
+                {
+                    Debug.WriteLine(album.ArtistViewUrl);
+                }
+
+                if (album.ArtworkUrl100 != null)
+                {
+                    Debug.WriteLine(album.ArtworkUrl100);
+
+                    var artworkUri = album.ArtworkUrl100.Replace("100x100bb", "1000x1000bb");
+
+                    using (var client = new WebClient())
+                    {
+                        var data = await client.DownloadDataTaskAsync(artworkUri);
+
+                        return data;
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+}

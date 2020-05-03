@@ -13,7 +13,18 @@
     <ListBox.ItemTemplate>
       <DataTemplate>
         <StackPanel Margin="15" Spacing="8">
-          <Image Width="200" MinHeight="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+          <Panel Width="200" MinHeight="200">
+
+            <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+
+            <Panel Background="Transparent">
+              <Panel.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
+                </ContextMenu>
+              </Panel.ContextMenu>
+            </Panel>
+          </Panel>
           <TextBlock MaxWidth="200"  TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" FontFamily="Segoe UI" />
           <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858" FontFamily="Segoe UI" />
         </StackPanel>
