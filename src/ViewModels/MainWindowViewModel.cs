@@ -68,13 +68,13 @@ namespace Symphony.ViewModels
                         _currentTrackIndex = 0;
                     }
 
-                    await DoPlay();
+                    
                 }
             });
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanMusicFolder(@"C:\Users\danwa\OneDrive\Music\Music\");
+            ScanMusicFolder(@"/Users/dan/Music");
         }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
