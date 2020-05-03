@@ -8,21 +8,21 @@ using System;
 
 namespace Symphony.Behaviors
 {
-    public class HideWhenClickedOutsideBehavior : Behavior<Visual>
+    public class HideWhenClickedOutsideBehavior : Behavior<Control>
     {
         private IDisposable _disposable;
-        private IVisual _targetVisual;
+        private Control _targetVisual;
 
-        public static readonly DirectProperty<HideWhenClickedOutsideBehavior, IVisual> TargetVisualProperty =
-            AvaloniaProperty.RegisterDirect<HideWhenClickedOutsideBehavior, IVisual>(
-                nameof(TargetVisual),
-                o => o.TargetVisual,
-                (o, v) => o.TargetVisual = v);
+        public static readonly DirectProperty<HideWhenClickedOutsideBehavior, Control> HitTargetProperty =
+            AvaloniaProperty.RegisterDirect<HideWhenClickedOutsideBehavior, Control>(
+                nameof(HitTarget),
+                o => o.HitTarget,
+                (o, v) => o.HitTarget = v);
 
-        public IVisual TargetVisual
+        public Control HitTarget
         {
             get { return _targetVisual; }
-            set { SetAndRaise(TargetVisualProperty, ref _targetVisual, value); }
+            set { SetAndRaise(HitTargetProperty, ref _targetVisual, value); }
         }
 
         protected override void OnAttached()
@@ -47,11 +47,11 @@ namespace Symphony.Behaviors
             {
                 if (AssociatedObject.IsVisible)
                 {
-                    var target = TargetVisual ?? AssociatedObject;
+                    var target = HitTarget ?? AssociatedObject;
 
-                    var hit = toplevel.InputHitTest(ee.GetCurrentPoint(null).Position);
+                    var hit = target.GetVisualAt(ee.GetCurrentPoint(target).Position);
 
-                    if (!target.IsVisualAncestorOf(hit))
+                    if (hit is null)
                     {
                         AssociatedObject.IsVisible = false;
                     }
