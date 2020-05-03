@@ -13,6 +13,9 @@ namespace Symphony.ViewModels
 {
     public class CollectionExplorerViewModel : ViewModelBase
     {
+        private LiteDatabase _db;
+        private Nito.AsyncEx.AsyncLock _dbLock;
+
         private static readonly List<string> SupportedFileExtensions = new List<string>()
         {
             "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff",
@@ -28,6 +31,9 @@ namespace Symphony.ViewModels
 
         public CollectionExplorerViewModel()
         {
+            _db = new LiteDatabase("library.db");
+            _dbLock = new Nito.AsyncEx.AsyncLock();
+
             Albums = new ObservableCollection<AlbumViewModel>();
             SelectArtwork = new SelectArtworkViewModel();
 
@@ -64,11 +70,18 @@ namespace Symphony.ViewModels
             set { this.RaiseAndSetIfChanged(ref _selectedAlbum, value); }
         }
 
+        public LiteDatabase Database => _db;
+
         public ReactiveCommand<Unit, Unit> ScanLibraryCommand { get; }
+
+        public async Task<IDisposable> LockDatabaseAsync()
+        {
+            return await _dbLock.LockAsync();
+        }
 
         private void LoadAlbum(Album albumEntry, string artistName)
         {
-            var album = new AlbumViewModel(albumEntry);
+            var album = new AlbumViewModel(albumEntry.AlbumId);
 
             album.Artist = artistName;
             album.Title = albumEntry.Title;
@@ -92,10 +105,12 @@ namespace Symphony.ViewModels
             }
         }
 
-        internal void LoadLibrary()
+        internal async Task LoadLibrary()
         {
-            using (var db = new LiteDatabase("library.db"))
+            using (await LockDatabaseAsync())
             {
+                var db = Database;
+
                 var artistsCollection = db.GetCollection<Artist>(Artist.CollectionName);
                 var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
                 var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
@@ -112,17 +127,19 @@ namespace Symphony.ViewModels
             }
         }
 
-        private void ScanMusicFolder(string path, Action<Album, string> onAlbumAdded)
+        private async Task ScanMusicFolder(string path, Action<Album, string> onAlbumAdded)
         {
             foreach (var directory in Directory.EnumerateDirectories(path))
             {
-                ScanMusicFolder(directory, onAlbumAdded);
+                await ScanMusicFolder(directory, onAlbumAdded);
             }
 
             var files = Directory.EnumerateFiles(path, "*.*");
 
-            using (var db = new LiteDatabase("library.db"))
+
+            using (var dbLock = await LockDatabaseAsync())
             {
+                var db = Database;
                 var artistsCollection = db.GetCollection<Artist>(Artist.CollectionName);
                 var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
                 var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
@@ -168,7 +185,7 @@ namespace Symphony.ViewModels
                                 artistsCollection.Insert(existingArtist);
                             }
 
-                            var existingAlbum = albumsCollection.FindOne(x => x.Title == tag.Album.Trim());
+                            var existingAlbum = albumsCollection.FindOne(x => x.ArtistId == existingArtist.ArtistId && x.Title == tag.Album.Trim());
 
                             bool albumAdded = false;
 
@@ -179,6 +196,7 @@ namespace Symphony.ViewModels
                                 existingAlbum = new Album
                                 {
                                     Title = albumName,
+                                    ArtistId = existingArtist.ArtistId
                                 };
 
                                 albumsCollection.Insert(existingAlbum);

@@ -36,7 +36,7 @@ namespace Symphony.ViewModels
                 throw new Exception("Failed to create an audio backend!");
             }
 
-            PlayPauseCommand = ReactiveCommand.CreateFromTask(async () =>
+            PlayCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 if (_isPlaying)
                 {
@@ -86,7 +86,7 @@ namespace Symphony.ViewModels
             });
         }
 
-        public ReactiveCommand<Unit, Unit> PlayPauseCommand { get; }
+        public ReactiveCommand<Unit, Unit> PlayCommand { get; }
 
         public ReactiveCommand<Unit, Unit> ForwardCommand { get; }
 

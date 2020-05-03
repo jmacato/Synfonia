@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Reactive.Concurrency;
 
 namespace Symphony.ViewModels
 {
@@ -16,7 +17,7 @@ namespace Symphony.ViewModels
             TrackStatus = new TrackStatusViewModel();
             CollectionExplorer = new CollectionExplorerViewModel();
 
-            CollectionExplorer.LoadLibrary();
+            RxApp.MainThreadScheduler.Schedule(async () => await CollectionExplorer.LoadLibrary());
         }
 
         public DiscChangerViewModel DiscChanger

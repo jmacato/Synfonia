@@ -15,11 +15,12 @@ namespace Symphony.ViewModels
     public class AlbumViewModel : ViewModelBase, IComparable<AlbumViewModel>
     {
         private IBitmap _cover;
-        private Album _album;
+        private int _albumId;
 
-        public AlbumViewModel(Album album)
+        public AlbumViewModel(int albumId)
         {
-            _album = album;
+            _albumId = albumId;
+
             Tracks = new List<TrackViewModel>();
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -29,7 +30,16 @@ namespace Symphony.ViewModels
 
             LoadAlbumCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await MainWindowViewModel.Instance.DiscChanger.LoadTrackList(_album);
+                using (var lockDb = await MainWindowViewModel.Instance.CollectionExplorer.LockDatabaseAsync())
+                {
+                    var db = MainWindowViewModel.Instance.CollectionExplorer.Database;
+
+                    var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
+
+                    var album = albumsCollection.Include(x => x.Tracks).FindById(_albumId);
+
+                    await MainWindowViewModel.Instance.DiscChanger.LoadTrackList(album);
+                }
             });
         }
 

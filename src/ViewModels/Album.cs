@@ -12,6 +12,8 @@ namespace Symphony.ViewModels
 
         public int AlbumId { get; set; }
 
+        public int ArtistId { get; set; }
+
         public string Title
         {
             get => Regex.Unescape(_title);
