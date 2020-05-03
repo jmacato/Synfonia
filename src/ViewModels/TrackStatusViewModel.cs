@@ -15,6 +15,8 @@ namespace Symphony.ViewModels
         private bool _albumCoverVisible;
         private string _currentTime;
         private object _albumCover;
+        private double _seekPosition;
+        private bool _isTrackSeeking;
 
         public object AlbumCover
         {
@@ -52,6 +54,17 @@ namespace Symphony.ViewModels
             get => _position;
             set => this.RaiseAndSetIfChanged(ref _position, value);
         }
+        public double SeekPosition
+        {
+            get => _seekPosition;
+            set => this.RaiseAndSetIfChanged(ref _seekPosition, value);
+        }
+
+        public bool IsTrackSeeking
+        {
+            get => _isTrackSeeking;
+            set => this.RaiseAndSetIfChanged(ref _isTrackSeeking, value);
+        }
 
         public string CurrentTime
         {
@@ -61,7 +74,7 @@ namespace Symphony.ViewModels
 
         private string FormatTimeSpan(TimeSpan x)
         {
-            return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}:{(x.Milliseconds / 100):0}";
+            return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}.{(x.Milliseconds / 100):0}";
         }
 
         public void LoadTrack(SoundStream track, string path)
@@ -78,15 +91,18 @@ namespace Symphony.ViewModels
 
                 Duration = file.Properties.Duration;
 
-                track.WhenAnyValue(x => x.Position)
+                this.WhenAnyValue(x => x.SeekPosition)
                     .Subscribe(x =>
                     {
-                        CurrentTime = FormatTimeSpan(x);
+                        Console.WriteLine($"SeekPos {x}");
+                        track.TrySeek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
                     });
 
                 track.WhenAnyValue(x => x.Position)
                             .ObserveOn(RxApp.MainThreadScheduler)
-                            .Subscribe(x => Position = ((x.TotalSeconds) / Duration.TotalSeconds) * 100);
+                            .Do(x => CurrentTime = FormatTimeSpan(x))
+                            .Do(x => { if (!IsTrackSeeking) Position = x.TotalSeconds / Duration.TotalSeconds; })
+                            .Subscribe();
             }
         }
     }

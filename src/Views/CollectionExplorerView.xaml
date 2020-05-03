@@ -1,10 +1,10 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Symphony.Views.CollectionExplorerView">
-  <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}">
+﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:converters="clr-namespace:Symphony.Converters;assembly=Symphony" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.CollectionExplorerView">
+  <UserControl.Resources>
+    <converters:IsNullConverter x:Key="IsNullConverter" />
+    <converters:DefaultBGImageConverter x:Key="DefaultBGImageConverter" />
+  </UserControl.Resources>
+  <ListBox Items="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" VirtualizationMode="Simple">
     <ListBox.ItemsPanel>
       <ItemsPanelTemplate>
         <WrapPanel MaxWidth="1000" HorizontalAlignment="Center" />

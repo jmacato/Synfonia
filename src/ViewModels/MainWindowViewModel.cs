@@ -26,6 +26,7 @@ namespace Symphony.ViewModels
         private Album _currentAlbum;
         private int _currentTrackIndex;
         private SelectArtworkViewModel _selectArtwork;
+        private bool _trackChanged;
 
         public static MainWindowViewModel Instance { get; set; }
 
@@ -49,16 +50,24 @@ namespace Symphony.ViewModels
                 {
                     if (_currentTrackIndex > 0)
                     {
+                        _trackChanged = true;
                         _currentTrackIndex--;
                     }
                     else
                     {
-                        _currentTrackIndex = _currentAlbum.Tracks.Count - 1;
+                        return;
                     }
+
+                    if (_soundStream != null && _soundStream.IsPlaying)
+                    {
+                        _soundStream.Stop();
+                        _soundStream = null;
+                    }
+
 
                     await DoPlay();
                 }
-            });
+            }, this.WhenAnyValue(x => x.SelectedAlbum).Select(x => x?.Tracks.Count > 1));
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -66,20 +75,32 @@ namespace Symphony.ViewModels
                 {
                     if (_currentTrackIndex < _currentAlbum.Tracks.Count - 1)
                     {
+                        _trackChanged = true;
                         _currentTrackIndex++;
                     }
                     else
                     {
-                        _currentTrackIndex = 0;
+                        return;
                     }
+
+
+                    if (_soundStream != null && _soundStream.IsPlaying)
+                    {
+                        _soundStream.Stop();
+                        _soundStream = null;
+                    }
+
 
                     await DoPlay();
                 }
-            });
+            }, this.WhenAnyValue(x => x.SelectedAlbum).Select(x => x?.Tracks.Count > 1));
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
-            ScanMusicFolder(@"c:\users\danwa\OneDrive\Music\Music");
+            this.WhenAnyValue(x => x.SelectedAlbum)
+                .Subscribe(x => _trackChanged = true);
+
+            ScanMusicFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
         }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
@@ -118,6 +139,15 @@ namespace Symphony.ViewModels
             set { SliderChangedManually(value); }
         }
 
+        private static readonly List<string> SupportedFileExtensions = new List<string>()
+        {
+            "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff",
+            "amb", "amr", "aob", "ape", "au", "awb", "caf", "dts", "dsf", "dff", "flac", "it", "kar",
+            "m4a", "m4b", "m4p", "m5p", "mka", "mlp", "mod", "mpa", "mp1", "mp2", "mp3", "mpc", "mpga", "mus",
+            "oga", "ogg", "oma", "opus", "qcp", "ra", "rmi", "s3m", "sid", "spx", "tak", "thd", "tta",
+            "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
+        };
+
         public SelectArtworkViewModel SelectArtwork
         {
             get { return _selectArtwork; }
@@ -131,10 +161,13 @@ namespace Symphony.ViewModels
                 await ScanMusicFolder(directory);
             }
 
-            foreach (var file in Directory.EnumerateFiles(path, "*.mp3")
-                //.Concat(Directory.EnumerateFiles(path, "*.m4a"))
-                )
+            var files = Directory.EnumerateFiles(path, "*.*");
+
+            foreach (var file in files)
             {
+                if (!SupportedFileExtensions.Any(x => $".{x}" == Path.GetExtension(file).ToLower()))
+                    continue;
+
                 Debug.WriteLine($"Processing file: {file}");
 
                 try
@@ -196,15 +229,16 @@ namespace Symphony.ViewModels
 
         private async Task DoPlay()
         {
-            if (_soundStream != null && _soundStream.IsPlaying)
+
+            if (_trackChanged)
             {
                 _soundStream?.Stop();
-
-                await Task.Delay(50);
-
-                _soundStream?.Dispose();
-
-                await Task.Delay(100);
+                _trackChanged = false;
+            }
+            else
+            {
+                _soundStream?.PlayPause();
+                return;
             }
 
             if (_currentAlbum != SelectedAlbum)
@@ -219,7 +253,7 @@ namespace Symphony.ViewModels
 
             TrackStatus.LoadTrack(_soundStream, targetTrack);
 
-            _soundStream.Play();
+            _soundStream.PlayPause();
         }
 
         public void SliderChangedManually(double value)

@@ -1,90 +1,94 @@
-<Styles xmlns="https://github.com/avaloniaui" 
-    xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony">
-    <Style Selector="c|SeekSlider:horizontal">
-        <Setter Property="MinWidth" Value="40"/>
-        <Setter Property="MinHeight" Value="20"/>
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Grid Name="grid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto" MinHeight="20"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Border Name="TrackBackground" Grid.Row="1" Height="4" Margin="6,0" VerticalAlignment="Center"/>
-                    <Track Name="PART_Track" Grid.Row="1" Orientation="Horizontal">
-                        <Track.DecreaseButton>
-                            <RepeatButton Name="PART_DecreaseButton" Classes="repeattrack" />
-                        </Track.DecreaseButton>
-                        <Track.IncreaseButton>
-                            <RepeatButton Name="PART_IncreaseButton" Classes="repeattrack" />
-                        </Track.IncreaseButton>
-                        <Thumb Name="thumb" MinWidth="20" MinHeight="20">
-                            <Thumb.Template>
-                                <ControlTemplate>
-                                    <Grid>
-                                        <Ellipse Width="12" Height="12" Fill="{DynamicResource ThemeAccentBrush}"/>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Thumb.Template>
-                        </Thumb>
-                    </Track>
-                </Grid>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-    <Style Selector="c|SeekSlider:vertical">
-        <Setter Property="MinWidth" Value="20"/>
-        <Setter Property="MinHeight" Value="40"/>
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto" MinWidth="26"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Name="TrackBackground" Grid.Column="1" Width="4" Margin="0,6" HorizontalAlignment="Center"/>
-                    <Track Name="PART_Track" Grid.Column="1" Orientation="Vertical" IsDirectionReversed="True">
-                        <Track.DecreaseButton>
-                            <RepeatButton Name="PART_DecreaseButton" Classes="repeattrack" />
-                        </Track.DecreaseButton>
-                        <Track.IncreaseButton>
-                            <RepeatButton Name="PART_IncreaseButton" Classes="repeattrack" />
-                        </Track.IncreaseButton>
-                        <Thumb Name="thumb" MinWidth="20" MinHeight="20">
-                            <Thumb.Template>
-                                <ControlTemplate>
-                                    <Grid>
-                                        <Ellipse Width="12" Height="12" Fill="{DynamicResource ThemeAccentBrush}"/>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Thumb.Template>
-                        </Thumb>
-                    </Track>
-                </Grid>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-    <Style Selector="c|SeekSlider /template/ Track#PART_Track">
-        <Setter Property="Minimum" Value="{TemplateBinding Minimum}"/>
-        <Setter Property="Maximum" Value="{TemplateBinding Maximum}"/>
-        <Setter Property="Value" Value="{TemplateBinding Value, Mode=TwoWay}"/>
-    </Style>
-    <Style Selector="c|SeekSlider /template/ Border#TrackBackground">
-        <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}"/>
-    </Style>
-    <Style Selector="c|SeekSlider /template/ RepeatButton.repeattrack">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource ThemeBorderLowBrush}"/>
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}" />
-            </ControlTemplate>
-        </Setter>
-    </Style>
-    <Style Selector="c|SeekSlider:disabled /template/ Grid#grid">
-        <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
-    </Style>
+<Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony">
+  <Style Selector="c|SeekSlider:horizontal">
+    <Setter Property="MinHeight" Value="6" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Name="grid">
+          <Border Name="TrackBackground" />
+          <Track Name="PART_Track" Orientation="Horizontal">
+            <Track.DecreaseButton>
+              <RepeatButton Name="PART_DecreaseButton" Classes="repeattrack_highlight" />
+            </Track.DecreaseButton>
+            <Track.IncreaseButton>
+              <RepeatButton Name="PART_IncreaseButton" Classes="repeattrack" />
+            </Track.IncreaseButton>
+            <Thumb Name="thumb" Margin="-6,0,0,0">
+              <Thumb.Template>
+                <ControlTemplate>
+                  <Grid >
+                    <Rectangle Width="12" Height="6" Fill="#AEAEAE" />
+                  </Grid>
+                </ControlTemplate>
+              </Thumb.Template>
+            </Thumb>
+          </Track>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="c|SeekSlider /template/ Track#PART_Track">
+    <Setter Property="Minimum" Value="{TemplateBinding Minimum}" />
+    <Setter Property="Maximum" Value="{TemplateBinding Maximum}" />
+    <Setter Property="Value" Value="{TemplateBinding Value, Mode=TwoWay}" />
+  </Style>
+  <Style Selector="c|SeekSlider /template/ Border#TrackBackground">
+    <Setter Property="Background" Value="#CCCCCC" />
+  </Style>
+  <Style Selector="c|SeekSlider /template/ RepeatButton.repeattrack">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="Transparent" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="Transparent" />
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="c|SeekSlider /template/ RepeatButton.repeattrack_highlight">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="Transparent" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="#565656" />
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="c|SeekSlider:disabled /template/ Grid#grid">
+    <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
+  </Style>
+  <Style Selector="c|SeekSlider:pointerover">
+    <Style.Animations>
+      <Animation Duration="0:0:0.25" FillMode="Both" Easing="SineEaseIn">
+        <KeyFrame Cue="100%">
+          <Setter Property="ScaleTransform.ScaleY" Value="3" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="c|SeekSlider:not(:pointerover)">
+    <Style.Animations>
+      <Animation Duration="0:0:0.25" FillMode="Both" Easing="SineEaseIn">
+        <KeyFrame Cue="100%">
+          <Setter Property="ScaleTransform.ScaleY" Value="1" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="c|SeekSlider:pointerover /template/ Thumb#thumb /template/ Rectangle">
+    <Style.Animations>
+      <Animation Duration="0:0:0.1" FillMode="Both" Easing="SineEaseOut">
+        <KeyFrame Cue="100%">
+          <Setter Property="Opacity" Value="1" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="c|SeekSlider:not(:pointerover) /template/ Thumb#thumb /template/ Rectangle">
+    <Style.Animations>
+      <Animation Duration="0:0:0.1" FillMode="Both" Easing="SineEaseOut">
+        <KeyFrame Cue="100%">
+          <Setter Property="Opacity" Value="0" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
 </Styles>
