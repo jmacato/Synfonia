@@ -135,6 +135,11 @@ namespace Symphony.ViewModels
                         continue;
                     }
 
+                    if(tag.Album is null)
+                    {
+                        tag.Album = "Unknown Album";
+                    }
+
                     if (!_albumsDictionary.ContainsKey(tag.Album))
                     {
                         var album = new Album();
