@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -159,13 +160,27 @@ namespace Symphony.ViewModels
 
             PlayCommand = ReactiveCommand.CreateFromTask(DoPlay);
 
+            ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await Task.Run(() => ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Music\\Music"),
+                    (album, artist) =>
+                    {
+                        RxApp.MainThreadScheduler.Schedule(() =>
+                        {
+                            LoadAlbum(album, artist);
+                        });
+                    }));
+
+                TrackStatus.Status = "";
+            });
+
             this.WhenAnyValue(x => x.SelectedAlbum)
                 .Subscribe(x => _trackChanged = true);
 
-            ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Music\\Music"));
-
             LoadLibrary();
         }
+
+        public ReactiveCommand<Unit, Unit> ScanLibraryCommand { get; }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
 
@@ -218,6 +233,35 @@ namespace Symphony.ViewModels
             set { this.RaiseAndSetIfChanged(ref _selectArtwork, value); }
         }
 
+        private void LoadAlbum(Album albumEntry, string artistName)
+        {
+            var album = new AlbumViewModel();
+
+            album.Artist = artistName;
+            album.Title = albumEntry.Title;
+
+            album.Tracks = new List<TrackViewModel>();
+
+            album.Tracks.AddRange(albumEntry.Tracks.Select(x => new TrackViewModel
+            {
+                Album = album,
+                Path = x.Path,
+                Title = x.Title
+            }));
+
+            album.Cover = albumEntry.LoadAlbumCover();
+
+            _albumsDictionary[albumEntry] = album;
+
+            Albums.Add(album);
+
+            if (SelectedAlbum is null)
+            {
+                SelectedAlbum = album;
+            }
+        }
+
+
         private void LoadLibrary()
         {
             using (var db = new LiteDatabase("library.db"))
@@ -232,43 +276,17 @@ namespace Symphony.ViewModels
                     {
                         var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
 
-                        //if (!_albumsDictionary.ContainsKey(albumEntry))
-                        {
-                            var album = new AlbumViewModel();
-
-                            album.Artist = artistEntry.Name;
-                            album.Title = albumEntry.Title;
-
-                            album.Tracks = new List<TrackViewModel>();
-
-                            album.Tracks.AddRange(albumEntry.Tracks.Select(x => new TrackViewModel
-                            {
-                                Album = album,
-                                Path = x.Path,
-                                Title = x.Title
-                            }));
-
-                            album.Cover = albumEntry.LoadAlbumCover();
-
-                            _albumsDictionary[albumEntry] = album;
-
-                            Albums.Add(album);
-
-                            if (SelectedAlbum is null)
-                            {
-                                SelectedAlbum = album;
-                            }
-                        }
+                        LoadAlbum(albumEntry, artistEntry.Name);
                     }
                 }
             }
         }
 
-        private async Task ScanMusicFolder(string path)
+        private void ScanMusicFolder(string path, Action<Album, string> onAlbumAdded)
         {
             foreach (var directory in Directory.EnumerateDirectories(path))
             {
-                await ScanMusicFolder(directory);
+                ScanMusicFolder(directory, onAlbumAdded);
             }
 
             var files = Directory.EnumerateFiles(path, "*.*");
@@ -283,8 +301,6 @@ namespace Symphony.ViewModels
                 {
                     if (!SupportedFileExtensions.Any(x => $".{x}" == Path.GetExtension(file).ToLower()))
                         continue;
-
-                    Debug.WriteLine($"Processing file: {file}");
 
                     try
                     {
@@ -305,6 +321,11 @@ namespace Symphony.ViewModels
 
                             // TODO other what to do if we dont know anything about the track, ignore?
 
+                            RxApp.MainThreadScheduler.Schedule(() =>
+                            {
+                                TrackStatus.Status = $"Processing: {artistName}, {albumName}, {trackName}";
+                            });
+
                             var existingArtist = artistsCollection.FindOne(x => x.Name == artistName.Trim());
 
                             if (existingArtist is null)
@@ -319,8 +340,12 @@ namespace Symphony.ViewModels
 
                             var existingAlbum = albumsCollection.FindOne(x => x.Title == tag.Album.Trim());
 
+                            bool albumAdded = false;
+
                             if (existingAlbum is null)
                             {
+                                albumAdded = true;
+
                                 existingAlbum = new Album
                                 {
                                     Title = albumName,
@@ -348,6 +373,11 @@ namespace Symphony.ViewModels
                                 existingAlbum.Tracks.Add(existingTrack);
 
                                 albumsCollection.Update(existingAlbum);
+
+                                if (albumAdded)
+                                {
+                                    onAlbumAdded(existingAlbum, existingArtist.Name);
+                                }
                             }
                         }
                     }

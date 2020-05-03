@@ -9,9 +9,10 @@ xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" mc:Ignorable="d" d:D
         <Panel DockPanel.Dock="Right" Width="80" />
         <Panel>
           <StackPanel VerticalAlignment="Center">
-            <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="20" FontFamily="Segoe UI" />
-            <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding CurrentTime}" Foreground="#686858" FontSize="14" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="18" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#686858" FontSize="12" FontFamily="Segoe UI" />
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding CurrentTime}" Foreground="#686858" FontSize="12" FontFamily="Segoe UI" />
+            <TextBlock Text="{Binding Status}" Margin="10 0 0 0" FontFamily="Segoe UI" FontSize="10" VerticalAlignment="Bottom" />
           </StackPanel>
         </Panel>
       </DockPanel>
