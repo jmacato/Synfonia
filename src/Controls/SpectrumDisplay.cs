@@ -7,7 +7,7 @@ namespace Symphony.Controls
 {
     public class SpectrumDisplay : UserControl
     {
-        IPen LinePen = new Pen(new SolidColorBrush(Colors.Red), 1);
+        IPen LinePen = new Pen(new SolidColorBrush(Colors.LightGray, 0.5), 1);
 
         public override void Render(DrawingContext context)
         {
@@ -39,23 +39,6 @@ namespace Symphony.Controls
         static SpectrumDisplay()
         {
             AffectsRender<SpectrumDisplay>(FFTDataProperty);
-        }
-
-        protected override void OnPointerPressed(PointerPressedEventArgs e)
-        {
-            e.Handled = false;
-        }
-        protected override void OnPointerEnter(PointerEventArgs e)
-        {
-            e.Handled = false;
-        }
-        protected override void OnPointerLeave(PointerEventArgs e)
-        {
-            e.Handled = false;
-        }
-        protected override void OnPointerReleased(PointerReleasedEventArgs e)
-        {
-            e.Handled = false;
         }
     }
 }
