@@ -27,7 +27,7 @@
         </ListBox.ContextMenu>
         <ListBox.ItemsPanel>
           <ItemsPanelTemplate>
-            <WrapPanel Width="{Binding Bounds.Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}" HorizontalAlignment="Center" />
+            <WrapPanel HorizontalAlignment="Center" />
           </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
         <ListBox.ItemTemplate>

@@ -12,8 +12,6 @@
     <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
     <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
     <StyleInclude Source="avares://Symphony/Controls/SeekSlider.xaml"/>
-    <StyleInclude Source="avares://Mechanism.AvaloniaUI/Themes/Generic.xaml"/>
-    <StyleInclude Source="avares://Mechanism.AvaloniaUI.Themes.Fluent/Themes/Fluent.xaml"/>
 
     <Style Selector="mectrl|ThemeControlDecorator[ControlStyle=Button][IsVisuallyPressed=True] /template/ mefl|ButtonPressRotator">
       <Style.Animations>

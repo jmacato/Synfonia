@@ -1,39 +1,23 @@
-<mewin:StyleableWindow xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Symphony.ViewModels;assembly=Symphony"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
         xmlns:local="clr-namespace:Symphony.Views"
-        xmlns:mewin="clr-namespace:Mechanism.AvaloniaUI.Controls.Windows;assembly=Mechanism.AvaloniaUI"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony"
-        ShowCaptionIcon="False" ShowCaptionText="False" TitlebarPlacement="Headerbar" Background="{DynamicResource TitlebarBlurBackgroundBrush}">
+        SystemDecorations="BorderOnly">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <Grid ColumnDefinitions="200,*" RowDefinitions="60,*">
-    <ToggleButton Width="45" Background="Transparent" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0">
-      <StackPanel Orientation="Vertical" Spacing="4" Width="11">
-        <Rectangle Height="1" Fill="{Binding $parent[Button].Foreground}"/>
-        <Rectangle Height="1" Fill="{Binding $parent[Button].Foreground}"/>
-        <Rectangle Height="1" Fill="{Binding $parent[Button].Foreground}"/>
-      </StackPanel>
-    </ToggleButton>
-    <DockPanel Grid.Column="0" Grid.Row="1">
-      <TextBlock Text="Beesechurger menu coming soon™" TextWrapping="Wrap" DockPanel.Dock="Top"/>
-      <TextBox Text="Search" IsEnabled="False" DockPanel.Dock="Top"/>
-      <ListBox Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
+  <DockPanel LastChildFill="True">
+    <DockPanel DockPanel.Dock="Top" LastChildFill="True" Background="LightGray" Height="80">
+      <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
+      <local:VolumeControlView DockPanel.Dock="Right" />
+      <local:TrackStatusView DataContext="{Binding TrackStatus}" />
     </DockPanel>
-    <Border BoxShadow="inset -8 0 10 -8 #C07F7F7F" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
-    <Border Background="{DynamicResource TitlebarBlurBackgroundBrush}" BoxShadow="inset 0 -4 5 -4 #C07F7F7F" Padding="0,0,135,0" Grid.Column="1" Grid.Row="0">
-      <DockPanel DockPanel.Dock="Top" LastChildFill="True" Height="{Binding $parent[mewin:StyleableWindow].TitlebarHeight}">
-        <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
-        <local:VolumeControlView DockPanel.Dock="Right" />
-        <local:TrackStatusView DataContext="{Binding TrackStatus}" />
-      </DockPanel>
-    </Border>
-    <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" Grid.Column="1" Grid.Row="1"/>
-  </Grid>
-</mewin:StyleableWindow>
+    <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
+  </DockPanel>
+</Window>

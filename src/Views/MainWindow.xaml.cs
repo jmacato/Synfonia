@@ -6,7 +6,7 @@ using Mechanism.AvaloniaUI.Controls.Windows;
 
 namespace Symphony.Views
 {
-    public class MainWindow : StyleableWindow
+    public class MainWindow : Window
     {
         public MainWindow()
         {
