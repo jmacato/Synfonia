@@ -67,6 +67,9 @@
   <Style Selector="c|SeekSlider:not(:pointerover)">
     <Style.Animations>
       <Animation Duration="0:0:0.25" FillMode="Both" Easing="SineEaseIn">
+        <KeyFrame Cue="0%">
+          <Setter Property="ScaleTransform.ScaleY" Value="3" />
+        </KeyFrame>
         <KeyFrame Cue="100%">
           <Setter Property="ScaleTransform.ScaleY" Value="1" />
         </KeyFrame>
