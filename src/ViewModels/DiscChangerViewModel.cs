@@ -21,6 +21,7 @@ namespace Symphony.ViewModels
         private int _currentTrackIndex;
         private Track _currentTrack;
         private bool _isPlaying;
+        private bool _userOperation = false;
 
         private bool _sliderClicked;
         private double _seekPosition;
@@ -58,23 +59,7 @@ namespace Symphony.ViewModels
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                if (_trackList is null)
-                {
-                    return;
-                }
-
-                if (_currentTrackIndex < _trackList.Tracks.Count - 1)
-                {
-                    _currentTrackIndex++;
-                }
-                else
-                {
-                    _currentTrackIndex = 0;
-                }
-
-                await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
-
-                Play();
+                await Forward();
             });
 
             BackCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -154,11 +139,11 @@ namespace Symphony.ViewModels
 
                 _soundStream.WhenAnyValue(x => x.State)
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(x =>
+                    .Subscribe(async x =>
                     {
-                        if (_isPlaying && x == SoundStreamState.Stopped)
+                        if (!_userOperation && _isPlaying && x == SoundStreamState.Stopped)
                         {
-                            ForwardCommand.Execute();
+                            await Forward();
                         }
                     })
                     .DisposeWith(_soundStreamDisposables);
@@ -173,6 +158,31 @@ namespace Symphony.ViewModels
             {
                 _soundStream.TrySeek(seektime);
             }
+        }
+
+        public async Task Forward(bool byUser = true)
+        {
+            _userOperation = byUser;
+
+            if (_trackList is null)
+            {
+                return;
+            }
+
+            if (_currentTrackIndex < _trackList.Tracks.Count - 1)
+            {
+                _currentTrackIndex++;
+            }
+            else
+            {
+                _currentTrackIndex = 0;
+            }
+
+            await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
+
+            Play();
+
+            _userOperation = false;
         }
 
         public void Play()
