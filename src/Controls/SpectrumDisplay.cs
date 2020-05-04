@@ -66,8 +66,6 @@ namespace Symphony.Controls
         private double minDB = -75;
         private void UpdateFFT(Complex[] fftResults)
         {
-            Console.WriteLine("fft.");
-
             for (int n = 0; n < fftResults.Length / 2; n += binsPerPoint)
             {
                 // averaging out bins
