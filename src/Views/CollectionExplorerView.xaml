@@ -12,10 +12,9 @@
     <converters:IsNullConverter x:Key="IsNullConverter" />
     <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
-  <Border Background="{DynamicResource WindowBackgroundBrush}" MinWidth="200">
+  <Border MinWidth="200" BoxShadow="inset 0 0 2 2 #FFa0a0a0">
     <Panel Background="Transparent">
       <ListBox BorderThickness="0"
-               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                AutoScrollToSelectedItem="False"
                Items="{Binding Albums}"
                SelectedItem="{Binding SelectedAlbum}"
@@ -27,7 +26,7 @@
         </ListBox.ContextMenu>
         <ListBox.ItemsPanel>
           <ItemsPanelTemplate>
-            <WrapPanel Width="{Binding Bounds.Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}" HorizontalAlignment="Center" />
+            <WrapPanel MaxWidth="1000" HorizontalAlignment="Center" />
           </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
         <ListBox.ItemTemplate>
