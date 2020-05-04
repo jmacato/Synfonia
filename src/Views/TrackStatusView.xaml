@@ -11,8 +11,7 @@
         <DockPanel Background="Transparent" LastChildFill="True">
           <Panel DockPanel.Dock="Left">
             <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
-          </Panel>
-          <Panel DockPanel.Dock="Right" Width="80" />
+          </Panel>          
           <Panel>
             <c:SpectrumDisplay FFTData="{Binding InFFTData}" />
             <StackPanel VerticalAlignment="Center">
