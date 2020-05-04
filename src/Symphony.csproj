@@ -29,12 +29,4 @@
     <ProjectReference Include="..\Mechanism-for-Avalonia\Themes\Mechanism.AvaloniaUI.Themes.Fluent\Mechanism.AvaloniaUI.Themes.Fluent.csproj" />
     <ProjectReference Include="..\SharpAudio\src\SharpAudio.Codec\SharpAudio.Codec.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Mechanism.AvaloniaUI">
-      <HintPath>..\..\..\..\Mechanism\Development\Mechanism.AvaloniaUI\Mechanism.AvaloniaUI\bin\Debug\netstandard2.0\Mechanism.AvaloniaUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Mechanism.AvaloniaUI.Themes.Fluent">
-      <HintPath>..\..\..\..\Mechanism\Development\Mechanism.AvaloniaUI\Themes\Mechanism.AvaloniaUI.Themes.Fluent\bin\Debug\netstandard2.0\Mechanism.AvaloniaUI.Themes.Fluent.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
