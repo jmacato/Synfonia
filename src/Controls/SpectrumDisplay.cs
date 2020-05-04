@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace Symphony.Controls
 {
@@ -18,7 +19,22 @@ namespace Symphony.Controls
                 for (int i = 0; i < FFTData.Length; i++)
                 {
                     context.DrawLine(LinePen, new Point(i, Bounds.Height), new Point(i, Bounds.Height * (1 - FFTData[i])));
+                    FFTData[i] *= 0.9;
                 }
+
+                Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
+            }
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            if (FFTData != null)
+            {
+                return new Size(FFTData.Length, availableSize.Height);
+            }
+            else
+            {
+                return new Size(1, availableSize.Height);
             }
         }
 
@@ -38,7 +54,7 @@ namespace Symphony.Controls
 
         static SpectrumDisplay()
         {
-            AffectsRender<SpectrumDisplay>(FFTDataProperty);
+            AffectsMeasure<SpectrumDisplay>(FFTDataProperty);
         }
     }
 }
