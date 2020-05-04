@@ -145,6 +145,8 @@ namespace Symphony.ViewModels
             }
         }
 
+        
+
         public void Seek(TimeSpan seektime)
         {
             if (_isPlaying)

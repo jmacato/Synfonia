@@ -39,7 +39,7 @@ namespace Symphony.ViewModels
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await Task.Run(async () => await ScanMusicFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+                await Task.Run(async () => await ScanMusicFolder(("/home/jmacato/Music/test"),
                     (album, artist) =>
                     {
                         RxApp.MainThreadScheduler.Schedule(() =>
