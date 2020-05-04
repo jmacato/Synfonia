@@ -13,6 +13,7 @@
             "program": "${workspaceFolder}/src/bin/Debug/netcoreapp3.0/Symphony.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
+            "enableStepFiltering": false,
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

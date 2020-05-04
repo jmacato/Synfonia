@@ -4,6 +4,7 @@ using SharpAudio.Codec;
 using System;
 using System.IO;
 using System.Reactive;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -135,6 +136,12 @@ namespace Symphony.ViewModels
                     {
                         MainWindowViewModel.Instance.TrackStatus.UpdateCurrentPlayTime(x);
                     });
+
+                _soundStream.FFTDataReady += (x) =>
+                {
+                    MainWindowViewModel.Instance.TrackStatus.InFFTData = x;
+                };
+
             }
         }
 

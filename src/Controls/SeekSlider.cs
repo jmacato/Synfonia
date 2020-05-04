@@ -135,7 +135,7 @@ namespace Symphony.Controls
         /// <param name="value">Value that want to snap to closest Tick.</param>
         private void MoveToNextTick(double value)
         {
-            Value = (Math.Max(Minimum, Math.Min(Maximum, value)));
+            Value = Math.Max(Minimum, Math.Min(Maximum, value));
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Threading;
+using ReactiveUI;
 using SharpAudio.Codec;
 using System;
 using System.Linq;
+using System.Numerics;
 using System.Reactive.Linq;
 
 namespace Symphony.ViewModels
@@ -19,6 +21,7 @@ namespace Symphony.ViewModels
         private bool _isTrackSeeking;
         private bool _isSeekbarActive = true;
         private string _status;
+        private Complex[] _fftData;
 
         public TrackStatusViewModel()
         {
@@ -36,6 +39,7 @@ namespace Symphony.ViewModels
                 {
                     Status = "";
                 });
+
         }
 
         public object AlbumCover
@@ -103,6 +107,12 @@ namespace Symphony.ViewModels
             set { this.RaiseAndSetIfChanged(ref _status, value); }
         }
 
+        public Complex[] InFFTData
+        {
+            get { return _fftData; }
+            set { this.RaiseAndSetIfChanged(ref _fftData, value); }
+        }
+
         private string FormatTimeSpan(TimeSpan x)
         {
             return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}.{(x.Milliseconds / 100):0}";
@@ -135,5 +145,6 @@ namespace Symphony.ViewModels
                 Duration = file.Properties.Duration;
             }
         }
+ 
     }
 }
