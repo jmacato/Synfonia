@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Reactive.Disposables;
 
 namespace Symphony.ViewModels
 {
@@ -16,6 +17,7 @@ namespace Symphony.ViewModels
         private ITrackList _trackList;
         private AudioEngine _audioEngine;
         private SoundStream _soundStream;
+        private CompositeDisposable _soundStreamDisposables;
         private int _currentTrackIndex;
         private Track _currentTrack;
         private bool _isPlaying;
@@ -126,6 +128,9 @@ namespace Symphony.ViewModels
             {
                 await Task.Delay(100);
                 _soundStream?.Dispose();
+                _soundStreamDisposables?.Dispose();
+
+                _soundStreamDisposables = new CompositeDisposable();
 
                 _soundStream = new SoundStream(File.OpenRead(targetTrack), _audioEngine);
 
@@ -136,14 +141,27 @@ namespace Symphony.ViewModels
                     .Subscribe(x =>
                     {
                         MainWindowViewModel.Instance.TrackStatus.UpdateCurrentPlayTime(x);
-                    });
+                    })
+                    .DisposeWith(_soundStreamDisposables);
 
                 Observable.FromEventPattern<double[]>(_soundStream, nameof(_soundStream.FFTDataReady))
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(x =>
                     {
                         MainWindowViewModel.Instance.TrackStatus.InFFTData = x.EventArgs;
-                    });
+                    })
+                    .DisposeWith(_soundStreamDisposables);
+
+                _soundStream.WhenAnyValue(x => x.State)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(x =>
+                    {
+                        if (_isPlaying && x == SoundStreamState.Stopped)
+                        {
+                            ForwardCommand.Execute();
+                        }
+                    })
+                    .DisposeWith(_soundStreamDisposables);
             }
         }
 
