@@ -1,14 +1,14 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100" x:Class="Symphony.Views.TrackStatusView">
   <Panel Background="White">
-    <c:SpectrumDisplay FFTData="{Binding InFFTData}" HorizontalAlignment="Center" />
     <Grid RowDefinitions="*,Auto">
       <DockPanel Grid.RowSpan="1" LastChildFill="True">
-        <Panel>
+        <Panel DockPanel.Dock="Left">
           <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
         </Panel>
-        <Panel DockPanel.Dock="Right" Width="80" />
         <Panel>
+          <c:SpectrumDisplay FFTData="{Binding InFFTData}" />
+          <Panel DockPanel.Dock="Right" Width="80" />
           <StackPanel VerticalAlignment="Center">
             <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="18" FontFamily="Segoe UI" />
             <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#686858" FontSize="12" FontFamily="Segoe UI" />
