@@ -12,16 +12,16 @@ namespace Symphony.Controls
 {
     public class SpectrumDisplay : UserControl
     {
-        private IPen _linePen = new Pen(new SolidColorBrush(Colors.LightGray, 0.5), 1);
+        private IPen _linePen;
         private double _lastStrokeThickness;
         private double[] _averagedData;
-        private int _averageLevel = 10;
+        private int _averageLevel = 6;
 
         public override void Render(DrawingContext context)
         {
             base.Render(context);
 
-            context.DrawRectangle(new Pen(new SolidColorBrush(Colors.Red, 0.5)), new Rect(0, 0, Bounds.Width, Bounds.Height));
+            context.FillRectangle(Brushes.White, Bounds);
 
             if (FFTData != null)
             {
@@ -36,27 +36,28 @@ namespace Symphony.Controls
                     _averagedData[i] += FFTData[i] / _averageLevel;
                 }
 
-                var gaps = FFTData.Length - 1;
+                var length = FFTData.Length / 32;
+                var gaps = length - 1;
 
-                var gapSize = 2;
+                var gapSize = 1;
                 if ((gaps * gapSize) > Bounds.Width)
                 {
                     gapSize = 0;
                 }
 
-                var binStroke = (Bounds.Width - (gaps * gapSize)) / FFTData.Length;
+                var binStroke = (Bounds.Width - (gaps * gapSize)) / length;
 
                 if (_lastStrokeThickness != binStroke)
                 {
                     _lastStrokeThickness = binStroke;
-                    _linePen = new Pen(new SolidColorBrush(Colors.LightGray, 0.5), _lastStrokeThickness);
+                    _linePen = new Pen(new SolidColorBrush(Colors.Gray, 0.8), _lastStrokeThickness);
                 }
 
                 double x = binStroke / 2;
-                for (int i = 0; i < _averagedData.Length; i++)
+                for (int i = 0; i < length; i++)
                 {
                     context.DrawLine(_linePen, new Point(x, Bounds.Height), new Point(x, Bounds.Height * (1 - _averagedData[i])));
-                    x += (binStroke + 2);
+                    x += (binStroke + gapSize);
                 }
 
                 Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
