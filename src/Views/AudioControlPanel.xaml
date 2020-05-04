@@ -4,12 +4,48 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Symphony.Views.AudioControlPanel">
-  <Panel Height="80">
-    <Image Opacity="0.25" Source="avares://Symphony/Assets/AudioControlsViewMock.png" />
+  <Panel>
+    <Panel.Styles>
+      <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
+        <Setter Property="Background" Value="Transparent"/>
+      </Style>
+    </Panel.Styles>
+    <Image Opacity="0.25" Source="avares://Symphony/Assets/AudioControlsViewMock.png" IsVisible="False"/>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-      <Button HorizontalAlignment="Center" Width="54" Background="Transparent" Command="{Binding BackCommand}" />
-      <Button HorizontalAlignment="Center" Width="54" Background="Transparent" Command="{Binding PlayCommand}" />
-      <Button HorizontalAlignment="Center" Width="54" Background="Transparent" Command="{Binding ForwardCommand}" />
+      <ToggleButton Width="36">
+        <Panel Width="17" Height="12" Opacity="0.75">
+          <Path Data="M 0 10 C 8,10 8,2 16,2" Stroke="{Binding $parent[ToggleButton].Foreground}" StrokeThickness="1"/>
+          <Path Data="M 15 0 L 17 2 L 15 4 Z" Fill="{Binding $parent[ToggleButton].Foreground}"/>
+
+          <Path Data="M 0 2 Q 4,2 7,4.5" Stroke="{Binding $parent[ToggleButton].Foreground}" StrokeThickness="1"/>
+          <Path Data="M 16 10 Q 12,10 9,7.5" Stroke="{Binding $parent[ToggleButton].Foreground}" StrokeThickness="1"/>
+          <Path Data="M 15 8 L 17 10 L 15 12 Z" Fill="{Binding $parent[ToggleButton].Foreground}"/>
+        </Panel>
+      </ToggleButton>
+      <Button HorizontalAlignment="Center" Width="54" Command="{Binding BackCommand}">
+        <StackPanel Orientation="Horizontal" Opacity="0.75">
+          <Path Data="M 0 8 L 14 0 L 14 16 Z" Fill="{Binding $parent[Button].Foreground}"/>
+          <Path Data="M 0 8 L 14 0 L 14 16 Z" Fill="{Binding $parent[Button].Foreground}"/>
+        </StackPanel>
+      </Button>
+      <Button HorizontalAlignment="Center" Width="54" Command="{Binding PlayCommand}">
+        <Path Data="M 0 0 L 24 14 L 0 28 Z" Fill="{Binding $parent[Button].Foreground}" Opacity="0.75"/>
+      </Button>
+      <Button HorizontalAlignment="Center" Width="54" Command="{Binding ForwardCommand}">
+        <StackPanel Orientation="Horizontal" Opacity="0.75">
+          <Path Data="M 14 8 L 0 0 L 0 16 Z" Fill="{Binding $parent[Button].Foreground}"/>
+          <Path Data="M 14 8 L 0 0 L 0 16 Z" Fill="{Binding $parent[Button].Foreground}"/>
+        </StackPanel>
+      </Button>
+      <ToggleButton Width="36">
+        <Panel Width="18" Height="16" Opacity="0.75">
+          <!--Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1"-->
+          <Path Data="M 2 13 Q 0,8 2,6 Q 3,4 6,3 L 12 3" Stroke="{Binding $parent[ToggleButton].Foreground}" StrokeThickness="1"/>
+          <Path Data="M 12 0 L 12 6 L 15 3 Z" Fill="{Binding $parent[ToggleButton].Foreground}"/>
+          <Path Data="M 16 5 Q 18,10 16,12 Q 15,14 12,15 L 6 15" Stroke="{Binding $parent[ToggleButton].Foreground}" StrokeThickness="1"/>
+          <Path Data="M 6 18 L 6 12 L 3 15 Z" Fill="{Binding $parent[ToggleButton].Foreground}"/>
+        </Panel>
+      </ToggleButton>
     </StackPanel>
   </Panel>
 </UserControl>
