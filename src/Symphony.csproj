@@ -24,6 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj" />
+    <ProjectReference Include="..\Mechanism-for-Avalonia\Mechanism.AvaloniaUI\Mechanism.AvaloniaUI.csproj" />
+    <ProjectReference Include="..\Mechanism-for-Avalonia\Themes\Mechanism.AvaloniaUI.Themes.Fluent\Mechanism.AvaloniaUI.Themes.Fluent.csproj" />
     <ProjectReference Include="..\SharpAudio\src\SharpAudio.Codec\SharpAudio.Codec.csproj" />
   </ItemGroup>
 </Project>
