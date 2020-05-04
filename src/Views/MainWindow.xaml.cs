@@ -2,10 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Mechanism.AvaloniaUI.Controls.Windows;
 
 namespace Symphony.Views
 {
-    public class MainWindow : Window
+    public class MainWindow : StyleableWindow
     {
         public MainWindow()
         {
