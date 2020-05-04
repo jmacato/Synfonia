@@ -10,8 +10,6 @@
     <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
     <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
     <StyleInclude Source="avares://Symphony/Controls/SeekSlider.xaml"/>
-        <StyleInclude Source="avares://Mechanism.AvaloniaUI/Themes/Generic.xaml"/>
-        <StyleInclude Source="avares://Mechanism.AvaloniaUI.Themes.Fluent/Themes/Fluent.xaml"/>
   </Application.Styles>
   <NativeMenu.Menu>
     <NativeMenu />
