@@ -13,7 +13,13 @@ namespace Symphony.ViewModels
 
         public string Name
         {
-            get { return Regex.Unescape(_name); }
+            get
+            {
+                if (string.IsNullOrEmpty(_name))
+                    return "Unknown Artist";
+                    
+                return Regex.Unescape(_name);
+            }
             set { _name = value; }
         }
 

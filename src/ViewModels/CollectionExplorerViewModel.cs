@@ -39,7 +39,7 @@ namespace Symphony.ViewModels
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await Task.Run(async () => await ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive\\Music\\Music"),
+                await Task.Run(async () => await ScanMusicFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
                     (album, artist) =>
                     {
                         RxApp.MainThreadScheduler.Schedule(() =>
@@ -119,7 +119,7 @@ namespace Symphony.ViewModels
                     {
                         var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
 
-                        LoadAlbum(albumEntry, artistEntry.Name);
+                        LoadAlbum(albumEntry, artistEntry.Name ?? "Unknown Artist");
                     }
                 }
             }
@@ -127,12 +127,12 @@ namespace Symphony.ViewModels
 
         private async Task ScanMusicFolder(string path, Action<Album, string> onAlbumAdded)
         {
-            foreach (var directory in Directory.EnumerateDirectories(path))
-            {
-                await ScanMusicFolder(directory, onAlbumAdded);
-            }
+            // foreach (var directory in Directory.EnumerateDirectories(path))
+            // {
+            //     await ScanMusicFolder(directory, onAlbumAdded);
+            // }
 
-            var files = Directory.EnumerateFiles(path, "*.*");
+            var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
 
 
             using (var dbLock = await LockDatabaseAsync())
@@ -158,8 +158,13 @@ namespace Symphony.ViewModels
                                 continue;
                             }
 
-                            var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault() ?? "Unknown Artist";
+                            var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
 
+                            if (artistName is null)
+                            {
+                                artistName = "Unknown Artist";
+                            }
+                            
                             var albumName = tag.Album ?? "Unknown Album";
 
                             var trackName = tag.Title ?? "Unknown Track";
