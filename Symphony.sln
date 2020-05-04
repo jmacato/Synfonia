@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpAudio.ALBinding", "Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunesSearch.Library", "iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj", "{A4C0E485-A36C-473C-8987-2C298481936C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mechanism.AvaloniaUI", "Mechanism-for-Avalonia\Mechanism.AvaloniaUI\Mechanism.AvaloniaUI.csproj", "{6FBB3700-2FCC-4A32-9971-F3577AA84042}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mechanism.AvaloniaUI.Themes.Fluent", "Mechanism-for-Avalonia\Themes\Mechanism.AvaloniaUI.Themes.Fluent\Mechanism.AvaloniaUI.Themes.Fluent.csproj", "{15903A80-E63A-424A-B01E-717433F6505E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{A4C0E485-A36C-473C-8987-2C298481936C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4C0E485-A36C-473C-8987-2C298481936C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4C0E485-A36C-473C-8987-2C298481936C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15903A80-E63A-424A-B01E-717433F6505E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15903A80-E63A-424A-B01E-717433F6505E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15903A80-E63A-424A-B01E-717433F6505E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15903A80-E63A-424A-B01E-717433F6505E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
