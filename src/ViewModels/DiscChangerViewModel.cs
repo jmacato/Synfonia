@@ -7,6 +7,7 @@ using System.Reactive;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Symphony.ViewModels
 {
@@ -137,15 +138,16 @@ namespace Symphony.ViewModels
                         MainWindowViewModel.Instance.TrackStatus.UpdateCurrentPlayTime(x);
                     });
 
-                _soundStream.FFTDataReady += (x) =>
-                {
-                    MainWindowViewModel.Instance.TrackStatus.InFFTData = x;
-                };
-
+                Observable.FromEventPattern<double[]>(_soundStream, nameof(_soundStream.FFTDataReady))
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(x =>
+                    {
+                        MainWindowViewModel.Instance.TrackStatus.InFFTData = x.EventArgs;
+                    });
             }
         }
 
-        
+
 
         public void Seek(TimeSpan seektime)
         {

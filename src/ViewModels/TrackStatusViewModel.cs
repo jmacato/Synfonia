@@ -21,7 +21,7 @@ namespace Symphony.ViewModels
         private bool _isTrackSeeking;
         private bool _isSeekbarActive = true;
         private string _status;
-        private Complex[] _fftData;
+        private double[] _fftData;
 
         public TrackStatusViewModel()
         {
@@ -107,10 +107,14 @@ namespace Symphony.ViewModels
             set { this.RaiseAndSetIfChanged(ref _status, value); }
         }
 
-        public Complex[] InFFTData
+        public double[] InFFTData
         {
             get { return _fftData; }
-            set { this.RaiseAndSetIfChanged(ref _fftData, value); }
+            set
+            {
+                _fftData = value;
+                this.RaisePropertyChanged(nameof(InFFTData));
+            }
         }
 
         private string FormatTimeSpan(TimeSpan x)
@@ -145,6 +149,6 @@ namespace Symphony.ViewModels
                 Duration = file.Properties.Duration;
             }
         }
- 
+
     }
 }
