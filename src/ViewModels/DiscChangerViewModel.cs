@@ -2,7 +2,6 @@
 using SharpAudio;
 using SharpAudio.Codec;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -10,11 +9,6 @@ using System.Threading.Tasks;
 
 namespace Symphony.ViewModels
 {
-    public interface ITrackList
-    {
-        IList<Track> Tracks { get; }
-    }
-
     public class DiscChangerViewModel : ViewModelBase
     {
         private ITrackList _trackList;
@@ -177,35 +171,6 @@ namespace Symphony.ViewModels
         {
             get => _sliderClicked;
             set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
-        }
-
-        public double SeekPosition
-        {
-            get => _seekPosition;
-            set { SliderChangedManually(value); }
-        }
-
-
-
-
-
-        public void SliderChangedManually(double value)
-        {
-            if (_soundStream is null) return;
-            if (!_soundStream.IsPlaying) return;
-
-            var x = ValidValuesOnly(value);
-            //var z = TimeSpan.FromSeconds(x * Duration.TotalSeconds);
-            //_soundStream.TrySeek(z);
-        }
-
-        private double ValidValuesOnly(double value)
-        {
-            if (double.IsInfinity(value) || double.IsNaN(value))
-            {
-                return 0;
-            }
-            else return Math.Clamp(value, 0d, 1000d);
         }
     }
 }
