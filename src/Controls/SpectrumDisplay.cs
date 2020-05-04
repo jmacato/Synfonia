@@ -36,7 +36,7 @@ namespace Symphony.Controls
                     _averagedData[i] += FFTData[i] / _averageLevel;
                 }
 
-                var length = FFTData.Length / 32;
+                var length = FFTData.Length / 24;
                 var gaps = length - 1;
 
                 var gapSize = 1;
@@ -50,7 +50,7 @@ namespace Symphony.Controls
                 if (_lastStrokeThickness != binStroke)
                 {
                     _lastStrokeThickness = binStroke;
-                    _linePen = new Pen(new SolidColorBrush(Colors.Gray, 0.8), _lastStrokeThickness);
+                    _linePen = new Pen(new SolidColorBrush(Colors.Gray, 0.5), _lastStrokeThickness);
                 }
 
                 double x = binStroke / 2;
