@@ -5,3 +5,6 @@
 [submodule "iTunesSearch"]
 	path = iTunesSearch
 	url = https://github.com/danwalmsley/iTunesSearch.git
+[submodule "Mechanism-for-Avalonia"]
+	path = Mechanism-for-Avalonia
+	url = https://github.com/Splitwirez/Mechanism-for-Avalonia
