@@ -16,7 +16,7 @@ namespace Symphony.Controls
     public class SpectrumDisplay : UserControl
     {
         IPen LinePen = new Pen(new SolidColorBrush(Colors.Red), 1);
-        int delay = 0;
+
         public override void Render(DrawingContext context)
         {
             for (int i = 0; i < _processedFFT.Length; i++)
