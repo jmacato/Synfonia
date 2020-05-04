@@ -1,12 +1,17 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100" x:Class="Symphony.Views.TrackStatusView">
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
+             x:Class="Symphony.Views.TrackStatusView">
   <Panel Background="White">
     <Grid RowDefinitions="*,Auto">
       <DockPanel Grid.RowSpan="1" LastChildFill="True">
         <Panel DockPanel.Dock="Left">
           <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
         </Panel>
-        <Panel>
+        <Panel Background="Transparent">
           <c:SpectrumDisplay FFTData="{Binding InFFTData}" />
           <Panel DockPanel.Dock="Right" Width="80" />
           <StackPanel VerticalAlignment="Center">
@@ -15,6 +20,7 @@ xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony" mc:Ignorable="d" d:D
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding CurrentTime}" Foreground="#686858" FontSize="12" FontFamily="Segoe UI" />
             <TextBlock Text="{Binding Status}" Margin="10 0 0 0" FontFamily="Segoe UI" FontSize="10" VerticalAlignment="Bottom" />
           </StackPanel>
+          <Border IsHitTestVisible="False" BorderThickness="1" BorderBrush="#44000000" MinHeight="20" BoxShadow="inset 0 0 2 1 LightGray" />
         </Panel>
       </DockPanel>
       <c:SeekSlider Grid.Row="1" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />

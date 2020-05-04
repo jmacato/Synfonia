@@ -36,8 +36,8 @@ namespace Symphony.Controls
                     _averagedData[i] += FFTData[i] / _averageLevel;
                 }
 
-                var length = FFTData.Length / 24;
-                var gaps = length - 1;
+                var length = FFTData.Length / 26;
+                var gaps = length + 1;
 
                 var gapSize = 1;
                 if ((gaps * gapSize) > Bounds.Width)
@@ -53,7 +53,7 @@ namespace Symphony.Controls
                     _linePen = new Pen(new SolidColorBrush(Colors.Gray, 0.5), _lastStrokeThickness);
                 }
 
-                double x = binStroke / 2;
+                double x = binStroke / 2 + gapSize;
                 for (int i = 0; i < length; i++)
                 {
                     context.DrawLine(_linePen, new Point(x, Bounds.Height), new Point(x, Bounds.Height * (1 - _averagedData[i])));

@@ -12,12 +12,14 @@
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <DockPanel LastChildFill="True">
-    <DockPanel DockPanel.Dock="Top" LastChildFill="True" Background="LightGray" Height="80">
-      <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
-      <local:VolumeControlView DockPanel.Dock="Right" />
-      <local:TrackStatusView DataContext="{Binding TrackStatus}" />
-    </DockPanel>
+  <DockPanel LastChildFill="True" Background="LightGray">
+    <Border DockPanel.Dock="Top" BorderThickness="0 0 0 1" BorderBrush="Gray">
+      <DockPanel LastChildFill="True" Height="80" Margin="0 2 0 0">
+        <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
+        <local:VolumeControlView DockPanel.Dock="Right" Opacity="0" />
+        <local:TrackStatusView DataContext="{Binding TrackStatus}" />
+      </DockPanel>
+    </Border>
     <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
   </DockPanel>
 </Window>
