@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
+             xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Symphony.Views.VolumeControlView">
+             x:Class="Synfonia.Views.VolumeControlView">
 
-  <Image Opacity="0.25" Source="avares://Symphony/Assets/VolumeControlViewMock.png" />
+  <Image Opacity="0.25" Source="avares://Synfonia/Assets/VolumeControlViewMock.png" />
 </UserControl>

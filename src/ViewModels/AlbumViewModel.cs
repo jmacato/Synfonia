@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Avalonia.Media.Imaging;
 using System.Diagnostics.CodeAnalysis;
 using ReactiveUI;
-using Symphony.Scrobbler;
+using Synfonia.Scrobbler;
 using System.Reactive;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LiteDB;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public class AlbumViewModel : ViewModelBase, IComparable<AlbumViewModel>
     {

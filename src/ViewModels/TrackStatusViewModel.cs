@@ -6,7 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reactive.Linq;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public class TrackStatusViewModel : ViewModelBase
     {

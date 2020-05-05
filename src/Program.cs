@@ -2,7 +2,7 @@
 using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
 
-namespace Symphony
+namespace Synfonia
 {
     class Program
     {
@@ -18,7 +18,7 @@ namespace Symphony
             .UsePlatformDetect()
             .UseSkia()
             .With(new Win32PlatformOptions { AllowEglInitialization = true, UseDeferredRendering = true })
-            .With(new X11PlatformOptions { UseGpu = true, WmClass = "Symphony" })
+            .With(new X11PlatformOptions { UseGpu = true, WmClass = "Synfonia" })
             .With(new AvaloniaNativePlatformOptions { UseDeferredRendering = true, UseGpu = true })
             .With(new MacOSPlatformOptions { ShowInDock = true })
                 .UseReactiveUI()

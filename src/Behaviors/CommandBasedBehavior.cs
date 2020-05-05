@@ -2,7 +2,7 @@
 using Avalonia.Xaml.Interactivity;
 using System.Windows.Input;
 
-namespace Symphony.Behaviors
+namespace Synfonia.Behaviors
 {
     public class CommandBasedBehavior<T> : Behavior<T> where T : AvaloniaObject
     {

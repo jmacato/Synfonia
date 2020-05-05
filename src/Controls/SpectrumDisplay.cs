@@ -7,7 +7,7 @@ using ReactiveUI;
 using System;
 using System.Reactive.Linq;
 
-namespace Symphony.Controls
+namespace Synfonia.Controls
 {
     public class SpectrumDisplay : UserControl
     {

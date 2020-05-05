@@ -1,4 +1,4 @@
-﻿namespace Symphony.ViewModels
+﻿namespace Synfonia.ViewModels
 {
     public class TrackViewModel
     {

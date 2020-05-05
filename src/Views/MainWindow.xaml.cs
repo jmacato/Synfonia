@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 
-namespace Symphony.Views
+namespace Synfonia.Views
 {
     public class MainWindow : Window
     {

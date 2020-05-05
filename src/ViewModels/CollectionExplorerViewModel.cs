@@ -9,7 +9,7 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public class CollectionExplorerViewModel : ViewModelBase
     {
@@ -39,7 +39,7 @@ namespace Symphony.ViewModels
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await Task.Run(async () => await ScanMusicFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+                await Task.Run(async () => await ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "TestMusic"),
                     (album, artist) =>
                     {
                         RxApp.MainThreadScheduler.Schedule(() =>
@@ -158,7 +158,7 @@ namespace Symphony.ViewModels
                             {
                                 artistName = "Unknown Artist";
                             }
-                            
+
                             var albumName = tag.Album ?? "Unknown Album";
 
                             var trackName = tag.Title ?? "Unknown Track";

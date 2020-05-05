@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
+             xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
-             x:Class="Symphony.Views.TrackStatusView">
+             x:Class="Synfonia.Views.TrackStatusView">
   <Panel Background="White">
     <Grid RowDefinitions="*,Auto">
       <Panel Grid.RowSpan="1">

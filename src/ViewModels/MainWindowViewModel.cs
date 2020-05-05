@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
 using System.Reactive.Concurrency;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {

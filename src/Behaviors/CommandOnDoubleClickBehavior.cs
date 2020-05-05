@@ -3,7 +3,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Reactive.Disposables;
 
-namespace Symphony.Behaviors
+namespace Synfonia.Behaviors
 {
     public class CommandOnDoubleClickBehavior : CommandBasedBehavior<Control>
     {

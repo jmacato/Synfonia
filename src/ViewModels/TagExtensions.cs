@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using Avalonia.Media.Imaging;
 using System.Linq;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public static class TagExtensions
     {

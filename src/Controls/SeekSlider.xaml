@@ -1,4 +1,4 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony">
+<Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia">
   <Style Selector="c|SeekSlider">
     <Setter Property="MinHeight" Value="6" />
     <Setter Property="Template">

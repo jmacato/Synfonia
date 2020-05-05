@@ -1,7 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Nito.AsyncEx;
 using ReactiveUI;
-using Symphony.Scrobbler;
+using Synfonia.Scrobbler;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public class SelectArtworkViewModel : ViewModelBase
     {

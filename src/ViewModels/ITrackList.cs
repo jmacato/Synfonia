@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public interface ITrackList
     {

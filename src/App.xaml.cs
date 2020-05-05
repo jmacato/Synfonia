@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Symphony.ViewModels;
-using Symphony.Views;
+using Synfonia.ViewModels;
+using Synfonia.Views;
 
-namespace Symphony
+namespace Synfonia
 {
     public class App : Application
     {

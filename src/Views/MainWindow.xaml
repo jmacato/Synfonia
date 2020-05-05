@@ -1,11 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:Symphony.ViewModels;assembly=Symphony"
+        xmlns:vm="clr-namespace:Synfonia.ViewModels;assembly=Synfonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:c="clr-namespace:Symphony.Controls;assembly=Symphony"
-        xmlns:local="clr-namespace:Symphony.Views"
+        xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia"
+        xmlns:local="clr-namespace:Synfonia.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Symphony.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Symphony"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Synfonia"
         SystemDecorations="BorderOnly">
 
   <Design.DataContext>

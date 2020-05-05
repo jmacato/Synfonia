@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.Reactive.Disposables;
 
-namespace Symphony.ViewModels
+namespace Synfonia.ViewModels
 {
     public class DiscChangerViewModel : ViewModelBase
     {

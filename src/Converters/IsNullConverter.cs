@@ -2,7 +2,7 @@ using System;
 using Avalonia.Data.Converters;
 using System.Globalization;
 
-namespace Symphony.Converters
+namespace Synfonia.Converters
 {
     public class IsNullConverter : IValueConverter
     {

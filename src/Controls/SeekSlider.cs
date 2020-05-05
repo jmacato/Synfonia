@@ -14,7 +14,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using System.Reactive;
 
-namespace Symphony.Controls
+namespace Synfonia.Controls
 {
     public class SeekSlider : RangeBase
     { 

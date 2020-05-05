@@ -11,7 +11,7 @@ using System.Collections.Specialized;
 using System.Xml.Serialization;
 using System.Threading;
 
-namespace Symphony.Scrobbler
+namespace Synfonia.Scrobbler
 {
     public class ScrobblerTrack
     {

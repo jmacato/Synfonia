@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Symphony.Scrobbler
+namespace Synfonia.Scrobbler
 {
     public class ArtworkData
     {

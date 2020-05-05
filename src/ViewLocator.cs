@@ -4,9 +4,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Symphony.ViewModels;
+using Synfonia.ViewModels;
 
-namespace Symphony
+namespace Synfonia
 {
     public class ViewLocator : IDataTemplate
     {

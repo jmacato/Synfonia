@@ -5,7 +5,7 @@ using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System;
 
-namespace Symphony.Behaviors
+namespace Synfonia.Behaviors
 {
     public class HideWhenClickedOutsideBehavior : Behavior<Control>
     {

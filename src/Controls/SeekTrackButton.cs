@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 
-namespace Symphony.Controls
+namespace Synfonia.Controls
 {
     public class SeekTrackButton : Button
     {

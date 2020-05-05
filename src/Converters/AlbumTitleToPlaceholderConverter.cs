@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Avalonia.Media;
 
-namespace Symphony.Converters
+namespace Synfonia.Converters
 {
     public class AlbumTitleToPlaceholderConverter : IValueConverter
     {
