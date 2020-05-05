@@ -5,7 +5,6 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using ReactiveUI;
 using System;
-using System.Diagnostics;
 using System.Reactive.Linq;
 
 namespace Symphony.Controls
