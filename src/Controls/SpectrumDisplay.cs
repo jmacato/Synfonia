@@ -35,7 +35,7 @@ namespace Symphony.Controls
                 {
 
                     _averagedData[i] -= _averagedData[i] / _averageLevel;
-                    _averagedData[i] += FFTData[i] / _averageLevel;
+                    _averagedData[i] += Math.Abs(FFTData[i]) / _averageLevel;
                 }
 
                 var length = FFTData.Length;
