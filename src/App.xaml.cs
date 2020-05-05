@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Synfonia.Backend;
 using Synfonia.ViewModels;
 using Synfonia.Views;
 
@@ -19,7 +20,7 @@ namespace Synfonia
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MainWindowViewModel.Instance = new MainWindowViewModel();
+                MainWindowViewModel.Instance = new MainWindowViewModel(new DiscChanger());
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = MainWindowViewModel.Instance,

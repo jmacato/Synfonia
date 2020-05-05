@@ -3,6 +3,7 @@ using System.IO;
 using System.Reactive.Linq;
 using Avalonia.Media.Imaging;
 using System.Linq;
+using Synfonia.Backend;
 
 namespace Synfonia.ViewModels
 {

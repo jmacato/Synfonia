@@ -1,15 +1,14 @@
-﻿using Avalonia.Threading;
-using ReactiveUI;
-using SharpAudio.Codec;
+﻿using ReactiveUI;
+using Synfonia.Backend;
 using System;
 using System.Linq;
-using System.Numerics;
 using System.Reactive.Linq;
 
 namespace Synfonia.ViewModels
 {
     public class TrackStatusViewModel : ViewModelBase
     {
+        private DiscChanger _model;
         private string _artist;
         private string _trackTitle;
         private TimeSpan _duration;
@@ -23,13 +22,13 @@ namespace Synfonia.ViewModels
         private string _status;
         private double[] _fftData;
 
-        public TrackStatusViewModel()
+        public TrackStatusViewModel(DiscChanger discChanger)
         {
             this.WhenAnyValue(x => x.SeekPosition)
                 .Skip(1)
                 .Subscribe(x =>
                 {
-                    MainWindowViewModel.Instance.DiscChanger.Seek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
+                    discChanger.Seek(TimeSpan.FromSeconds(SeekPosition * Duration.TotalSeconds));
                 });
 
             this.WhenAnyValue(x => x.Status)
@@ -40,6 +39,19 @@ namespace Synfonia.ViewModels
                     Status = "";
                 });
 
+            _model = discChanger;
+
+            Observable.FromEventPattern(_model, nameof(_model.TrackChanged))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => LoadTrack(_model.CurrentTrack));
+
+            Observable.FromEventPattern(_model, nameof(_model.TrackPositionChanged))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => UpdateCurrentPlayTime(_model.CurrentTrackPosition));
+
+            Observable.FromEventPattern(_model, nameof(_model.SpectrumDataReady))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => InFFTData = _model.CurrentSpectrumData);
         }
 
         public object AlbumCover
@@ -122,7 +134,7 @@ namespace Synfonia.ViewModels
             return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}.{(x.Milliseconds / 100):0}";
         }
 
-        public void UpdateCurrentPlayTime(TimeSpan time)
+        private void UpdateCurrentPlayTime(TimeSpan time)
         {
             CurrentTime = FormatTimeSpan(time);
 
@@ -132,20 +144,23 @@ namespace Synfonia.ViewModels
             }
         }
 
-        public void LoadTrack(Track track)
+        private void LoadTrack(Track track)
         {
             using (var file = TagLib.File.Create(track.Path))
             {
                 SeekPosition = 0;
 
+                // todo get bitmap data from track.
                 AlbumCover = file.Tag.LoadAlbumCover();
 
                 AlbumCoverVisible = true;
 
+                // TODO get artist from track
                 Artist = file.Tag.AlbumArtists.Concat(file.Tag.Artists).FirstOrDefault();
 
-                TrackTitle = file.Tag.Title;
+                TrackTitle = track.Title;
 
+                // TODO get duration from track.
                 Duration = file.Properties.Duration;
             }
         }

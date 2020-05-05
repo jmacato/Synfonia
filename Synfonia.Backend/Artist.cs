@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Synfonia.ViewModels
+namespace Synfonia.Backend
 {
     public class Artist
     {

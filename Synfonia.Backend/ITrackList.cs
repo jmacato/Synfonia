@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Synfonia.ViewModels
+namespace Synfonia.Backend
 {
     public interface ITrackList
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Synfonia.ViewModels
+namespace Synfonia.Backend
 {
     public class Track
     {

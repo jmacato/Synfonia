@@ -1,7 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" Version="10.3.6" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="LiteDB" Version="5.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpAudio\src\SharpAudio.Codec\SharpAudio.Codec.csproj" />
+  </ItemGroup>
 
 </Project>

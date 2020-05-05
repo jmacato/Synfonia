@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using ReactiveUI;
+using Synfonia.Backend;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
