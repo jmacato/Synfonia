@@ -16,6 +16,7 @@ namespace Symphony.Controls
         private double _lastStrokeThickness;
         private double[] _averagedData;
         private int _averageLevel = 6;
+        private bool _center = true;
 
         public override void Render(DrawingContext context)
         {
@@ -37,7 +38,7 @@ namespace Symphony.Controls
                     _averagedData[i] += FFTData[i] / _averageLevel;
                 }
 
-                var length = FFTData.Length;
+                var length = FFTData.Length / 16;
                 var gaps = length + 1;
 
                 var gapSize = 1;
@@ -56,7 +57,7 @@ namespace Symphony.Controls
 
                 double x = binStroke / 2 + gapSize;
 
-                if (true)
+                if (_center)
                 {
                     for (int i = 0; i < length; i++)
                     {
@@ -97,6 +98,13 @@ namespace Symphony.Controls
         static SpectrumDisplay()
         {
             AffectsMeasure<SpectrumDisplay>(FFTDataProperty);
+        }
+
+        protected override void OnPointerPressed(PointerPressedEventArgs e)
+        {
+            base.OnPointerPressed(e);
+
+            _center = !_center;
         }
 
         public SpectrumDisplay()
