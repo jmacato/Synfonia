@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpAudio.ALBinding", "Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunesSearch.Library", "iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj", "{A4C0E485-A36C-473C-8987-2C298481936C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mechanism.AvaloniaUI", "Mechanism-for-Avalonia\Mechanism.AvaloniaUI\Mechanism.AvaloniaUI.csproj", "{6FBB3700-2FCC-4A32-9971-F3577AA84042}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{301D12D0-AF2A-4C04-AD2E-359F18D0A216}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mechanism.AvaloniaUI.Themes.Fluent", "Mechanism-for-Avalonia\Themes\Mechanism.AvaloniaUI.Themes.Fluent\Mechanism.AvaloniaUI.Themes.Fluent.csproj", "{15903A80-E63A-424A-B01E-717433F6505E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synfonia.Backend", "Synfonia.Backend\Synfonia.Backend.csproj", "{E3295FEC-B18E-4D73-A4AF-CDA346223E98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,17 +43,20 @@ Global
 		{A4C0E485-A36C-473C-8987-2C298481936C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4C0E485-A36C-473C-8987-2C298481936C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4C0E485-A36C-473C-8987-2C298481936C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FBB3700-2FCC-4A32-9971-F3577AA84042}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15903A80-E63A-424A-B01E-717433F6505E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15903A80-E63A-424A-B01E-717433F6505E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15903A80-E63A-424A-B01E-717433F6505E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15903A80-E63A-424A-B01E-717433F6505E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3295FEC-B18E-4D73-A4AF-CDA346223E98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3295FEC-B18E-4D73-A4AF-CDA346223E98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3295FEC-B18E-4D73-A4AF-CDA346223E98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3295FEC-B18E-4D73-A4AF-CDA346223E98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{01CDDC12-47D1-4EDF-96A1-7B1EB0DA3179} = {301D12D0-AF2A-4C04-AD2E-359F18D0A216}
+		{F0F72846-459F-4D45-AE1A-B836198DF4D2} = {301D12D0-AF2A-4C04-AD2E-359F18D0A216}
+		{567BA33F-1203-42A2-82F4-54D1D8E5836C} = {301D12D0-AF2A-4C04-AD2E-359F18D0A216}
+		{A4C0E485-A36C-473C-8987-2C298481936C} = {301D12D0-AF2A-4C04-AD2E-359F18D0A216}
+		{E3295FEC-B18E-4D73-A4AF-CDA346223E98} = {301D12D0-AF2A-4C04-AD2E-359F18D0A216}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B8670571-4F0C-42BB-9094-57769E6F3818}
