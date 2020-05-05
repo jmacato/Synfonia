@@ -38,7 +38,7 @@ namespace Symphony.Controls
                     _averagedData[i] += FFTData[i] / _averageLevel;
                 }
 
-                var length = FFTData.Length / 16;
+                var length = FFTData.Length;
                 var gaps = length + 1;
 
                 var gapSize = 1;
