@@ -16,13 +16,13 @@ namespace Symphony.Controls
         private double _lastStrokeThickness;
         private double[] _averagedData;
         private int _averageLevel = 5;
-        private bool _center = true;
+        private bool _center = false;
 
         public override void Render(DrawingContext context)
         {
             base.Render(context);
 
-            context.FillRectangle(Brushes.White, Bounds);
+            context.FillRectangle(Brushes.Transparent, Bounds);
 
             if (FFTData != null)
             {
