@@ -1,7 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Nito.AsyncEx;
 using ReactiveUI;
-using Synfonia.Scrobbler;
+using Synfonia.Backend.Artwork;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;

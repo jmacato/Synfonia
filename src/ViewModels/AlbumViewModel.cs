@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Avalonia.Media.Imaging;
-using System.Diagnostics.CodeAnalysis;
+﻿using Avalonia.Media.Imaging;
 using ReactiveUI;
-using Synfonia.Scrobbler;
-using System.Reactive;
+using Synfonia.Backend;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Http;
+using System.Reactive;
 using System.Threading.Tasks;
-using LiteDB;
-using Synfonia.Backend;
 
 namespace Synfonia.ViewModels
 {

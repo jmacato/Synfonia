@@ -1,25 +1,12 @@
 ﻿using FuzzyString;
 using iTunesSearch.Library;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Synfonia.Scrobbler
+namespace Synfonia.Backend.Artwork
 {
-    public class ArtworkData
-    {
-        public string Url { get; set; }
-
-        public string Album { get; set; }
-
-        public string Artist { get; set; }
-    }
-
     public class AlbumArtworkScraper
     {
         public async Task<List<ArtworkData>> GetPossibleAlbumArt(string country, string artist, string albumName)
