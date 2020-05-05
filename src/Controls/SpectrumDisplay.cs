@@ -15,7 +15,7 @@ namespace Symphony.Controls
         private IPen _linePen;
         private double _lastStrokeThickness;
         private double[] _averagedData;
-        private int _averageLevel = 6;
+        private int _averageLevel = 5;
         private bool _center = true;
 
         public override void Render(DrawingContext context)
