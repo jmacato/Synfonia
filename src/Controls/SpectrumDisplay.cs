@@ -32,11 +32,12 @@ namespace Symphony.Controls
 
                 for (int i = 0; i < FFTData.Length; i++)
                 {
+
                     _averagedData[i] -= _averagedData[i] / _averageLevel;
                     _averagedData[i] += FFTData[i] / _averageLevel;
                 }
 
-                var length = FFTData.Length / 26;
+                var length = FFTData.Length;
                 var gaps = length + 1;
 
                 var gapSize = 1;
@@ -54,10 +55,25 @@ namespace Symphony.Controls
                 }
 
                 double x = binStroke / 2 + gapSize;
-                for (int i = 0; i < length; i++)
+
+                if (true)
                 {
-                    context.DrawLine(_linePen, new Point(x, Bounds.Height), new Point(x, Bounds.Height * (1 - _averagedData[i])));
-                    x += (binStroke + gapSize);
+                    for (int i = 0; i < length; i++)
+                    {
+                        var value = (Bounds.Height / 2) * (_averagedData[i]);
+                        var center = Bounds.Height / 2;
+
+                        context.DrawLine(_linePen, new Point(x, center - value), new Point(x, center + value));
+                        x += (binStroke + gapSize);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < length; i++)
+                    {
+                        context.DrawLine(_linePen, new Point(x, Bounds.Height), new Point(x, Bounds.Height * (1 - _averagedData[i])));
+                        x += (binStroke + gapSize);
+                    }
                 }
 
                 Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
