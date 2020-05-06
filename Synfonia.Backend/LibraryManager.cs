@@ -76,6 +76,8 @@ namespace Synfonia.Backend
         {
             var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
 
+            var albumDictionary = new Dictionary<int, Album>();
+
             using (var dbLock = await LockDatabaseAsync())
             {
                 var db = Database;
@@ -147,11 +149,20 @@ namespace Synfonia.Backend
 
                                 artistsCollection.Update(existingArtist);
 
+                                albumDictionary.Add(existingAlbum.AlbumId, existingAlbum);
+
                                 _albums.Add(existingAlbum);
                             }
                             else
                             {
-                                existingAlbum.Artist = existingArtist;
+                                if (albumDictionary.ContainsKey(existingAlbum.AlbumId))
+                                {
+                                    existingAlbum = albumDictionary[existingAlbum.AlbumId];
+                                }
+                                else
+                                {
+                                    albumDictionary[existingAlbum.AlbumId] = existingAlbum;
+                                }
                             }
 
                             var existingTrack = tracksCollection.FindOne(x => x.Path == file);
