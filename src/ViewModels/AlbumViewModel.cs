@@ -71,7 +71,11 @@ namespace Synfonia.ViewModels
         {
             var skBitmap = SKBitmap.Decode(stream);
 
-            skBitmap = skBitmap.Resize(new SKImageInfo(400, 400), SKFilterQuality.High);
+            var scale = 600.0 / skBitmap.Width;
+
+            var height = (int)(skBitmap.Height * scale);
+
+            skBitmap = skBitmap.Resize(new SKImageInfo(600, height), SKFilterQuality.High);
 
             fixed (byte* p = skBitmap.Bytes)
             {
