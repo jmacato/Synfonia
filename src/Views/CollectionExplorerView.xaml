@@ -1,89 +1,56 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:Synfonia.Views"
-             xmlns:converters="clr-namespace:Synfonia.Converters;assembly=Synfonia"
-             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:b="clr-namespace:Synfonia.Behaviors"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Synfonia.Views.CollectionExplorerView">
+﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:local="clr-namespace:Synfonia.Views" xmlns:converters="clr-namespace:Synfonia.Converters;assembly=Synfonia" xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity" xmlns:b="clr-namespace:Synfonia.Behaviors"
+mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.CollectionExplorerView">
   <UserControl.Resources>
     <converters:IsNullConverter x:Key="IsNullConverter" />
     <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
   <Panel Background="White">
-    <ListBox BorderThickness="0"
-             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-             AutoScrollToSelectedItem="False"
-             Items="{Binding Albums}"
-             SelectedItem="{Binding SelectedAlbum}"
-             Background="Transparent">
-      <ListBox.ContextMenu>
-        <ContextMenu>
-          <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
-        </ContextMenu>
-      </ListBox.ContextMenu>
-      <ListBox.ItemsPanel>
-        <ItemsPanelTemplate>
-          <WrapPanel HorizontalAlignment="Center" />
-        </ItemsPanelTemplate>
-      </ListBox.ItemsPanel>
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <StackPanel Margin="15" Spacing="8">
-            <Border BoxShadow="2 2 5 #55000000">
-              <Panel Width="200" MinHeight="200">
-                <i:Interaction.Behaviors>
-                  <b:CommandOnDoubleClickBehavior Command="{Binding LoadAlbumCommand}" />
-                </i:Interaction.Behaviors>
-                <Panel.ContextMenu>
-                  <ContextMenu>
-                    <MenuItem Header="Play" Command="{Binding LoadAlbumCommand}" />
-                    <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
-                  </ContextMenu>
-                </Panel.ContextMenu>
-                <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
-                <Panel Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
-                  <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <DrawingPresenter.Drawing>
-                      <DrawingGroup>
-                        <DrawingGroup.Children>
-                          <GeometryDrawing Brush="White" Geometry="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17S7.79 21 10 21 14 19.21 14 17V7H18V3H12Z" />
-                        </DrawingGroup.Children>
-                      </DrawingGroup>
-                    </DrawingPresenter.Drawing>
-                  </DrawingPresenter>
+    <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="60 30 60 60">
+        <ItemsRepeater.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
+          </ContextMenu>
+        </ItemsRepeater.ContextMenu>
+        <ItemsRepeater.Layout>
+          <UniformGridLayout ItemsJustification="SpaceBetween" MinRowSpacing="20" Orientation="Horizontal" MaximumRowsOrColumns="4" />
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Margin="20">
+              <Border BoxShadow="2 2 5 #55000000">
+                <Panel Width="200" MinHeight="200">
+                  <i:Interaction.Behaviors>
+                    <b:CommandOnDoubleClickBehavior Command="{Binding LoadAlbumCommand}" />
+                  </i:Interaction.Behaviors>
+                  <Panel.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Play" Command="{Binding LoadAlbumCommand}" />
+                      <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
+                    </ContextMenu>
+                  </Panel.ContextMenu>
+                  <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+                  <Panel Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
+                    <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
+                      <DrawingPresenter.Drawing>
+                        <DrawingGroup>
+                          <DrawingGroup.Children>
+                            <GeometryDrawing Brush="White" Geometry="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17S7.79 21 10 21 14 19.21 14 17V7H18V3H12Z" />
+                          </DrawingGroup.Children>
+                        </DrawingGroup>
+                      </DrawingPresenter.Drawing>
+                    </DrawingPresenter>
+                  </Panel>
                 </Panel>
-              </Panel>
-            </Border>
-            <TextBlock MaxWidth="200"  TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" FontFamily="Segoe UI" />
-            <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858" FontFamily="Segoe UI" />
-          </StackPanel>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-      <ListBox.Styles>
-        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
-          <Setter Property="Background" Value="Transparent"/>
-        </Style>
-
-        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-          <Setter Property="Background" Value="Transparent"/>
-        </Style>
-
-        <Style Selector="ListBoxItem:selected:focus /template/ ContentPresenter">
-          <Setter Property="Background" Value="Transparent"/>
-        </Style>
-
-        <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
-          <Setter Property="Background" Value="Transparent"/>
-        </Style>
-
-        <Style Selector="ListBoxItem:selected:focus:pointerover /template/ ContentPresenter">
-          <Setter Property="Background" Value="Transparent"/>
-        </Style>
-      </ListBox.Styles>
-    </ListBox>
+              </Border>
+              <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" FontFamily="Segoe UI" />
+              <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858" FontFamily="Segoe UI" />
+            </StackPanel>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
     <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
     <Border BoxShadow="inset 0 0 2 1 LightGray" />
   </Panel>
