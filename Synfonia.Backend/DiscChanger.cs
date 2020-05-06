@@ -142,12 +142,15 @@ namespace Synfonia.Backend
 
         public async Task LoadTrackList(ITrackList trackList)
         {
-            _trackList = trackList;
-            _currentTrackIndex = 0;
+            if (trackList.Tracks.Count > 0)
+            {
+                _trackList = trackList;
+                _currentTrackIndex = 0;
 
-            await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
+                await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
 
-            DoPlay();
+                DoPlay();
+            }
         }
 
         private async Task LoadTrack(Track track)

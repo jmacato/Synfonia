@@ -5,22 +5,18 @@ using System.Reactive.Concurrency;
 namespace Synfonia.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
-    {
-        private DiscChanger _model;
+    {        
         private CollectionExplorerViewModel _collectionExplorer;
         private TrackStatusViewModel _trackStatus;
         private DiscChangerViewModel _discChanger;
 
         public static MainWindowViewModel Instance { get; set; }
 
-        public MainWindowViewModel(DiscChanger discChanger)
-        {
-            _model = discChanger;
-            DiscChanger = new DiscChangerViewModel(_model);
-            TrackStatus = new TrackStatusViewModel(_model);
-            CollectionExplorer = new CollectionExplorerViewModel();
-
-            RxApp.MainThreadScheduler.Schedule(async () => await CollectionExplorer.LoadLibrary());
+        public MainWindowViewModel(DiscChanger discChanger, LibraryManager libraryManager)
+        {            
+            DiscChanger = new DiscChangerViewModel(discChanger);
+            TrackStatus = new TrackStatusViewModel(discChanger, libraryManager);
+            CollectionExplorer = new CollectionExplorerViewModel(libraryManager, discChanger);            
         }
 
         public DiscChangerViewModel DiscChanger

@@ -1,6 +1,8 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Media.Imaging;
+using ReactiveUI;
 using Synfonia.Backend;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -22,7 +24,7 @@ namespace Synfonia.ViewModels
         private string _status;
         private double[] _fftData;
 
-        public TrackStatusViewModel(DiscChanger discChanger)
+        public TrackStatusViewModel(DiscChanger discChanger, LibraryManager libraryManager)
         {
             this.WhenAnyValue(x => x.SeekPosition)
                 .Skip(1)
@@ -52,6 +54,10 @@ namespace Synfonia.ViewModels
             Observable.FromEventPattern(_model, nameof(_model.SpectrumDataReady))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => InFFTData = _model.CurrentSpectrumData);
+
+            Observable.FromEventPattern<string>(libraryManager, nameof(libraryManager.StatusChanged))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x => Status = x.EventArgs);
         }
 
         public object AlbumCover
@@ -146,23 +152,22 @@ namespace Synfonia.ViewModels
 
         private void LoadTrack(Track track)
         {
-            using (var file = TagLib.File.Create(track.Path))
+            SeekPosition = 0;
+
+            // todo get bitmap data from track.
+            using (var ms = new MemoryStream(track.Album.LoadCoverArt()))
             {
-                SeekPosition = 0;
-
-                // todo get bitmap data from track.
-                AlbumCover = file.Tag.LoadAlbumCover();
-
-                AlbumCoverVisible = true;
-
-                // TODO get artist from track
-                Artist = file.Tag.AlbumArtists.Concat(file.Tag.Artists).FirstOrDefault();
-
-                TrackTitle = track.Title;
-
-                // TODO get duration from track.
-                Duration = file.Properties.Duration;
+                AlbumCover = new Bitmap(ms);
             }
+
+            AlbumCoverVisible = true;
+
+            Artist = track.Album.Artist.Name;
+
+            TrackTitle = track.Title;
+
+            // TODO get duration from track.
+            //Duration = file.Properties.Duration;            
         }
 
     }

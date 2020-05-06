@@ -1,12 +1,16 @@
 ﻿using Avalonia.Media.Imaging;
+using DynamicData;
 using ReactiveUI;
 using Synfonia.Backend;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Synfonia.ViewModels
@@ -14,13 +18,12 @@ namespace Synfonia.ViewModels
     public class AlbumViewModel : ViewModelBase, IComparable<AlbumViewModel>
     {
         private IBitmap _cover;
-        private int _albumId;
+        private Album _album;
+        private ReadOnlyObservableCollection<TrackViewModel> _tracks;
 
-        public AlbumViewModel(int albumId)
+        public AlbumViewModel(Album album, DiscChanger changer)
         {
-            _albumId = albumId;
-
-            Tracks = new List<TrackViewModel>();
+            _album = album;            
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -29,24 +32,46 @@ namespace Synfonia.ViewModels
 
             LoadAlbumCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                using (var lockDb = await MainWindowViewModel.Instance.CollectionExplorer.LockDatabaseAsync())
-                {
-                    var db = MainWindowViewModel.Instance.CollectionExplorer.Database;
-
-                    var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
-
-                    var album = albumsCollection.Include(x => x.Tracks).FindById(_albumId);
-
-                    await MainWindowViewModel.Instance.DiscChanger.LoadTrackList(album);
-                }
+                await changer.LoadTrackList(album);
             });
+
+
+            album.Tracks.AsObservableChangeSet()                
+                .Transform(x => new TrackViewModel(x))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _tracks)
+                .OnItemAdded(x =>
+                {
+                    if(Cover is null)
+                    {
+                        ReloadCover();
+                    }
+                })
+                .DisposeMany()
+                .Subscribe();
         }
 
-        public string Title { get; set; }
+        public string Title => _album.Title;
 
-        public string Artist { get; set; }
+        public string Artist => _album.Artist.Name;
 
-        public List<TrackViewModel> Tracks { get; set; }
+        public ReadOnlyObservableCollection<TrackViewModel> Tracks
+        {
+            get { return _tracks; }
+            set { this.RaiseAndSetIfChanged(ref _tracks, value); }
+        }
+
+        public Album Model => _album;
+
+        public void ReloadCover ()
+        {
+            var coverBitmap = _album.LoadCoverArt();
+
+            using (var ms = new MemoryStream(coverBitmap))
+            {
+                Cover = new Bitmap(ms);
+            }
+        }
 
         public IBitmap Cover
         {
@@ -57,42 +82,6 @@ namespace Synfonia.ViewModels
         public ReactiveCommand<Unit, Unit> GetArtworkCommand { get; }
 
         public ReactiveCommand<Unit, Unit> LoadAlbumCommand { get; }
-
-        public async Task UpdateCoverArt(string url)
-        {
-            var clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-
-            using (var client = new HttpClient(clientHandler))
-            {
-                var data = await client.GetByteArrayAsync(url);
-
-                if (data != null)
-                {
-                    using (var ms = new MemoryStream(data))
-                    {
-                        Cover = new Bitmap(ms);
-                    }
-
-                    foreach (var track in Tracks)
-                    {
-                        using (var tagFile = TagLib.File.Create(track.Path))
-                        {
-                            tagFile.Tag.Pictures = new TagLib.Picture[]
-                            {
-                                new TagLib.Picture(new TagLib.ByteVector(data, data.Length))
-                                {
-                                     Type = TagLib.PictureType.FrontCover,
-                                     MimeType = "image/jpeg"
-                                }
-                            };
-
-                            tagFile.Save();
-                        }
-                    }
-                }
-            }
-        }
 
         public int CompareTo([AllowNull] AlbumViewModel other)
         {

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using LiteDB;
+using System.Text.RegularExpressions;
 
 namespace Synfonia.Backend
 {
@@ -15,6 +16,9 @@ namespace Synfonia.Backend
             get { return Regex.Unescape(_title); }
             set { _title = value; }
         }
+
+        [BsonIgnore]
+        public Album Album { get; set; }
 
         public string Path
         {

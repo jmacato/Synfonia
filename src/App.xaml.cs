@@ -20,7 +20,7 @@ namespace Synfonia
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MainWindowViewModel.Instance = new MainWindowViewModel(new DiscChanger());
+                MainWindowViewModel.Instance = new MainWindowViewModel(new DiscChanger(), new LibraryManager());
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = MainWindowViewModel.Instance,

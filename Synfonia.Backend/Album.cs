@@ -1,6 +1,10 @@
 ﻿using LiteDB;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Synfonia.Backend
 {
@@ -10,8 +14,13 @@ namespace Synfonia.Backend
 
         private string _title;
 
-        public int AlbumId { get; set; }
+        public Album()
+        {
+            Tracks = new ObservableCollection<Track>();
+        }
 
+        public int AlbumId { get; set; }
+        
         public int ArtistId { get; set; }
 
         public string Title
@@ -20,7 +29,65 @@ namespace Synfonia.Backend
             set { _title = value; }
         }
 
+        [BsonIgnore]
+        public Artist Artist { get; set; }
+
         [BsonRef(Track.CollectionName)]
-        public IList<Track> Tracks { get; set; } = new List<Track>();
+        public ObservableCollection<Track> Tracks { get; set; }
+
+        IList<Track> ITrackList.Tracks => Tracks;
+
+        public byte[] LoadCoverArt()
+        {
+            var track = Tracks.FirstOrDefault();
+
+            if (track != null)
+            {
+                using (var tagFile = TagLib.File.Create(track.Path))
+                {
+                    var tag = tagFile.Tag;
+
+                    var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
+
+                    if (cover != null)
+                    {
+                        return cover.Data.Data;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public async Task UpdateCoverArtAsync(string url)
+        {
+            var clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            using (var client = new HttpClient(clientHandler))
+            {
+                var data = await client.GetByteArrayAsync(url);
+
+                if (data != null)
+                {
+                    foreach (var track in Tracks)
+                    {
+                        using (var tagFile = TagLib.File.Create(track.Path))
+                        {
+                            tagFile.Tag.Pictures = new TagLib.Picture[]
+                            {
+                                new TagLib.Picture(new TagLib.ByteVector(data, data.Length))
+                                {
+                                     Type = TagLib.PictureType.FrontCover,
+                                     MimeType = "image/jpeg"
+                                }
+                            };
+
+                            tagFile.Save();
+                        }
+                    }
+                }
+            }
+        }
     }
 }

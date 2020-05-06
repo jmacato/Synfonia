@@ -1,11 +1,18 @@
-﻿namespace Synfonia.ViewModels
+﻿using Synfonia.Backend;
+
+namespace Synfonia.ViewModels
 {
     public class TrackViewModel
     {
-        public string Title { get; set; }
+        private Track _track;
 
-        public AlbumViewModel Album { get; set; }
+        public TrackViewModel(Track track)
+        {
+            _track = track;
+        }
 
-        public string Path { get; set; }
+        public string Title => _track.Title;
+
+        public Track Model => _track;
     }
 }

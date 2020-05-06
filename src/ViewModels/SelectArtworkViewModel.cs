@@ -33,7 +33,9 @@ namespace Synfonia.ViewModels
                     _cancellationTokenSource.Cancel();
                     IsVisible = false;
 
-                    await _currentAlbum.UpdateCoverArt(x.Url.Replace("600x600bb", "1000x1000bb"));
+                    await _currentAlbum.Model.UpdateCoverArtAsync(x.Url.Replace("600x600bb", "1000x1000bb"));
+
+                    _currentAlbum.ReloadCover();
 
                     IsVisible = false;
                 });
