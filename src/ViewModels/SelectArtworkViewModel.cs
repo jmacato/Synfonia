@@ -35,7 +35,7 @@ namespace Synfonia.ViewModels
 
                     await _currentAlbum.Model.UpdateCoverArtAsync(x.Url.Replace("600x600bb", "1000x1000bb"));
 
-                    _currentAlbum.ReloadCover();
+                    _currentAlbum.Cover = await _currentAlbum.LoadCoverAsync();
 
                     IsVisible = false;
                 });
