@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI;
 using Synfonia.Backend;
 using System;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -35,19 +37,17 @@ namespace Synfonia.ViewModels
                 await changer.LoadTrackList(album);
             });
 
-
-            album.Tracks.AsObservableChangeSet()                
+            _album.Tracks.ToObservableChangeSet()
                 .Transform(x => new TrackViewModel(x))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _tracks)
                 .OnItemAdded(x =>
                 {
-                    if(Cover is null)
+                    if (Cover is null)
                     {
                         ReloadCover();
                     }
                 })
-                .DisposeMany()
                 .Subscribe();
         }
 
@@ -67,9 +67,12 @@ namespace Synfonia.ViewModels
         {
             var coverBitmap = _album.LoadCoverArt();
 
-            using (var ms = new MemoryStream(coverBitmap))
+            if (coverBitmap != null)
             {
-                Cover = new Bitmap(ms);
+                using (var ms = new MemoryStream(coverBitmap))
+                {
+                    Cover = new Bitmap(ms);
+                }
             }
         }
 
