@@ -41,6 +41,8 @@ namespace Synfonia.Backend
 
         public TimeSpan CurrentTrackPosition => _soundStream.Position;
 
+        public TimeSpan CurrentTrackDuration => _soundStream.Duration;
+
         public double[] CurrentSpectrumData => _lastSpectrumData;
 
         public async Task Forward(bool byUser = true)

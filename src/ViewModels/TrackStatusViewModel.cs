@@ -166,8 +166,7 @@ namespace Synfonia.ViewModels
 
             TrackTitle = track.Title;
 
-            // TODO get duration from track.
-            //Duration = file.Properties.Duration;            
+            Duration = _model.CurrentTrackDuration;
         }
 
     }
