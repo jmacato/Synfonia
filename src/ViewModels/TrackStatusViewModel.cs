@@ -1,10 +1,14 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia;
+using Avalonia.Media.Imaging;
 using ReactiveUI;
+using SkiaSharp;
 using Synfonia.Backend;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Synfonia.ViewModels
 {
@@ -150,15 +154,51 @@ namespace Synfonia.ViewModels
             }
         }
 
+        public unsafe Bitmap LoadBitmap(Stream stream)
+        {
+            var skBitmap = SKBitmap.Decode(stream);
+
+            var scale = 200.0 / skBitmap.Width;
+
+            var height = (int)(skBitmap.Height * scale);
+
+            skBitmap = skBitmap.Resize(new SKImageInfo(200, height), SKFilterQuality.High);
+
+            fixed (byte* p = skBitmap.Bytes)
+            {
+                IntPtr ptr = (IntPtr)p;
+
+                return new Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, ptr, new PixelSize(skBitmap.Width, skBitmap.Height), new Vector(96, 96), skBitmap.RowBytes);
+            }
+        }
+
+
+        public async Task<Bitmap> LoadCoverAsync(Track track)
+        {
+            return await Task.Run(async () =>
+            {
+                var coverBitmap = track.Album.LoadCoverArt();
+
+                if (coverBitmap != null)
+                {
+                    using (var ms = new MemoryStream(coverBitmap))
+                    {
+                        return LoadBitmap(ms);
+                    }
+                }
+
+                return null;
+            });
+        }
+
         private void LoadTrack(Track track)
         {
             SeekPosition = 0;
 
-            // todo get bitmap data from track.
-            using (var ms = new MemoryStream(track.Album.LoadCoverArt()))
+            RxApp.MainThreadScheduler.Schedule(async () =>
             {
-                AlbumCover = new Bitmap(ms);
-            }
+                AlbumCover = await LoadCoverAsync(track);
+            });
 
             AlbumCoverVisible = true;
 
