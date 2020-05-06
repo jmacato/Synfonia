@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml;  
 
 namespace Synfonia.Views
 {
@@ -15,6 +15,7 @@ namespace Synfonia.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+            this.AttachDevTools();
         }
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)

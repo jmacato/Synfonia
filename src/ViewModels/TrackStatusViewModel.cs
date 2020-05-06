@@ -155,10 +155,12 @@ namespace Synfonia.ViewModels
             SeekPosition = 0;
 
             // todo get bitmap data from track.
-            using (var ms = new MemoryStream(track.Album.LoadCoverArt()))
-            {
-                AlbumCover = new Bitmap(ms);
-            }
+            var c = track.Album.LoadCoverArt();
+            if (c != null)
+                using (var ms = new MemoryStream(c))
+                {
+                    AlbumCover = new Bitmap(ms);
+                }
 
             AlbumCoverVisible = true;
 
