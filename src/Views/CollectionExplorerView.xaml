@@ -8,12 +8,17 @@ mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.View
   <Panel Background="White">
     <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
       <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}">
+        <ItemsRepeater.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
+          </ContextMenu>
+        </ItemsRepeater.ContextMenu>
         <ItemsRepeater.Layout>
-          <UniformGridLayout MinItemWidth="200" MinItemHeight="200"/>
+          <UniformGridLayout MinItemWidth="200" MinItemHeight="200" Orientation="Horizontal" />
         </ItemsRepeater.Layout>
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>
-            <StackPanel Margin="20" >
+            <StackPanel Margin="20">
               <Border BoxShadow="2 2 5 #55000000">
                 <Panel Width="200" MinHeight="200">
                   <i:Interaction.Behaviors>
