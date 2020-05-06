@@ -10,6 +10,7 @@ namespace Synfonia.ViewModels
         private TrackStatusViewModel _trackStatus;
         private DiscChangerViewModel _discChanger;
         private VolumeControlViewModel _volumeControl;
+        private WindowControlViewModel _windowControl;
 
         public static MainWindowViewModel Instance { get; set; }
 
@@ -18,7 +19,8 @@ namespace Synfonia.ViewModels
             DiscChanger = new DiscChangerViewModel(discChanger);
             TrackStatus = new TrackStatusViewModel(discChanger, libraryManager);
             CollectionExplorer = new CollectionExplorerViewModel(libraryManager, discChanger);  
-            VolumeControl = new VolumeControlViewModel(discChanger);  
+            VolumeControl = new VolumeControlViewModel(discChanger); 
+            WindowControl = new WindowControlViewModel(this); 
         }
 
         public DiscChangerViewModel DiscChanger
@@ -43,6 +45,11 @@ namespace Synfonia.ViewModels
         {
             get { return _volumeControl; }
             set { this.RaiseAndSetIfChanged(ref _volumeControl, value); }
+        }
+        public WindowControlViewModel WindowControl
+        {
+            get { return _windowControl; }
+            set { this.RaiseAndSetIfChanged(ref _windowControl, value); }
         }
     }
 }

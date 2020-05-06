@@ -12,7 +12,6 @@
     <StyleInclude Source="avares://Synfonia/Assets/GlobalStyles.xaml"/>
     <StyleInclude Source="avares://Synfonia/Controls/SeekSlider.xaml"/>
     <StyleInclude Source="avares://Synfonia/Controls/VolumeSlider.xaml"/>
-
   </Application.Styles>
   <NativeMenu.Menu>
     <NativeMenu />

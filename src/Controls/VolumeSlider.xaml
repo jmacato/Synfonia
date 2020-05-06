@@ -16,7 +16,7 @@
               <Thumb.Template>
                 <ControlTemplate>
                   <Grid Margin="-9,0,0,0">
-                    <Border Width="18" Height="12" Background="#AEAEAE" BoxShadow="2 2 5 #55000000" />
+                    <Border Width="18" Height="12" Background="#AEAEAE" BoxShadow="2 2 4 Black" />
                   </Grid>
                 </ControlTemplate>
               </Thumb.Template>
