@@ -15,7 +15,7 @@ namespace Synfonia.Controls
         private double _lastStrokeThickness;
         private double[,] _averagedData;
         private int _averageLevel = 5;
-        private bool _center = true
+        private bool _center = true;
 
         public override void Render(DrawingContext context)
         {
