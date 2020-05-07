@@ -41,20 +41,20 @@ namespace Synfonia.Backend
         {
             var track = Tracks.FirstOrDefault();
 
-            // if (track != null)
-            // {
-            //     using (var tagFile = TagLib.File.Create(track.Path))
-            //     {
-            //         var tag = tagFile.Tag;
+            if (track != null)
+            {
+                using (var tagFile = TagLib.File.Create(track.Path))
+                {
+                    var tag = tagFile.Tag;
 
-            //         var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
+                    var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
 
-            //         if (cover != null)
-            //         {
-            //             return cover.Data.Data;
-            //         }
-            //     }
-            // }
+                    if (cover != null)
+                    {
+                        return cover.Data.Data;
+                    }
+                }
+            }
 
             return null;
         }
