@@ -19,7 +19,7 @@ namespace Synfonia.Backend
         private Track _currentTrack;
         private bool _isPlaying;
         private bool _userOperation = false;
-        private double[] _lastSpectrumData;
+        private double[,] _lastSpectrumData;
 
         public DiscChanger()
         {
@@ -43,7 +43,7 @@ namespace Synfonia.Backend
 
         public TimeSpan CurrentTrackDuration => _soundStream.Duration;
 
-        public double[] CurrentSpectrumData => _lastSpectrumData;
+        public double[,] CurrentSpectrumData => _lastSpectrumData;
 
         public double Volume
         {
@@ -192,7 +192,7 @@ namespace Synfonia.Backend
                     })
                     .DisposeWith(_soundStreamDisposables);
 
-                Observable.FromEventPattern<double[]>(_soundStream, nameof(_soundStream.FFTDataReady))
+                Observable.FromEventPattern<double[,]>(_soundStream, nameof(_soundStream.FFTDataReady))
                     .Subscribe(x =>
                     {
                         _lastSpectrumData = x.EventArgs;

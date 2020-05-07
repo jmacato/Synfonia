@@ -13,9 +13,9 @@ namespace Synfonia.Controls
     {
         private IPen _linePen;
         private double _lastStrokeThickness;
-        private double[] _averagedData;
+        private double[,] _averagedData;
         private int _averageLevel = 5;
-        private bool _center = false;
+        private bool _center = true;
 
         public override void Render(DrawingContext context)
         {
@@ -25,54 +25,63 @@ namespace Synfonia.Controls
 
             if (FFTData != null)
             {
-                if (_averagedData is null || FFTData.Length != _averagedData.Length)
+                if (_averagedData is null || FFTData.GetLength(1) != _averagedData.GetLength(1))
                 {
-                    _averagedData = new double[FFTData.Length];
+                    _averagedData = new double[2, FFTData.GetLength(1)];
                 }
 
-                for (int i = 0; i < FFTData.Length; i++)
+                for (int channel = 0; channel < 2; channel++)
                 {
+                    for (int i = 0; i < FFTData.GetLength(1); i++)
+                    {
 
-                    _averagedData[i] -= _averagedData[i] / _averageLevel;
-                    _averagedData[i] += Math.Abs(FFTData[i]) / _averageLevel;
+                        _averagedData[channel, i] -= _averagedData[channel, i] / _averageLevel;
+                        _averagedData[channel, i] += Math.Abs(FFTData[channel, i]) / _averageLevel;
+                    }
                 }
 
-                var length = FFTData.Length;
-                var gaps = length + 1;
+                var length = FFTData.GetLength(1);
+                var gaps = (length * 2) + 1;
 
-                var gapSize = 1;
-                if ((gaps * gapSize) > Bounds.Width)
+                var gapSize = 1.0;
+                //if ((gaps * gapSize) > Bounds.Width)
                 {
-                    gapSize = 0;
+                    gapSize = 0.25;
                 }
 
-                var binStroke = (Bounds.Width - (gaps * gapSize)) / length;
+                var binStroke = (Bounds.Width - (gaps * gapSize)) / (length * 2);
 
                 if (_lastStrokeThickness != binStroke)
                 {
                     _lastStrokeThickness = binStroke;
-                    _linePen = new Pen(new SolidColorBrush(Colors.Gray, 0.5), _lastStrokeThickness);
+                    _linePen = new Pen(new SolidColorBrush(Colors.Gray, 0.5), _lastStrokeThickness);                    
                 }
 
-                double x = binStroke / 2 + gapSize;
+                double x = (binStroke / 2) + gapSize;
 
                 if (_center)
                 {
-                    for (int i = 0; i < length; i++)
+                    for (int channel = 0; channel < 2; channel++)
                     {
-                        var value = (Bounds.Height / 2) * (_averagedData[i]);
-                        var center = Bounds.Height / 2;
+                        for (int i = 0; i < length; i++)
+                        {
+                            var value = (Bounds.Height / 2) * (_averagedData[channel, channel == 0 ? length - 1 - i : i]);
+                            var center = Bounds.Height / 2;
 
-                        context.DrawLine(_linePen, new Point(x, center - value), new Point(x, center + value));
-                        x += (binStroke + gapSize);
+                            context.DrawLine(_linePen, new Point(x, center - value), new Point(x, center + value));
+                            x += (binStroke + gapSize);
+                        }
                     }
                 }
                 else
                 {
-                    for (int i = 0; i < length; i++)
+                    for (int channel = 0; channel < 2; channel++)
                     {
-                        context.DrawLine(_linePen, new Point(x, Bounds.Height), new Point(x, Bounds.Height * (1 - _averagedData[i])));
-                        x += (binStroke + gapSize);
+                        for (int i = 0; i < length; i++)
+                        {
+                            context.DrawLine(_linePen, new Point(x, Bounds.Height), new Point(x, Bounds.Height * (1 - _averagedData[channel, channel == 0 ? length - 1 - i : i])));
+                            x += (binStroke + gapSize);
+                        }
                     }
                 }
 
@@ -80,15 +89,15 @@ namespace Synfonia.Controls
             }
         }
 
-        public static readonly DirectProperty<SpectrumDisplay, double[]> FFTDataProperty =
-            AvaloniaProperty.RegisterDirect<SpectrumDisplay, double[]>(
+        public static readonly DirectProperty<SpectrumDisplay, double[,]> FFTDataProperty =
+            AvaloniaProperty.RegisterDirect<SpectrumDisplay, double[,]>(
                 nameof(FFTData),
                 o => o.FFTData,
                 (o, v) => o.FFTData = v);
 
-        private double[] _fftData;
+        private double[,] _fftData;
 
-        public double[] FFTData
+        public double[,] FFTData
         {
             get { return _fftData; }
             set => SetAndRaise(FFTDataProperty, ref _fftData, value);
@@ -115,7 +124,7 @@ namespace Synfonia.Controls
                 {
                     if (FFTData != null)
                     {
-                        FFTData = new double[FFTData.Length];
+                        FFTData = new double[FFTData.GetLength(0), FFTData.GetLength(1)];
                     }
                 });
         }

@@ -22,7 +22,7 @@
             </StackPanel>
           </Panel>
         </DockPanel>
-        <Border IsHitTestVisible="False" BorderThickness="1" BorderBrush="#44000000" MinHeight="20" BoxShadow="inset 0 0 2 1 LightGray" />
+        <Border IsHitTestVisible="False" BorderThickness="1" BorderBrush="#44000000" MinHeight="20" />
       </Panel>
       <c:SeekSlider Grid.Row="1" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
     </Grid>
