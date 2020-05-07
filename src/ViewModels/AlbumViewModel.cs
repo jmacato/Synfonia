@@ -28,7 +28,7 @@ namespace Synfonia.ViewModels
 
         public AlbumViewModel(Album album, DiscChanger changer)
         {
-            _album = album;            
+            _album = album;
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -48,8 +48,14 @@ namespace Synfonia.ViewModels
                 {
                     if (!_coverLoaded)
                     {
-                        _coverLoaded = true;
-                        Cover = await LoadCoverAsync();
+                        try
+                        {
+                            Cover = await LoadCoverAsync();
+                            _coverLoaded = true;
+                        }
+                        catch(Exception e)
+                        {
+                        }
                     }
                 })
                 .Subscribe();
@@ -86,7 +92,7 @@ namespace Synfonia.ViewModels
         }
 
 
-        public async Task<Bitmap> LoadCoverAsync ()
+        public async Task<Bitmap> LoadCoverAsync()
         {
             return await Task.Run(async () =>
             {
