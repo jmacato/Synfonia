@@ -7,7 +7,7 @@ using Avalonia.Input;
 namespace Synfonia.Controls
 {
     public class VolumeSlider : RangeBase
-    { 
+    {
         // Slider required parts
         private Track _track;
         private SeekTrackButton _decreaseButton;
@@ -32,10 +32,12 @@ namespace Synfonia.Controls
 
         /// <inheritdoc/>
         protected override void OnTemplateApplied(TemplateAppliedEventArgs e)
-        { 
+        {
             _decreaseButton = e.NameScope.Find<SeekTrackButton>("PART_DecreaseButton");
             _track = e.NameScope.Find<Track>("PART_Track");
             _increaseButton = e.NameScope.Find<SeekTrackButton>("PART_IncreaseButton");
+            
+            this.PointerWheelChanged += EC_PWC;
 
             if (_decreaseButton != null)
             {
@@ -46,6 +48,11 @@ namespace Synfonia.Controls
             {
                 _increaseButton.PointerPressed += IC_PP;
             }
+        }
+
+        private void EC_PWC(object sender, PointerWheelEventArgs e)
+        {
+            Value += Math.Clamp(e.Delta.Y / 100, -1, 1);
         }
 
         private void IC_PP(object sender, PointerPressedEventArgs e)
@@ -66,7 +73,7 @@ namespace Synfonia.Controls
         /// <param name="e"></param>
         protected virtual void OnThumbDragStarted(VectorEventArgs e)
         {
-            
+
         }
 
         /// <summary>
@@ -87,7 +94,7 @@ namespace Synfonia.Controls
         /// <param name="e"></param>
         protected virtual void OnThumbDragCompleted(VectorEventArgs e)
         {
-            
+
         }
 
         /// <summary>
