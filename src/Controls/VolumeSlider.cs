@@ -36,7 +36,7 @@ namespace Synfonia.Controls
             _decreaseButton = e.NameScope.Find<SeekTrackButton>("PART_DecreaseButton");
             _track = e.NameScope.Find<Track>("PART_Track");
             _increaseButton = e.NameScope.Find<SeekTrackButton>("PART_IncreaseButton");
-            
+
             this.PointerWheelChanged += VolumeSlider_PointerWheelChanged;
 
             if (_decreaseButton != null)
@@ -57,12 +57,16 @@ namespace Synfonia.Controls
 
         private void IncreaseButton_PointerPressed(object sender, PointerPressedEventArgs e)
         {
+            if (e.MouseButton == MouseButton.Middle) return;
+
             var x = e.GetCurrentPoint(_track);
             Value = x.Position.X / _track.Bounds.Width;
         }
 
         private void DecreaseButton_PointerPressed(object sender, PointerPressedEventArgs e)
         {
+            if (e.MouseButton == MouseButton.Middle) return;
+
             var x = e.GetCurrentPoint(_track);
             Value = x.Position.X / _track.Bounds.Width;
         }
