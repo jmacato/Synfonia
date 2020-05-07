@@ -26,7 +26,7 @@ namespace Synfonia.ViewModels
         private bool _isTrackSeeking;
         private bool _isSeekbarActive = true;
         private string _status;
-        private double[] _fftData;
+        private double[,] _fftData;
 
         public TrackStatusViewModel(DiscChanger discChanger, LibraryManager libraryManager)
         {
@@ -129,13 +129,12 @@ namespace Synfonia.ViewModels
             set { this.RaiseAndSetIfChanged(ref _status, value); }
         }
 
-        public double[] InFFTData
+        public double[,] InFFTData
         {
             get { return _fftData; }
             set
             {
-                _fftData = value;
-                this.RaisePropertyChanged(nameof(InFFTData));
+                this.RaiseAndSetIfChanged(ref _fftData, value);
             }
         }
 
