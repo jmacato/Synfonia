@@ -37,31 +37,31 @@ namespace Synfonia.Controls
             _track = e.NameScope.Find<Track>("PART_Track");
             _increaseButton = e.NameScope.Find<SeekTrackButton>("PART_IncreaseButton");
             
-            this.PointerWheelChanged += EC_PWC;
+            this.PointerWheelChanged += VolumeSlider_PointerWheelChanged;
 
             if (_decreaseButton != null)
             {
-                _decreaseButton.PointerPressed += DC_PP;
+                _decreaseButton.PointerPressed += DecreaseButton_PointerPressed;
             }
 
             if (_increaseButton != null)
             {
-                _increaseButton.PointerPressed += IC_PP;
+                _increaseButton.PointerPressed += IncreaseButton_PointerPressed;
             }
         }
 
-        private void EC_PWC(object sender, PointerWheelEventArgs e)
+        private void VolumeSlider_PointerWheelChanged(object sender, PointerWheelEventArgs e)
         {
             Value += Math.Clamp(e.Delta.Y / 100, -1, 1);
         }
 
-        private void IC_PP(object sender, PointerPressedEventArgs e)
+        private void IncreaseButton_PointerPressed(object sender, PointerPressedEventArgs e)
         {
             var x = e.GetCurrentPoint(_track);
             Value = x.Position.X / _track.Bounds.Width;
         }
 
-        private void DC_PP(object sender, PointerPressedEventArgs e)
+        private void DecreaseButton_PointerPressed(object sender, PointerPressedEventArgs e)
         {
             var x = e.GetCurrentPoint(_track);
             Value = x.Position.X / _track.Bounds.Width;
