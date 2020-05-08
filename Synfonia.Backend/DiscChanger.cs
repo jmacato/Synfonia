@@ -20,7 +20,7 @@ namespace Synfonia.Backend
         private bool _isPlaying;
         private bool _userOperation = false;
         private double[,] _lastSpectrumData;
-        private bool _isPaused;
+        private bool _isPaused = true;
 
         public DiscChanger()
         {
@@ -188,7 +188,11 @@ namespace Synfonia.Backend
 
                 _soundStreamDisposables = new CompositeDisposable();
 
-                _soundStream = new SoundStream(File.OpenRead(targetTrack), _audioEngine);
+                var fileStream = File.OpenRead(targetTrack);
+                
+                _soundStream = new SoundStream(fileStream, _audioEngine);
+
+                _soundStreamDisposables.Add(fileStream);
 
                 TrackChanged?.Invoke(this, EventArgs.Empty);
 
