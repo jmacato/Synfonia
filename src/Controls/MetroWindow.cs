@@ -94,7 +94,6 @@ namespace Synfonia.Controls
                 // var color = (ColorTheme.CurrentTheme.Background as SolidColorBrush).Color;
                 // (PlatformImpl as Avalonia.Native.WindowImpl).SetTitleBarColor(color);
             }
-            //             PseudoClass<MetroWindow, WindowState>(WindowStateProperty, x => x == WindowState.Maximized, ":");
 
             this.WhenAnyValue(x => x.WindowState)
                 .Where(x => x == WindowState.Maximized)
@@ -114,7 +113,6 @@ namespace Synfonia.Controls
         private Grid _bottomLeftGrip;
         private Grid _bottomRightGrip;
         private Button _closeButton;
-        private Image _icon;
         private Grid _leftVerticalGrip;
         private Button _minimiseButton;
 
@@ -226,7 +224,7 @@ namespace Synfonia.Controls
             _restoreButton = e.NameScope.Find<Button>("restoreButton");
             _restoreButtonPanelPath = e.NameScope.Find<Path>("restoreButtonPanelPath");
             _closeButton = e.NameScope.Find<Button>("closeButton");
-            _icon = e.NameScope.Find<Image>("icon");
+            // _icon = e.NameScope.Find<Image>("icon");
 
             _topHorizontalGrip = e.NameScope.Find<Grid>("topHorizontalGrip");
             _bottomHorizontalGrip = e.NameScope.Find<Grid>("bottomHorizontalGrip");
@@ -242,7 +240,7 @@ namespace Synfonia.Controls
             _restoreButton.Click += (sender, ee) => { ToggleWindowState(); };
             _titleBar.DoubleTapped += (sender, ee) => { ToggleWindowState(); };
             _closeButton.Click += (sender, ee) => { Close(); };
-            _icon.DoubleTapped += (sender, ee) => { Close(); };
+            // _icon.DoubleTapped += (sender, ee) => { Close(); };
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {

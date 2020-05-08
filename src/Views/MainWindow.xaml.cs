@@ -1,11 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;  
+using Avalonia.Markup.Xaml;
+using Synfonia.Controls;
 
 namespace Synfonia.Views
 {
-    public class MainWindow : Window
+    public class MainWindow : MetroWindow
     {
         public MainWindow()
         {
@@ -16,21 +17,6 @@ namespace Synfonia.Views
         {
             AvaloniaXamlLoader.Load(this);
             this.AttachDevTools();
-        }
-
-        protected override void OnPointerPressed(PointerPressedEventArgs e)
-        {
-            base.OnPointerPressed(e);
-
-            var point = e.GetCurrentPoint(this);
-
-            if (point.Properties.IsLeftButtonPressed)
-            {
-                if (point.Position.Y < 20)
-                {
-                    BeginMoveDrag(e);
-                }
-            }
         }
     }
 }
