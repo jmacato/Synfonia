@@ -57,7 +57,7 @@ namespace Synfonia.Controls
 
         private void IncreaseButton_PointerPressed(object sender, PointerPressedEventArgs e)
         {
-            if (e.MouseButton == MouseButton.Middle) return;
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
 
             var x = e.GetCurrentPoint(_track);
             Value = x.Position.X / _track.Bounds.Width;
@@ -65,7 +65,7 @@ namespace Synfonia.Controls
 
         private void DecreaseButton_PointerPressed(object sender, PointerPressedEventArgs e)
         {
-            if (e.MouseButton == MouseButton.Middle) return;
+            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
 
             var x = e.GetCurrentPoint(_track);
             Value = x.Position.X / _track.Bounds.Width;
