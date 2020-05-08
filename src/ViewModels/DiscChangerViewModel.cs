@@ -11,6 +11,7 @@ namespace Synfonia.ViewModels
     {
         private bool _sliderClicked;
         private DiscChanger _discChanger;
+        private readonly ObservableAsPropertyHelper<bool> _isPaused;
 
         public DiscChangerViewModel(DiscChanger discChanger)
         {
@@ -52,8 +53,6 @@ namespace Synfonia.ViewModels
             set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
         }
 
-        private readonly ObservableAsPropertyHelper<bool> _isPaused;
         public bool IsPaused => _isPaused?.Value ?? false;
-
     }
 }
