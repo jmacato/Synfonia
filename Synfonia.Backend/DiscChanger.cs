@@ -45,6 +45,15 @@ namespace Synfonia.Backend
 
         public double[,] CurrentSpectrumData => _lastSpectrumData;
 
+        public double Volume
+        {
+            get => _soundStream?.Volume ?? 0d;
+            set
+            {
+                if (_soundStream != null) _soundStream.Volume = (float)value;
+            }
+        }
+
         public async Task Forward(bool byUser = true)
         {
             _userOperation = byUser;
