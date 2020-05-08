@@ -1,24 +1,27 @@
 ﻿using ReactiveUI;
 using Synfonia.Backend;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 
 namespace Synfonia.ViewModels
 {
     public class DiscChangerViewModel : ViewModelBase
-    {        
-        private bool _sliderClicked;        
-        private bool _isPaused;
+    {
+        private bool _sliderClicked;
         private DiscChanger _discChanger;
 
         public DiscChangerViewModel(DiscChanger discChanger)
         {
             _discChanger = discChanger;
 
+            _isPaused = _discChanger.WhenAnyValue(x => x.IsPaused)
+                                    .ToProperty(this, nameof(IsPaused));
 
             PlayCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                 await _discChanger.Play();
+                await _discChanger.Play();
             });
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -32,7 +35,7 @@ namespace Synfonia.ViewModels
             });
         }
 
-        public async Task LoadTrackList (ITrackList trackList)
+        public async Task LoadTrackList(ITrackList trackList)
         {
             await _discChanger.LoadTrackList(trackList);
         }
@@ -49,10 +52,8 @@ namespace Synfonia.ViewModels
             set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
         }
 
-        public bool IsPaused
-        {
-            get => _isPaused;
-            set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
-        }
+        private readonly ObservableAsPropertyHelper<bool> _isPaused;
+        public bool IsPaused => _isPaused?.Value ?? false;
+
     }
 }

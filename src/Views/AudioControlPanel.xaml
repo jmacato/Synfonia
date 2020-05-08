@@ -1,30 +1,45 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Synfonia.Views.AudioControlPanel">
+﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+mc:Ignorable="d" d:DesignWidth="800" Name="audioControl" d:DesignHeight="450" x:Class="Synfonia.Views.AudioControlPanel">
   <Panel>
     <Panel.Styles>
       <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="Transparent" />
+      </Style>
+      <Style Selector=":is(Button)#BackButton DrawingPresenter">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Drawing" Value="{DynamicResource Back}" />
+      </Style>
+      <Style Selector=":is(Button)#FwdButton DrawingPresenter">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Drawing" Value="{DynamicResource Forward}" />
+      </Style>
+      <Style Selector=":is(Button)#ShuffleButton DrawingPresenter">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Drawing" Value="{DynamicResource Shuffle}" />
+      </Style>
+      <Style Selector=":is(Button)#LoopButton DrawingPresenter">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Drawing" Value="{DynamicResource Loop}" />
       </Style>
     </Panel.Styles>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-      <ToggleButton Width="36">
-    
+      <ToggleButton Name="ShuffleButton" Width="36">
+        <DrawingPresenter Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
       </ToggleButton>
-      <Button HorizontalAlignment="Center" Width="54" Command="{Binding BackCommand}">
-        
+      <Button Name="BackButton" HorizontalAlignment="Center" Width="36" Command="{Binding BackCommand}">
+        <DrawingPresenter Width="20" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" />
       </Button>
-      <Button HorizontalAlignment="Center" Width="54" Command="{Binding PlayCommand}">
- 
-       </Button>
-      <Button HorizontalAlignment="Center" Width="54" Command="{Binding ForwardCommand}">
-         
+      <Button Name="PlayButton" HorizontalAlignment="Center" Width="36" Command="{Binding PlayCommand}">
+        <Panel>
+          <DrawingPresenter Drawing="{DynamicResource Play}" IsVisible="{Binding !IsPaused}" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+          <DrawingPresenter Drawing="{DynamicResource Pause}" IsVisible="{Binding IsPaused}" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Panel>
       </Button>
-      <ToggleButton Width="36">
-         
+      <Button Name="FwdButton" HorizontalAlignment="Center" Width="36" Command="{Binding ForwardCommand}">
+        <DrawingPresenter Width="20" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      </Button>
+      <ToggleButton Name="LoopButton" Width="36">
+        <DrawingPresenter Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
       </ToggleButton>
     </StackPanel>
   </Panel>

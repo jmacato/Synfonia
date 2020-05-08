@@ -9,10 +9,10 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Opacity" Value="0.5"/>
       </Style>
-      <Style Selector="ToggleButton.volumetoggle:checked DrawingPresenter#Icon">
+      <Style Selector="ToggleButton.volumetoggle:checked DrawingPresenter">
         <Setter Property="Drawing" Value="{DynamicResource VolumeMute}"/>
       </Style>
-      <Style Selector="ToggleButton.volumetoggle:unchecked DrawingPresenter#Icon">
+      <Style Selector="ToggleButton.volumetoggle:unchecked DrawingPresenter">
         <Setter Property="Drawing" Value="{DynamicResource VolumeEnable}"/>
       </Style>
       <Style Selector="ToggleButton.volumetoggle:checked">
@@ -26,7 +26,7 @@
     </Panel.Styles>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
       <ToggleButton Classes="volumetoggle" IsChecked="{Binding IsMuted, Mode=OneWayToSource}">
-        <DrawingPresenter Name="Icon" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <DrawingPresenter Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
       </ToggleButton>
       <c:VolumeSlider Margin="5,0,0,0" IsEnabled="{Binding !IsMuted}" Value="{Binding Volume, Mode=TwoWay}" Minimum="0" Width="100" Maximum="1" VerticalAlignment="Center" />
     </StackPanel>
