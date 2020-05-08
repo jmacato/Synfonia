@@ -188,11 +188,7 @@ namespace Synfonia.Backend
 
                 _soundStreamDisposables = new CompositeDisposable();
 
-                var fileStream = File.OpenRead(targetTrack);
-                
-                _soundStream = new SoundStream(fileStream, _audioEngine);
-
-                _soundStreamDisposables.Add(fileStream);
+                _soundStream = new SoundStream(File.OpenRead(targetTrack), _audioEngine);
 
                 TrackChanged?.Invoke(this, EventArgs.Empty);
 
