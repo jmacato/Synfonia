@@ -60,12 +60,14 @@ namespace Synfonia.Controls
 
         private void IC_PP(object sender, PointerPressedEventArgs e)
         {
+            if(e.MouseButton == MouseButton.Middle) return;
             var x = e.GetCurrentPoint(_track);
             SeekValue = x.Position.X / _track.Bounds.Width;
         }
 
         private void DC_PP(object sender, PointerPressedEventArgs e)
         {
+            if(e.MouseButton == MouseButton.Middle) return;
             var x = e.GetCurrentPoint(_track);
             SeekValue = x.Position.X / _track.Bounds.Width;
         }

@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui" 
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style>
+    <Style.Resources>
+      <DrawingGroup x:Key="VolumeEnable">
+        <GeometryDrawing Brush="Black" Geometry="F1M299,-342C331,-326 352,-294 352,-256 352,-218 331,-186 299,-170L299,-342z M256,-427L256,-85 149,-192 64,-192 64,-320 149,-320 256,-427z M299,-443C385,-424 448,-347 448,-256 448,-165 385,-88 299,-69L299,-113C361,-131 405,-188 405,-256 405,-324 361,-381 299,-399L299,-443z" />
+      </DrawingGroup>
+      <DrawingGroup x:Key="VolumeMute">
+        <GeometryDrawing Brush="Black" Geometry="F1M299,-342C331,-326 352,-294 352,-256 352,-251 352,-247 351,-243L299,-295 299,-342z M256,-427L256,-337 211,-382 256,-427z M299,-443C385,-424 448,-347 448,-256 448,-224 440,-193 426,-167L394,-200C401,-217 405,-236 405,-256 405,-324 361,-381 299,-399L299,-443z M91,-448L448,-91 421,-64 377,-108C354,-90,328,-76,299,-69L299,-113C317,-118,333,-127,347,-138L256,-229 256,-85 149,-192 64,-192 64,-320 165,-320 64,-421 91,-448z" />
+      </DrawingGroup>
+      <DrawingGroup x:Key="WindowMaximize">
+        <GeometryDrawing Brush="Black" Geometry="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
+      </DrawingGroup>
+      <DrawingGroup x:Key="WindowMinimize">
+        <GeometryDrawing Brush="Black" Geometry="M20,14H4V10H20" />
+      </DrawingGroup>
+      <DrawingGroup x:Key="WindowClose">
+        <GeometryDrawing Brush="Black" Geometry="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+      </DrawingGroup>
+      <DrawingGroup x:Key="WindowRestore">
+        <GeometryDrawing Brush="Black" Geometry="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" />
+      </DrawingGroup>
+    </Style.Resources>
+  </Style>
+</Styles>

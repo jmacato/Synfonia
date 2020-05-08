@@ -11,19 +11,19 @@
       </Style>
     </Panel.Styles>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-      <ToggleButton Width="36" BorderThickness="0">
+      <ToggleButton Width="36">
     
       </ToggleButton>
-      <Button HorizontalAlignment="Center" Width="54" Command="{Binding BackCommand}" BorderThickness="0">
+      <Button HorizontalAlignment="Center" Width="54" Command="{Binding BackCommand}">
         
       </Button>
-      <Button HorizontalAlignment="Center" Width="54" Command="{Binding PlayCommand}" BorderThickness="0">
+      <Button HorizontalAlignment="Center" Width="54" Command="{Binding PlayCommand}">
  
        </Button>
-      <Button HorizontalAlignment="Center" Width="54" Command="{Binding ForwardCommand}" BorderThickness="0">
+      <Button HorizontalAlignment="Center" Width="54" Command="{Binding ForwardCommand}">
          
       </Button>
-      <ToggleButton Width="36" BorderThickness="0">
+      <ToggleButton Width="36">
          
       </ToggleButton>
     </StackPanel>
