@@ -104,10 +104,10 @@ namespace Synfonia.Controls
                 });
         }
 
-        public static readonly AvaloniaProperty<Control> TitleBarContentProperty =
+        public static readonly StyledProperty<Control> TitleBarContentProperty =
             AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarContent));
 
-        public static readonly AvaloniaProperty<bool> ClientDecorationsProperty =
+        public static readonly StyledProperty<bool> ClientDecorationsProperty =
             AvaloniaProperty.Register<MetroWindow, bool>(nameof(ClientDecorations));
 
         private Grid _bottomHorizontalGrip;
