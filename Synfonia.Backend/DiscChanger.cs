@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Synfonia.Backend
 {
-    public class DiscChanger
+    public class DiscChanger : ReactiveObject
     {
         private AudioEngine _audioEngine;
         private SoundStream _soundStream;
@@ -20,6 +20,7 @@ namespace Synfonia.Backend
         private bool _isPlaying;
         private bool _userOperation = false;
         private double[,] _lastSpectrumData;
+        private bool _isPaused;
 
         public DiscChanger()
         {
@@ -44,6 +45,21 @@ namespace Synfonia.Backend
         public TimeSpan CurrentTrackDuration => _soundStream.Duration;
 
         public double[,] CurrentSpectrumData => _lastSpectrumData;
+
+        public double Volume
+        {
+            get => _soundStream?.Volume ?? 0d;
+            set
+            {
+                if (_soundStream != null) _soundStream.Volume = (float)value;
+            }
+        }
+
+        public bool IsPaused
+        {
+            get => _isPaused;
+            set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
+        }
 
         public async Task Forward(bool byUser = true)
         {
@@ -198,6 +214,8 @@ namespace Synfonia.Backend
                         {
                             await Forward();
                         }
+                        
+                        IsPaused = x == SoundStreamState.Paused;
                     })
                     .DisposeWith(_soundStreamDisposables);
             }
