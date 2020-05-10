@@ -1,15 +1,39 @@
-<c:MetroWindow xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:Synfonia.ViewModels;assembly=Synfonia" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia" xmlns:local="clr-namespace:Synfonia.Views" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-x:Class="Synfonia.Views.MainWindow" Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
-  <Design.DataContext>
-    <vm:MainWindowViewModel />
-  </Design.DataContext>
-  <c:MetroWindow.TitleBarContent>
-    <DockPanel>
-      <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
-      <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" />
-      <local:TrackStatusView DataContext="{Binding TrackStatus}" />
+<Window xmlns="https://github.com/avaloniaui" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:vm="clr-namespace:Synfonia.ViewModels;assembly=Synfonia" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia" 
+        xmlns:local="clr-namespace:Synfonia.Views" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"        
+        x:Class="Synfonia.Views.MainWindow"
+        SystemDecorations="BorderOnly"
+        Icon="/Assets/avalonia-logo.ico" Title="Synfonia">  
+  <Panel>
+    <DockPanel LastChildFill="True">
+      <DockPanel DockPanel.Dock="Top" Height="80" Background="LightGray">
+        <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
+        <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" />
+        <local:TrackStatusView DataContext="{Binding TrackStatus}" />
+      </DockPanel>
+      <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
     </DockPanel>
-  </c:MetroWindow.TitleBarContent>
-  <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
-</c:MetroWindow>
+    <Border Width="300" HorizontalAlignment="Left" BoxShadow="1 0 10 0 Black">
+      <Panel>
+        <Panel.Background>
+          <VisualBrush Stretch="Uniform" SourceRect="0 0 20 20" DestinationRect="0 0 20 20" TileMode="Tile">
+            <VisualBrush.Visual>
+              <Panel>
+                <Image Source="/Assets/noiselayer.png" Stretch="Uniform" />
+                <Panel Background="#FFFFFF" Opacity="0.78" />
+              </Panel>
+            </VisualBrush.Visual>
+          </VisualBrush>
+        </Panel.Background>
+        <Panel>
+          <DrawingPresenter Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" Drawing="{DynamicResource Hamburger}" Margin="10" />
+        </Panel>
+      </Panel>  
+    </Border>    
+  </Panel>  
+</Window>
