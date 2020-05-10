@@ -10,14 +10,15 @@
         SystemDecorations="BorderOnly"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia"> 
     <DockPanel LastChildFill="True">
-      <DockPanel DockPanel.Dock="Top" Height="80" Background="LightGray" ZIndex="10">
-        <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
-        <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" />
-        <local:TrackStatusView DataContext="{Binding TrackStatus}" />
-      </DockPanel>
-      <Panel>
-        <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
-        <Border Width="250" HorizontalAlignment="Right" BoxShadow="1 0 10 0 Black">
+      <Border DockPanel.Dock="Top" Height="80" Background="LightGray" ZIndex="5"  BoxShadow="0 0 5 0 Black">
+        <DockPanel>
+          <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" Margin="40 0" />
+          <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
+          <local:TrackStatusView DataContext="{Binding TrackStatus}" />
+        </DockPanel>
+      </Border>
+      <DockPanel>
+        <Border DockPanel.Dock="Right" Width="250" BoxShadow="0 0 5 0 Black" ZIndex="10">
           <Panel>
             <Panel.Background>
               <VisualBrush Stretch="Uniform" SourceRect="0 0 20 20" DestinationRect="-10 -20 20 20" TileMode="Tile">
@@ -44,6 +45,7 @@
             </StackPanel>
           </Panel>
         </Border>
-      </Panel>      
+        <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />        
+      </DockPanel>      
     </DockPanel>      
 </Window>
