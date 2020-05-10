@@ -1,7 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui" xmlns:local="clr-namespace:Synfonia.Controls;assembly=Synfonia" xmlns:convert="clr-namespace:Synfonia.Converters;assembly=Synfonia" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Style Selector="local|MetroWindow">
-    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource AvalonBorderBrush}" />
+    <Setter Property="Background" Value="{DynamicResource GlassBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
     <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}" />
     <Setter Property="Template">
       <ControlTemplate>
@@ -10,24 +10,34 @@
             <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto,Auto,*,Auto,Auto" Background="Transparent">
               <Grid Grid.Row="0" Grid.RowSpan="5" Margin="-4" Grid.Column="1" RowDefinitions="Auto * Auto" ColumnDefinitions="Auto,Auto,*,Auto,Auto">
                 <Grid Grid.Row="1" Margin="0" Grid.Column="0" Grid.ColumnSpan="5" Background="{TemplateBinding Background}">
-                  <Grid RowDefinitions="80, *"  Background="LightGray" >
-                    <DockPanel Grid.RowSpan="1" Name="titlebar" Margin="14,0" LastChildFill="True"> 
-                      <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0" IsVisible="{TemplateBinding ClientDecorations, Mode=TwoWay}" Spacing="6">
-                        <Button Width="24" Name="minimiseButton">
+                  <Grid RowDefinitions="80, *" ColumnDefinitions="Auto, *">
+                    <DockPanel Grid.RowSpan="1" Grid.Column="1" Background="LightGray" Name="titlebar" LastChildFill="True">
+                      <Panel DockPanel.Dock="Right" Width="14" HorizontalAlignment="Center" />
+                      <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0" IsVisible="{TemplateBinding ClientDecorations, Mode=TwoWay}">
+                        <Button Width="30" Name="minimiseButton">
                           <DrawingPresenter Width="16" Height="4" VerticalAlignment="Center" HorizontalAlignment="Center" Drawing="{DynamicResource WindowMinimize}" />
                         </Button>
-                        <Button Width="24" Name="restoreButton">
-                          <DrawingPresenter Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" Drawing="{DynamicResource WindowMaximize}" />
+                        <Button Width="30" Name="restoreButton">
+                          <DrawingPresenter Name="restoreIcon" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Button>
-                        <Button Width="24" Name="closeButton">
+                        <Button Width="30" Name="closeButton">
                           <DrawingPresenter Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" Drawing="{DynamicResource WindowClose}" />
                         </Button>
                       </StackPanel>
+                      <Panel Name="sidebar_spacer" DockPanel.Dock="Left" Width="0" HorizontalAlignment="Center" />
                       <ContentControl Content="{TemplateBinding TitleBarContent}" />
                     </DockPanel>
-                    <Grid Grid.Row="1">
+                    <Panel Grid.Row="1" Grid.Column="1">
                       <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" Margin="0" />
+                    </Panel>
+                    <Grid Grid.RowSpan="2" Grid.ColumnSpan="1" Width="1" Name="sidebar">
+                      <ContentPresenter Content="{TemplateBinding SideBarContent}" Margin="0" />
                     </Grid>
+                  </Grid>
+                  <Grid Grid.Row="0" RowDefinitions="80, *">
+                    <Button Name="sidebar_button" Grid.RowSpan="1" Width="48" HorizontalAlignment="Left">
+                      <DrawingPresenter Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" Drawing="{DynamicResource Hamburger}" />
+                    </Button>
                   </Grid>
                 </Grid>
                 <Grid Background="Transparent" Width="10" Height="4" />
@@ -49,10 +59,52 @@
       </ControlTemplate>
     </Setter>
   </Style>
-  <Style Selector="local|MetroWindow:maximised">
-    <Setter Property="BorderThickness" Value="0" />
+  <Style Selector="local|MetroWindow:not(:sidebar) /template/ Grid#sidebar">
+    <Style.Animations>
+      <Animation Duration="0:0:0.5" FillMode="Both" Easing="QuadraticEaseIn">
+        <KeyFrame Cue="100%">
+          <Setter Property="Width" Value="1" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="local|MetroWindow:sidebar /template/ Grid#sidebar">
+    <Style.Animations>
+      <Animation Duration="0:0:0.5" FillMode="Both" Easing="QuadraticEaseOut">
+        <KeyFrame Cue="100%">
+          <Setter Property="Width" Value="250" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="local|MetroWindow:not(:sidebar) /template/ Panel#sidebar_spacer">
+    <Style.Animations>
+      <Animation Duration="0:0:0.5" FillMode="Both" Easing="QuadraticEaseOut">
+        <KeyFrame Cue="100%">
+          <Setter Property="Width" Value="48" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="local|MetroWindow:sidebar /template/ Panel#sidebar_spacer">
+    <Style.Animations>
+      <Animation Duration="0:0:0.5" FillMode="Both" Easing="QuadraticEaseOut">
+        <KeyFrame Cue="100%">
+          <Setter Property="Width" Value="14" />
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="local|MetroWindow:maximised /template/ DrawingPresenter#restoreIcon">
+    <Setter Property="Drawing" Value="{DynamicResource WindowRestore}" />
+  </Style>
+  <Style Selector="local|MetroWindow:not(:maximised) /template/ DrawingPresenter#restoreIcon">
+    <Setter Property="Drawing" Value="{DynamicResource WindowMaximize}" />
   </Style>
   <Style Selector="local|MetroWindow">
     <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="local|MetroWindow:maximised">
+    <Setter Property="BorderThickness" Value="0" />
   </Style>
 </Styles>

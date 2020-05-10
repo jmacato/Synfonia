@@ -101,18 +101,32 @@ namespace Synfonia.Controls
                 {
                     PseudoClasses.Set(":maximised", this.WindowState == WindowState.Maximized);
                 });
+
+            this.WhenAnyValue(x => x.SideBarEnabled)
+                .DistinctUntilChanged()
+                .Subscribe(x =>
+                {
+                    PseudoClasses.Set(":sidebar", x);
+                });
         }
 
         public static readonly StyledProperty<Control> TitleBarContentProperty =
             AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarContent));
 
+        public static readonly StyledProperty<Control> SideBarContentProperty =
+            AvaloniaProperty.Register<MetroWindow, Control>(nameof(SideBarContent));
+
         public static readonly StyledProperty<bool> ClientDecorationsProperty =
             AvaloniaProperty.Register<MetroWindow, bool>(nameof(ClientDecorations));
+
+        public static readonly StyledProperty<bool> SideBarEnabledProperty =
+            AvaloniaProperty.Register<MetroWindow, bool>(nameof(SideBarEnabled));
 
         private Grid _bottomHorizontalGrip;
         private Grid _bottomLeftGrip;
         private Grid _bottomRightGrip;
         private Button _closeButton;
+        private Button _sidebar_button;
         private Grid _leftVerticalGrip;
         private Button _minimiseButton;
 
@@ -127,6 +141,11 @@ namespace Synfonia.Controls
         private Grid _topLeftGrip;
         private Grid _topRightGrip;
 
+        public bool SideBarEnabled
+        {
+            get => GetValue(SideBarEnabledProperty);
+            set => SetValue(SideBarEnabledProperty, value);
+        }
 
         public bool ClientDecorations
         {
@@ -138,6 +157,12 @@ namespace Synfonia.Controls
         {
             get { return GetValue(TitleBarContentProperty); }
             set { SetValue(TitleBarContentProperty, value); }
+        }
+
+        public Control SideBarContent
+        {
+            get { return GetValue(SideBarContentProperty); }
+            set { SetValue(SideBarContentProperty, value); }
         }
 
         Type IStyleable.StyleKey => typeof(MetroWindow);
@@ -224,6 +249,7 @@ namespace Synfonia.Controls
             _restoreButton = e.NameScope.Find<Button>("restoreButton");
             _restoreButtonPanelPath = e.NameScope.Find<Path>("restoreButtonPanelPath");
             _closeButton = e.NameScope.Find<Button>("closeButton");
+            _sidebar_button = e.NameScope.Find<Button>("sidebar_button");
             // _icon = e.NameScope.Find<Image>("icon");
 
             _topHorizontalGrip = e.NameScope.Find<Grid>("topHorizontalGrip");
@@ -236,10 +262,13 @@ namespace Synfonia.Controls
             _topRightGrip = e.NameScope.Find<Grid>("topRightGrip");
             _bottomRightGrip = e.NameScope.Find<Grid>("bottomRightGrip");
 
-            _minimiseButton.Click += (sender, ee) => { WindowState = WindowState.Minimized; };
-            _restoreButton.Click += (sender, ee) => { ToggleWindowState(); };
-            _titleBar.DoubleTapped += (sender, ee) => { ToggleWindowState(); };
-            _closeButton.Click += (sender, ee) => { Close(); };
+            _minimiseButton.Click += delegate { WindowState = WindowState.Minimized; };
+            _restoreButton.Click += delegate { ToggleWindowState(); };
+            _titleBar.DoubleTapped += delegate { ToggleWindowState(); };
+            _closeButton.Click += delegate { Close(); };
+            _sidebar_button.Click += delegate { SideBarEnabled = !SideBarEnabled; };
+
+
             // _icon.DoubleTapped += (sender, ee) => { Close(); };
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
