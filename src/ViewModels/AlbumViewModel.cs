@@ -81,20 +81,25 @@ namespace Synfonia.ViewModels
 
             var height = (int)(skBitmap.Height * scale);
 
-            skBitmap = skBitmap.Resize(new SKImageInfo(600, height), SKFilterQuality.High);
+            var resized = skBitmap.Resize(new SKImageInfo(600, height), SKFilterQuality.High);
+            skBitmap.Dispose();
+            skBitmap = resized;
 
-            fixed (byte* p = skBitmap.Bytes)
+            using (skBitmap)
             {
-                IntPtr ptr = (IntPtr)p;
+                fixed (byte* p = skBitmap.Bytes)
+                {
+                    IntPtr ptr = (IntPtr)p;
 
-                return new Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, ptr, new PixelSize(skBitmap.Width, skBitmap.Height), new Vector(96, 96), skBitmap.RowBytes);
+                    return new Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, ptr, new PixelSize(skBitmap.Width, skBitmap.Height), new Vector(96, 96), skBitmap.RowBytes);
+                }
             }
         }
 
 
         public async Task<Bitmap> LoadCoverAsync()
         {
-            return await Task.Run(async () =>
+            return await Task.Run(() =>
             {
                 var coverBitmap = _album.LoadCoverArt();
 
