@@ -19,9 +19,7 @@ namespace Synfonia.Controls
 
         public override void Render(DrawingContext context)
         {
-            base.Render(context);
-
-            context.FillRectangle(Brushes.Transparent, Bounds);
+            base.Render(context);            
 
             if (FFTData != null)
             {

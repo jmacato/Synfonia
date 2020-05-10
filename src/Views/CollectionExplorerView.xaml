@@ -6,7 +6,7 @@ mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.View
     <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
   </UserControl.Resources>
   <Panel Background="White">
-    <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
       <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="0 0 0 0">
         <ItemsRepeater.ContextMenu>
           <ContextMenu>
@@ -51,7 +51,6 @@ mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.View
         </ItemsRepeater.ItemTemplate>
       </ItemsRepeater>
     </ScrollViewer>
-    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
-    <Border BoxShadow="inset 0 0 2 1 LightGray" />
+    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />    
   </Panel>
 </UserControl>
