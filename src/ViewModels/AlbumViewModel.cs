@@ -2,6 +2,7 @@
 using Avalonia.Media.Imaging;
 using DynamicData;
 using DynamicData.Binding;
+using Nito.AsyncEx;
 using ReactiveUI;
 using SkiaSharp;
 using Synfonia.Backend;
@@ -25,6 +26,7 @@ namespace Synfonia.ViewModels
         private Album _album;
         private ReadOnlyObservableCollection<TrackViewModel> _tracks;
         private bool _coverLoaded;
+        private static Nito.AsyncEx.AsyncLock _loadAlbumLock = new Nito.AsyncEx.AsyncLock();
 
         public AlbumViewModel(Album album, DiscChanger changer)
         {
@@ -48,10 +50,10 @@ namespace Synfonia.ViewModels
                 {
                     if (!_coverLoaded)
                     {
+                        _coverLoaded = true;
                         try
                         {
-                            Cover = await LoadCoverAsync();
-                            _coverLoaded = true;
+                            Cover = await LoadCoverAsync();                                                       
                         }
                         catch(Exception e)
                         {
@@ -77,11 +79,11 @@ namespace Synfonia.ViewModels
         {
             var skBitmap = SKBitmap.Decode(stream);
 
-            var scale = 600.0 / skBitmap.Width;
+            var scale = 200.0 / skBitmap.Width;
 
             var height = (int)(skBitmap.Height * scale);
 
-            var resized = skBitmap.Resize(new SKImageInfo(600, height), SKFilterQuality.High);
+            var resized = skBitmap.Resize(new SKImageInfo(200, height), SKFilterQuality.High);
             skBitmap.Dispose();
             skBitmap = resized;
 
@@ -97,22 +99,25 @@ namespace Synfonia.ViewModels
         }
 
 
-        public async Task<Bitmap> LoadCoverAsync()
+        public async Task<IBitmap> LoadCoverAsync()
         {
-            return await Task.Run(() =>
+            using (await _loadAlbumLock.LockAsync())
             {
-                var coverBitmap = _album.LoadCoverArt();
-
-                if (coverBitmap != null)
+                return await Task.Run(() =>
                 {
-                    using (var ms = new MemoryStream(coverBitmap))
-                    {
-                        return LoadBitmap(ms);
-                    }
-                }
+                    var coverBitmap = _album.LoadCoverArt();
 
-                return null;
-            });
+                    if (coverBitmap != null)
+                    {
+                        using (var ms = new MemoryStream(coverBitmap))
+                        {
+                            return LoadBitmap(ms);
+                        }
+                    }
+
+                    return null;
+                });
+            }
         }
 
         public IBitmap Cover
