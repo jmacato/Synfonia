@@ -96,10 +96,10 @@ namespace Synfonia.Controls
             }
 
             this.WhenAnyValue(x => x.WindowState)
-                .Where(x => x == WindowState.Maximized)
+                .Select(x => x == WindowState.Maximized)
                 .Subscribe(x =>
                 {
-                    PseudoClasses.Set(":maximised", this.WindowState == WindowState.Maximized);
+                    PseudoClasses.Set(":maximised", x);
                 });
 
             this.WhenAnyValue(x => x.SideBarEnabled)
@@ -122,24 +122,18 @@ namespace Synfonia.Controls
         public static readonly StyledProperty<bool> SideBarEnabledProperty =
             AvaloniaProperty.Register<MetroWindow, bool>(nameof(SideBarEnabled));
 
-        private Grid _bottomHorizontalGrip;
-        private Grid _bottomLeftGrip;
-        private Grid _bottomRightGrip;
+        private Panel _bottomHorizontalGrip, _bottomLeftGrip, _bottomRightGrip, _leftVerticalGrip, _rightVerticalGrip, _topHorizontalGrip, _topLeftGrip, _topRightGrip;
+
+        private Button _minimiseButton;
         private Button _closeButton;
         private Button _sidebar_button;
-        private Grid _leftVerticalGrip;
-        private Button _minimiseButton;
+
 
         private bool _mouseDown;
         private Point _mouseDownPosition;
         private Button _restoreButton;
         private Path _restoreButtonPanelPath;
-        private Grid _rightVerticalGrip;
-
         private DockPanel _titleBar;
-        private Grid _topHorizontalGrip;
-        private Grid _topLeftGrip;
-        private Grid _topRightGrip;
 
         public bool SideBarEnabled
         {
@@ -252,15 +246,15 @@ namespace Synfonia.Controls
             _sidebar_button = e.NameScope.Find<Button>("sidebar_button");
             // _icon = e.NameScope.Find<Image>("icon");
 
-            _topHorizontalGrip = e.NameScope.Find<Grid>("topHorizontalGrip");
-            _bottomHorizontalGrip = e.NameScope.Find<Grid>("bottomHorizontalGrip");
-            _leftVerticalGrip = e.NameScope.Find<Grid>("leftVerticalGrip");
-            _rightVerticalGrip = e.NameScope.Find<Grid>("rightVerticalGrip");
+            _topHorizontalGrip = e.NameScope.Find<Panel>("topHorizontalGrip");
+            _bottomHorizontalGrip = e.NameScope.Find<Panel>("bottomHorizontalGrip");
+            _leftVerticalGrip = e.NameScope.Find<Panel>("leftVerticalGrip");
+            _rightVerticalGrip = e.NameScope.Find<Panel>("rightVerticalGrip");
 
-            _topLeftGrip = e.NameScope.Find<Grid>("topLeftGrip");
-            _bottomLeftGrip = e.NameScope.Find<Grid>("bottomLeftGrip");
-            _topRightGrip = e.NameScope.Find<Grid>("topRightGrip");
-            _bottomRightGrip = e.NameScope.Find<Grid>("bottomRightGrip");
+            _topLeftGrip = e.NameScope.Find<Panel>("topLeftGrip");
+            _bottomLeftGrip = e.NameScope.Find<Panel>("bottomLeftGrip");
+            _topRightGrip = e.NameScope.Find<Panel>("topRightGrip");
+            _bottomRightGrip = e.NameScope.Find<Panel>("bottomRightGrip");
 
             _minimiseButton.Click += delegate { WindowState = WindowState.Minimized; };
             _restoreButton.Click += delegate { ToggleWindowState(); };
