@@ -8,32 +8,42 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"        
         x:Class="Synfonia.Views.MainWindow"
         SystemDecorations="BorderOnly"
-        Icon="/Assets/avalonia-logo.ico" Title="Synfonia">  
-  <Panel>
+        Icon="/Assets/avalonia-logo.ico" Title="Synfonia"> 
     <DockPanel LastChildFill="True">
-      <DockPanel DockPanel.Dock="Top" Height="80" Background="LightGray">
+      <DockPanel DockPanel.Dock="Top" Height="80" Background="LightGray" ZIndex="10">
         <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" />
         <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" />
         <local:TrackStatusView DataContext="{Binding TrackStatus}" />
       </DockPanel>
-      <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
-    </DockPanel>
-    <Border Width="300" HorizontalAlignment="Left" BoxShadow="1 0 10 0 Black">
       <Panel>
-        <Panel.Background>
-          <VisualBrush Stretch="Uniform" SourceRect="0 0 20 20" DestinationRect="0 0 20 20" TileMode="Tile">
-            <VisualBrush.Visual>
-              <Panel>
-                <Image Source="/Assets/noiselayer.png" Stretch="Uniform" />
-                <Panel Background="#FFFFFF" Opacity="0.78" />
-              </Panel>
-            </VisualBrush.Visual>
-          </VisualBrush>
-        </Panel.Background>
-        <Panel>
-          <DrawingPresenter Width="16" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" Drawing="{DynamicResource Hamburger}" Margin="10" />
-        </Panel>
-      </Panel>  
-    </Border>    
-  </Panel>  
+        <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
+        <Border Width="250" HorizontalAlignment="Right" BoxShadow="1 0 10 0 Black">
+          <Panel>
+            <Panel.Background>
+              <VisualBrush Stretch="Uniform" SourceRect="0 0 20 20" DestinationRect="-10 -20 20 20" TileMode="Tile">
+                <VisualBrush.Visual>
+                  <Panel>
+                    <Image Source="/Assets/noiselayer.png" Stretch="Uniform" />
+                    <Panel Background="#FFFFFF" Opacity="0.88" />
+                  </Panel>
+                </VisualBrush.Visual>
+              </VisualBrush>
+            </Panel.Background>
+            <StackPanel Margin="20" Spacing="5">
+              <TextBlock Text="01 - Song blah blah blah" />
+              <TextBlock Text="02 - Song" />
+              <TextBlock Text="03 - Song" />
+              <TextBlock Text="04 - Song 1" />
+              <TextBlock Text="05 - Song 1" />
+              <TextBlock Text="07 - Song 1" />
+              <TextBlock Text="08 - Song 1" />
+              <TextBlock Text="09 - Song 1" />
+              <TextBlock Text="10 - Song 1" />
+              <TextBlock Text="11 - Song 1" />
+              <TextBlock Text="12 - Song 1" />
+            </StackPanel>
+          </Panel>
+        </Border>
+      </Panel>      
+    </DockPanel>      
 </Window>
