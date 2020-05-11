@@ -2,19 +2,13 @@
 using Avalonia.Media.Imaging;
 using DynamicData;
 using DynamicData.Binding;
-using Nito.AsyncEx;
 using ReactiveUI;
-using SkiaSharp;
 using Synfonia.Backend;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -75,29 +69,6 @@ namespace Synfonia.ViewModels
 
         public Album Model => _album;
 
-        public unsafe Bitmap LoadBitmap(Stream stream)
-        {
-            var skBitmap = SKBitmap.Decode(stream);
-
-            var scale = 200.0 / skBitmap.Width;
-
-            var height = (int)(skBitmap.Height * scale);
-
-            var resized = skBitmap.Resize(new SKImageInfo(200, height), SKFilterQuality.High);
-            skBitmap.Dispose();
-            skBitmap = resized;
-
-            using (skBitmap)
-            {
-                fixed (byte* p = skBitmap.Bytes)
-                {
-                    IntPtr ptr = (IntPtr)p;
-
-                    return new Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, ptr, new PixelSize(skBitmap.Width, skBitmap.Height), new Vector(96, 96), skBitmap.RowBytes);
-                }
-            }
-        }
-
 
         public async Task<IBitmap> LoadCoverAsync()
         {
@@ -111,7 +82,7 @@ namespace Synfonia.ViewModels
                     {
                         using (var ms = new MemoryStream(coverBitmap))
                         {
-                            return LoadBitmap(ms);
+                            return Bitmap.DecodeToWidth(ms, 200);
                         }
                     }
 
