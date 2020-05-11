@@ -129,7 +129,7 @@ namespace Synfonia.Backend
                     return;
                 }
 
-                if (_currentTrack is null)
+                if (_currentTrack is null && _trackList.Tracks.Count > 0)
                 {
                     await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
                 }
