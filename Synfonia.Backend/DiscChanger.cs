@@ -14,7 +14,7 @@ namespace Synfonia.Backend
         private AudioEngine _audioEngine;
         private SoundStream _soundStream;
         private CompositeDisposable _soundStreamDisposables;
-        private ITrackList _trackList;
+        private Playlist _trackList;
         private int _currentTrackIndex;
         private Track _currentTrack;
         private bool _isPlaying;
@@ -24,6 +24,7 @@ namespace Synfonia.Backend
 
         public DiscChanger()
         {
+            _trackList = new Playlist();
             _audioEngine = AudioEngine.CreateDefault();
 
             if (_audioEngine == null)
@@ -158,11 +159,31 @@ namespace Synfonia.Backend
             }
         }
 
+        public async Task AppendTrackList(ITrackList trackList)
+        {
+            bool isEmpty = _trackList.Tracks.Count == 0;
+
+            _trackList.AddTracks(trackList);
+
+            if(_isPaused || isEmpty)
+            {
+                if(isEmpty)
+                {
+                    _currentTrackIndex = 0;
+                }
+
+                await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
+
+                DoPlay();
+            }
+        }
+
         public async Task LoadTrackList(ITrackList trackList)
         {
             if (trackList.Tracks.Count > 0)
             {
-                _trackList = trackList;
+                _trackList = new Playlist();
+                _trackList.AddTracks(trackList);
                 _currentTrackIndex = 0;
 
                 await LoadTrack(_trackList.Tracks[_currentTrackIndex]);

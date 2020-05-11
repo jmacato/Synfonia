@@ -138,6 +138,8 @@ namespace Synfonia.ViewModels
             }
         }
 
+        public DiscChanger Model => _model;
+
         private string FormatTimeSpan(TimeSpan x)
         {
             return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}.{(x.Milliseconds / 100):0}";

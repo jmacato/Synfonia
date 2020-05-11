@@ -22,7 +22,7 @@ namespace Synfonia.Behaviors
         {
             if (sourceContext is Synfonia.ViewModels.AlbumViewModel avm && avm.Model is Synfonia.Backend.ITrackList tl && targetContext is Synfonia.ViewModels.TrackStatusViewModel ts)
             {
-                avm.LoadAlbumCommand.Execute();
+                ts.Model.AppendTrackList(avm.Model);
                 return true;
             }
             return false;

@@ -35,6 +35,11 @@ namespace Synfonia.ViewModels
                 await _discChanger.Back();
             });
         }
+        
+        public async Task AppendTrackList (ITrackList trackList)
+        {
+            await _discChanger.AppendTrackList(trackList);
+        }
 
         public async Task LoadTrackList(ITrackList trackList)
         {
