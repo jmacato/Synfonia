@@ -18,7 +18,7 @@
     </i:Interaction.Behaviors>    
     <DockPanel LastChildFill="True">      
       <Border DockPanel.Dock="Top" BoxShadow="2 2 5 #55000000">
-        <Panel Width="200" MinHeight="200">
+        <Panel Width="200">
           <i:Interaction.Behaviors>
             <b:CommandOnDoubleClickBehavior Command="{Binding LoadAlbumCommand}" />
           </i:Interaction.Behaviors>
@@ -29,7 +29,7 @@
             </ContextMenu>
           </Panel.ContextMenu>
           <Image Width="200" Stretch="Uniform" Source="{Binding Cover}" />
-          <Panel Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
+          <Panel Height="200" Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}" IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
             <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
               <DrawingPresenter.Drawing>
                 <DrawingGroup>
