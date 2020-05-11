@@ -155,24 +155,6 @@ namespace Synfonia.ViewModels
             }
         }
 
-        public unsafe Bitmap LoadBitmap(Stream stream)
-        {
-            var skBitmap = SKBitmap.Decode(stream);
-
-            var scale = 200.0 / skBitmap.Width;
-
-            var height = (int)(skBitmap.Height * scale);
-
-            skBitmap = skBitmap.Resize(new SKImageInfo(200, height), SKFilterQuality.High);
-
-            fixed (byte* p = skBitmap.Bytes)
-            {
-                IntPtr ptr = (IntPtr)p;
-
-                return new Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, ptr, new PixelSize(skBitmap.Width, skBitmap.Height), new Vector(96, 96), skBitmap.RowBytes);
-            }
-        }
-
 
         public async Task<Bitmap> LoadCoverAsync(Track track)
         {
@@ -184,7 +166,7 @@ namespace Synfonia.ViewModels
                 {
                     using (var ms = new MemoryStream(coverBitmap))
                     {
-                        return LoadBitmap(ms);
+                        return Bitmap.DecodeToWidth(ms, 200);
                     }
                 }
 
