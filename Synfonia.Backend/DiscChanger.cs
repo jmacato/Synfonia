@@ -12,7 +12,6 @@ namespace Synfonia.Backend
     public class DiscChanger : ReactiveObject
     {
         private AudioEngine _audioEngine;
-
         private Playlist _trackList;
         private int _currentTrackIndex;
         private Track _currentTrack;
@@ -69,7 +68,6 @@ namespace Synfonia.Backend
             set => this.RaiseAndSetIfChanged(ref _gaplessPlaybackEnabled, value, nameof(GaplessPlaybackEnabled));
         }
 
-
         public int GetNextTrackIndex(int index, TrackIndexDirection direction)
         {
             switch (direction)
@@ -95,9 +93,9 @@ namespace Synfonia.Backend
                     {
                         return _trackList.Tracks.Count - 1;
                     }
+                default:
+                    return (int)TrackIndexDirection.Error;
             }
-
-            return (int)TrackIndexDirection.Error;
         }
 
         public async Task Forward(bool byUser = true)
@@ -116,62 +114,40 @@ namespace Synfonia.Backend
                 return;
             }
 
-            if (GaplessPlaybackEnabled)
-            {
-                _ = Task.Factory.StartNew(async () =>
-                  {
-                      await Task.Delay(TimeSpan.FromMilliseconds(100));
-                      var preloadNextIndex = GetNextTrackIndex(nextIndex, TrackIndexDirection.Forward);
-                      UpNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadNextIndex]);
-                      UpNextTrack.SoundStream.PlayPause();
-                      UpNextTrack.SoundStream.PlayPause();
-                      UpNextTrack.SoundStream.TrySeek(TimeSpan.Zero);
-                  });
-            }
-
-            TrackContainer NextToPlay;
-
-            if (UpNextTrack is null)
-            {
-                NextToPlay = await LoadTrackAsync(_trackList.Tracks[nextIndex]);
-
-                if (NextToPlay is null)
-                {
-                    await Forward(false);
-                    return;
-                }
-
-            }
-            else
-            {
-                NextToPlay = UpNextTrack;
-                UpNextTrack = null;
-            }
-
             _currentTrackIndex = nextIndex;
-            CurrentlyPlayingTrack = NextToPlay;
-            TrackChanged?.Invoke(this, EventArgs.Empty);
-            DoPlay();
+
+            ChangeTrackAndPlay(_currentTrackIndex);
+
             _userOperation = false;
         }
 
         public async Task Back(bool byUser = true)
         {
+            _userOperation = byUser;
+
             if (_trackList is null)
             {
                 return;
             }
 
-            // await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
+            var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Backward);
 
-            // DoPlay();
+            if (nextIndex == (int)TrackIndexDirection.Error)
+            {
+                return;
+            }
+
+            _currentTrackIndex = nextIndex;
+            ChangeTrackAndPlay(_currentTrackIndex);
+
+            _userOperation = false;
         }
 
         public void Seek(TimeSpan seektime)
         {
             if (_isPlaying)
             {
-                CurrentlyPlayingTrack.SoundStream.TrySeek(seektime);
+                CurrentlyPlayingTrack?.SoundStream.TrySeek(seektime);
             }
         }
 
@@ -191,14 +167,16 @@ namespace Synfonia.Backend
                 if (_currentTrack is null && _trackList.Tracks.Count > 0)
                 {
                     await Forward();
-                    // await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
                 }
             }
         }
 
         private void DoPlay()
         {
-            CurrentlyPlayingTrack?.SoundStream.PlayPause();
+            if (!_isPlaying)
+            {
+                CurrentlyPlayingTrack.SoundStream.PlayPause();
+            }
         }
 
         public async Task Pause()
@@ -206,8 +184,6 @@ namespace Synfonia.Backend
             if (_isPlaying)
             {
                 CurrentlyPlayingTrack.SoundStream.PlayPause();
-
-                await Task.Delay(100);
             }
         }
 
@@ -224,10 +200,16 @@ namespace Synfonia.Backend
                     _currentTrackIndex = 0;
                 }
 
-                await Forward();
-
-                DoPlay();
+                ChangeTrackAndPlay(_currentTrackIndex);
             }
+        }
+
+        private async void ChangeTrackAndPlay(int index)
+        {
+            CurrentlyPlayingTrack?.Dispose();
+            CurrentlyPlayingTrack = await LoadTrackAsync(_trackList.Tracks[index]);
+            TrackChanged?.Invoke(this, EventArgs.Empty);
+            DoPlay();
         }
 
         public async Task LoadTrackList(ITrackList trackList)
@@ -238,11 +220,7 @@ namespace Synfonia.Backend
                 _trackList.AddTracks(trackList);
                 _currentTrackIndex = 0;
 
-                _currentTrackIndex = -1;
-                Forward();
-
-                // await LoadTrack(_trackList.Tracks[_currentTrackIndex]);
-                // DoPlay();
+                ChangeTrackAndPlay(_currentTrackIndex);
             }
         }
 
