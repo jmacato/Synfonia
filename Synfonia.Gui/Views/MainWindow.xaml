@@ -10,7 +10,7 @@
         SystemDecorations="BorderOnly"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia"> 
     <DockPanel LastChildFill="True">
-      <Border DockPanel.Dock="Top" Height="80" Background="LightGray" ZIndex="5"  BoxShadow="0 0 5 0 Black">
+      <Border DockPanel.Dock="Top" Height="100" Background="LightGray" ZIndex="5"  BoxShadow="0 0 5 0 Black">
         <DockPanel>
           <DockPanel.Background>
             <RadialGradientBrush SpreadMethod="Reflect" Radius="1" Center="0.5 0.7">
@@ -25,7 +25,8 @@
           </DockPanel.Background>
           <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" Margin="40 0" />
           <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
-          <local:TrackStatusView DataContext="{Binding TrackStatus}" />
+          <TextBlock Text="Synfonia" FontSize="10" DockPanel.Dock="Top" Opacity="0.5" Margin="1" HorizontalAlignment="Center" />          
+          <local:TrackStatusView DataContext="{Binding TrackStatus}" />          
         </DockPanel>
       </Border>
       <DockPanel>

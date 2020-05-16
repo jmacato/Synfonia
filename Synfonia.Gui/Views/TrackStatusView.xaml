@@ -13,7 +13,7 @@
   <i:Interaction.Behaviors>
     <b:ContextDropBehavior Context="{Binding FallbackValue={x:Null}}" Handler="{StaticResource TrackDropHandler}"/>
   </i:Interaction.Behaviors>
-  <Panel Background="White" DragDrop.AllowDrop="True">
+  <Panel DragDrop.AllowDrop="True">
     <Grid RowDefinitions="*,Auto">
       <Panel Grid.RowSpan="1">
         <Panel.Background>
@@ -43,7 +43,7 @@
         </DockPanel>
         <Border IsHitTestVisible="False" BorderThickness="1" BorderBrush="#44000000" MinHeight="20" />
       </Panel>
-      <c:SeekSlider Grid.Row="1" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
+      <c:SeekSlider Grid.Row="1" Height="12" Value="{Binding Position}" Maximum="1.0" Minimum="0" IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}" SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
     </Grid>
   </Panel>
 </UserControl>

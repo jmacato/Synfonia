@@ -28,7 +28,7 @@
       <ToggleButton Classes="volumetoggle" IsChecked="{Binding IsMuted, Mode=OneWayToSource}">
         <DrawingPresenter Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
       </ToggleButton>
-      <c:VolumeSlider Margin="5,0,0,0" IsEnabled="{Binding !IsMuted}" Value="{Binding Volume, Mode=TwoWay}" Width="100" VerticalAlignment="Center" />
+      <c:VolumeSlider IsEnabled="{Binding !IsMuted}" Value="{Binding Volume, Mode=TwoWay}" Width="100" VerticalAlignment="Center"/>
     </StackPanel>
   </Panel>
 </UserControl>
