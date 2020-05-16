@@ -1,4 +1,4 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:local="clr-namespace:Synfonia.Controls;assembly=Synfonia" xmlns:convert="clr-namespace:Synfonia.Converters;assembly=Synfonia" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Styles xmlns="https://github.com/avaloniaui" xmlns:local="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui" xmlns:convert="clr-namespace:Synfonia.Converters;assembly=Synfonia.Gui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Style Selector="local|MetroWindow">
     <Setter Property="Background" Value="{DynamicResource GlassBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />

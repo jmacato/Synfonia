@@ -2,7 +2,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-  xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.VolumeControlView">
+  xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.VolumeControlView">
   <Panel Margin="10,0">
     <Panel.Styles>
       <Style Selector="ToggleButton.volumetoggle /template/ ContentPresenter">
@@ -28,7 +28,7 @@
       <ToggleButton Classes="volumetoggle" IsChecked="{Binding IsMuted, Mode=OneWayToSource}">
         <DrawingPresenter Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
       </ToggleButton>
-      <c:VolumeSlider Margin="5,0,0,0" IsEnabled="{Binding !IsMuted}" Value="{Binding Volume, Mode=TwoWay}" Minimum="0" Width="100" Maximum="1" VerticalAlignment="Center" />
+      <c:VolumeSlider Margin="5,0,0,0" IsEnabled="{Binding !IsMuted}" Value="{Binding Volume, Mode=TwoWay}" Width="100" VerticalAlignment="Center" />
     </StackPanel>
   </Panel>
 </UserControl>
