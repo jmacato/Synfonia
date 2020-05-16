@@ -24,10 +24,12 @@ namespace Synfonia.Backend.Artwork
 
             var albums = await searchManager.GetAlbumsByArtistIdAsync(foundArtist.ArtistId);
 
-            var options = new List<FuzzyStringComparisonOptions>();
-            options.Add(FuzzyStringComparisonOptions.UseOverlapCoefficient);
-            options.Add(FuzzyStringComparisonOptions.UseLongestCommonSubsequence);
-            options.Add(FuzzyStringComparisonOptions.UseLongestCommonSubstring);
+            var options = new List<FuzzyStringComparisonOptions>
+            {
+                FuzzyStringComparisonOptions.UseOverlapCoefficient,
+                FuzzyStringComparisonOptions.UseLongestCommonSubsequence,
+                FuzzyStringComparisonOptions.UseLongestCommonSubstring
+            };
 
             var bestMatches = albums.Albums.Where(x => x.CollectionName != null && albumName.ApproximatelyEquals(x.CollectionName, FuzzyStringComparisonTolerance.Strong, options.ToArray())).ToList();
 
@@ -64,15 +66,16 @@ namespace Synfonia.Backend.Artwork
             {
                 var artworkUri = album.ArtworkUrl100.Replace("100x100bb", "1000x1000bb");
 
-                HttpClientHandler clientHandler = new HttpClientHandler();
-                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-
-                using (var client = new HttpClient(clientHandler))
+                var clientHandler = new HttpClientHandler
                 {
-                    var data = await client.GetByteArrayAsync(artworkUri);
+                    ServerCertificateCustomValidationCallback = delegate { return true; }
+                };
 
-                    return data;
-                }
+                using var client = new HttpClient(clientHandler);
+
+                var data = await client.GetByteArrayAsync(artworkUri);
+
+                return data;
             }
 
             return null;

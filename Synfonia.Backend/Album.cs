@@ -43,16 +43,15 @@ namespace Synfonia.Backend
 
             if (track != null)
             {
-                using (var tagFile = TagLib.File.Create(track.Path))
+                using var tagFile = TagLib.File.Create(track.Path);
+
+                var tag = tagFile.Tag;
+
+                var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
+
+                if (cover != null)
                 {
-                    var tag = tagFile.Tag;
-
-                    var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
-
-                    if (cover != null)
-                    {
-                        return cover.Data.Data;
-                    }
+                    return cover.Data.Data;
                 }
             }
 
@@ -61,8 +60,10 @@ namespace Synfonia.Backend
 
         public async Task UpdateCoverArtAsync(string url)
         {
-            var clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            var clientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = delegate { return true; }
+            };
 
             using (var client = new HttpClient(clientHandler))
             {
