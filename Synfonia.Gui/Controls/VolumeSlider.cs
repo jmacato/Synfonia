@@ -28,6 +28,8 @@ namespace Synfonia.Controls
         /// </summary>
         public VolumeSlider()
         {
+            Minimum = 0.0d;
+            Maximum = 1.0d;
         }
 
         /// <inheritdoc/>
