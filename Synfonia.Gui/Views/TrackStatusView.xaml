@@ -16,6 +16,17 @@
   <Panel Background="White" DragDrop.AllowDrop="True">
     <Grid RowDefinitions="*,Auto">
       <Panel Grid.RowSpan="1">
+        <Panel.Background>
+          <RadialGradientBrush SpreadMethod="Reflect" Radius="1" Center="0.5 0.7">
+            <RadialGradientBrush.GradientStops>
+              <GradientStop Color="#F2F2F2" Offset="0" />
+              <GradientStop Color="#FEFEFE" Offset="0.25" />
+              <GradientStop Color="#F2F2F2" Offset="0.5" />
+              <GradientStop Color="#FEFEFE" Offset="0.75" />
+              <GradientStop Color="#F2F2F2" Offset="1" />
+            </RadialGradientBrush.GradientStops>
+          </RadialGradientBrush>
+        </Panel.Background>
         <DockPanel Background="Transparent" LastChildFill="True">
           <Panel DockPanel.Dock="Left">
             <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform" DockPanel.Dock="Left" Source="{Binding AlbumCover}" />
