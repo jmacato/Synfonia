@@ -8,11 +8,11 @@
   <Application.Styles>
     <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
     <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
-    <StyleInclude Source="avares://Synfonia/Assets/Icons.xaml"/>
-    <StyleInclude Source="avares://Synfonia/Assets/GlobalStyles.xaml"/>
-    <StyleInclude Source="avares://Synfonia/Controls/SeekSlider.xaml"/>
-    <StyleInclude Source="avares://Synfonia/Controls/VolumeSlider.xaml"/>
-    <StyleInclude Source="avares://Synfonia/Controls/MetroWindow.xaml"/>
+    <StyleInclude Source="avares://Synfonia.Gui/Assets/Icons.xaml"/>
+    <StyleInclude Source="avares://Synfonia.Gui/Assets/GlobalStyles.xaml"/>
+    <StyleInclude Source="avares://Synfonia.Gui/Controls/SeekSlider.xaml"/>
+    <StyleInclude Source="avares://Synfonia.Gui/Controls/VolumeSlider.xaml"/>
+    <StyleInclude Source="avares://Synfonia.Gui/Controls/MetroWindow.xaml"/>
   </Application.Styles>
   <NativeMenu.Menu>
     <NativeMenu />

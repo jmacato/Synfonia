@@ -1,4 +1,4 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia">
+<Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui">
   <Style Selector="c|VolumeSlider">
     <Setter Property="MinHeight" Value="12" /> 
     <Setter Property="Template">
