@@ -166,7 +166,7 @@ namespace Synfonia.Backend
 
                 if (_currentTrack is null && _trackList.Tracks.Count > 0)
                 {
-                    await Forward();
+                    await Forward(false);
                 }
             }
         }
@@ -255,9 +255,9 @@ namespace Synfonia.Backend
                 soundStr.WhenAnyValue(x => x.State)
                     .Subscribe(async x =>
                     {
-                        if (!_userOperation && _isPlaying && x == SoundStreamState.Stopped)
+                        if (!_userOperation && x == SoundStreamState.Stopped)
                         {
-                            await Forward();
+                            await Forward(false);
                         }
 
                         IsPaused = x == SoundStreamState.Paused;
