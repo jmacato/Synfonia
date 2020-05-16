@@ -12,6 +12,17 @@
     <DockPanel LastChildFill="True">
       <Border DockPanel.Dock="Top" Height="80" Background="LightGray" ZIndex="5"  BoxShadow="0 0 5 0 Black">
         <DockPanel>
+          <DockPanel.Background>
+            <RadialGradientBrush SpreadMethod="Reflect" Radius="1" Center="0.5 0.7">
+              <RadialGradientBrush.GradientStops>
+                <GradientStop Color="#AAAAAA" Offset="0" />
+                <GradientStop Color="LightGray" Offset="0.25" />
+                <GradientStop Color="#BBBBBB" Offset="0.5" />
+                <GradientStop Color="LightGray" Offset="0.75" />
+                <GradientStop Color="#AAAAAA" Offset="1" />
+              </RadialGradientBrush.GradientStops>
+            </RadialGradientBrush>
+          </DockPanel.Background>
           <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" Margin="40 0" />
           <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
           <local:TrackStatusView DataContext="{Binding TrackStatus}" />
