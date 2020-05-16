@@ -32,14 +32,14 @@
     <Setter Property="Value" Value="{TemplateBinding Value, Mode=TwoWay}" />
   </Style>
   <Style Selector="c|SeekSlider /template/ Border#TrackBackground">
-    <Setter Property="Background" Value="LightGray" />
+    <Setter Property="Background" Value="Transparent" />
   </Style>
   <Style Selector="c|SeekSlider /template/ c|SeekTrackButton.inc_track">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="Transparent" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Border Background="LightGray" />
+        <Border Background="Transparent" />
       </ControlTemplate>
     </Setter>
   </Style>
@@ -48,7 +48,7 @@
     <Setter Property="Foreground" Value="Transparent" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Border Name="InternalBorder" Background="#565656" />
+        <Border Name="InternalBorder" Background="Black" Opacity="0.2" />
       </ControlTemplate>
     </Setter>
   </Style>
