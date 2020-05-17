@@ -3,20 +3,20 @@
     <Setter Property="MinHeight" Value="12" /> 
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Name="grid" RowDefinitions="Auto,12,Auto">
+        <Grid Name="grid" RowDefinitions="Auto,Auto,Auto" Margin="10">
           <Border Name="TrackBackground" />
-          <Track Name="PART_Track" Grid.Row="1" Orientation="Horizontal" ClipToBounds="False">
+          <Track Name="PART_Track" Grid.Row="1" Orientation="Horizontal">
             <Track.DecreaseButton>
               <c:SeekTrackButton Name="PART_DecreaseButton" Classes="dec_track" Height="6" VerticalAlignment="Center" />
             </Track.DecreaseButton>
             <Track.IncreaseButton>
               <c:SeekTrackButton Name="PART_IncreaseButton" Classes="inc_track" Height="6" VerticalAlignment="Center" />
             </Track.IncreaseButton>
-            <Thumb Name="thumb" Height="12">
+            <Thumb Name="thumb" ClipToBounds="False">
               <Thumb.Template>
                 <ControlTemplate>
-                  <Grid Margin="-9,0,0,0">
-                    <Border Width="18" Height="12" Background="#AEAEAE" BoxShadow="2 2 4 Black" />
+                  <Grid>
+                    <Border Width="12" CornerRadius="6" Height="12" Background="#AEAEAE" BoxShadow="2 2 2 #CC222222" />
                   </Grid>
                 </ControlTemplate>
               </Thumb.Template>
