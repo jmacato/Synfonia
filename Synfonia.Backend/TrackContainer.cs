@@ -8,13 +8,11 @@ namespace Synfonia.Backend
     {
         private Track _track;
         private SoundStream _soundStream;
-        private CompositeDisposable _disp;
 
-        public TrackContainer(Track track, SoundStream soundStream, CompositeDisposable disposable)
+        public TrackContainer(Track track, SoundStream soundStream)
         {
             _track = track;
             _soundStream = soundStream;
-            _disp = disposable;
         }
 
         public Track Track => _track;
@@ -22,7 +20,7 @@ namespace Synfonia.Backend
 
         public void Dispose()
         {
-            _disp?.Dispose();
+            _soundStream?.Dispose();
         }
     }
 }
