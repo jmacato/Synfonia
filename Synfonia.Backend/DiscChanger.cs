@@ -93,12 +93,13 @@ namespace Synfonia.Backend
                 .DistinctUntilChanged()
                 .Subscribe(async x =>
                 {
-                    if (!_userOperation && x == SoundStreamState.Stopped)
+                    if (!_userOperation && x == SoundStreamState.Stop)
                     {
                         if (preloadedNextTrack)
                         {
                             CurrentlyPlayingTrack?.Dispose();
                             CurrentlyPlayingTrack = PreloadNextTrack;
+                            PreloadNextTrack = null;
                             _currentTrackIndex = preloadIndex;
                             preloadedNextTrack = false;
                             TrackChanged?.Invoke(this, EventArgs.Empty);
@@ -286,12 +287,10 @@ namespace Synfonia.Backend
             var targetPath = track.Path;
 
             SoundStream soundStr;
-            CompositeDisposable disp;
 
             if (File.Exists(targetPath))
             {
                 soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
-
                 return new TrackContainer(track, soundStr);
             }
             else
