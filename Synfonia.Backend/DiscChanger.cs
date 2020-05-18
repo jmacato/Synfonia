@@ -90,7 +90,7 @@ namespace Synfonia.Backend
                             CurrentlyPlayingTrack?.Dispose();
                             CurrentlyPlayingTrack = PreloadNextTrack;
                             PreloadNextTrack = null;
-                            
+
                             _currentTrackIndex = preloadIndex;
 
                             TrackChanged?.Invoke(this, EventArgs.Empty);
