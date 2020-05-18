@@ -187,6 +187,9 @@ namespace Synfonia.Backend
                 return;
             }
 
+            CurrentlyPlayingTrack?.Dispose();
+            PreloadNextTrack?.Dispose();
+
             _currentTrackIndex = nextIndex;
 
             ChangeTrackAndPlay(_currentTrackIndex);
@@ -210,7 +213,11 @@ namespace Synfonia.Backend
                 return;
             }
 
+            CurrentlyPlayingTrack?.Dispose();
+            PreloadNextTrack?.Dispose();
+
             _currentTrackIndex = nextIndex;
+            
             ChangeTrackAndPlay(_currentTrackIndex);
 
             _userOperation = false;
