@@ -89,9 +89,8 @@ namespace Synfonia.Backend
                         {
                             CurrentlyPlayingTrack?.Dispose();
                             CurrentlyPlayingTrack = PreloadNextTrack;
-
-
                             PreloadNextTrack = null;
+                            
                             _currentTrackIndex = preloadIndex;
 
                             TrackChanged?.Invoke(this, EventArgs.Empty);
@@ -187,6 +186,9 @@ namespace Synfonia.Backend
                 return;
             }
 
+            if (_userOperation)
+                PreloadNextTrack?.Dispose();
+
             _currentTrackIndex = nextIndex;
 
             ChangeTrackAndPlay(_currentTrackIndex);
@@ -210,7 +212,11 @@ namespace Synfonia.Backend
                 return;
             }
 
+            if (_userOperation)
+                PreloadNextTrack?.Dispose();
+
             _currentTrackIndex = nextIndex;
+
             ChangeTrackAndPlay(_currentTrackIndex);
 
             _userOperation = false;
