@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using SharpAudio;
 using SharpAudio.Codec;
+using SharpAudio.SpectrumAnalysis;
 using System;
 using System.IO;
 using System.Reactive;
@@ -37,13 +38,22 @@ namespace Synfonia.Backend
                 throw new Exception("Failed to create an audio backend!");
             }
 
-            _soundSink = new SoundSink(audioEngine);
+            var specProcessor = new SpectrumProcessor();
+
+            _soundSink = new SoundSink(audioEngine, specProcessor);
 
             Observable.FromEventPattern<EventArgs>(this, nameof(TrackChanged))
                       .Select(x => this.CurrentlyPlayingTrack)
                       .Where(x => x != null)
                       .Select(x => x.SoundStream)
                       .Subscribe(OnTrackChanged);
+
+            Observable.FromEventPattern<double[,]>(specProcessor, nameof(specProcessor.FFTDataReady))
+                .Subscribe(x =>
+                {
+                    _lastSpectrumData = x.EventArgs;
+                    SpectrumDataReady?.Invoke(this, EventArgs.Empty);
+                });
         }
 
         private void OnTrackChanged(SoundStream soundStr)
@@ -81,13 +91,6 @@ namespace Synfonia.Backend
                 })
                 .DisposeWith(disp);
 
-            Observable.FromEventPattern<double[,]>(soundStr, nameof(soundStr.FFTDataReady))
-                .Subscribe(x =>
-                {
-                    _lastSpectrumData = x.EventArgs;
-                    SpectrumDataReady?.Invoke(this, EventArgs.Empty);
-                })
-                .DisposeWith(disp);
 
             soundStr.WhenAnyValue(x => x.State)
                 .DistinctUntilChanged()
