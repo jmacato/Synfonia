@@ -20,9 +20,9 @@ namespace Synfonia.Backend
         private bool _userOperation = false;
         private double[,] _lastSpectrumData;
         private bool _isPaused = true;
-        private bool _gaplessPlaybackEnabled = true;
+        private bool _gaplessPlaybackEnabled = false;
         private int preloadIndex;
-        private TrackContainer CurrentlyPlayingTrack, PreloadNextTrack;
+        private TrackContainer CurrentlyPlayingTrack;
 
         CompositeDisposable disp;
         private SoundSink _soundSink;
@@ -47,7 +47,7 @@ namespace Synfonia.Backend
                       .Select(x => x.SoundStream)
                       .Subscribe(OnTrackChanged);
 
-            Observable.FromEventPattern<double[,]>(specProcessor, nameof(specProcessor.FFTDataReady))
+            Observable.FromEventPattern<double[,]>(specProcessor, nameof(specProcessor.FftDataReady))
                 .Subscribe(x =>
                 {
                     _lastSpectrumData = x.EventArgs;
@@ -61,18 +61,18 @@ namespace Synfonia.Backend
 
             disp = new CompositeDisposable();
 
-            if (_gaplessPlaybackEnabled & PreloadNextTrack is null)
-            {
-                var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
+            // if (_gaplessPlaybackEnabled & PreloadNextTrack is null)
+            // {
+            //     var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
 
-                if (nextIndex == (int)TrackIndexDirection.Error)
-                {
-                    return;
-                }
+            //     if (nextIndex == (int)TrackIndexDirection.Error)
+            //     {
+            //         return;
+            //     }
 
-                preloadIndex = nextIndex;
-                PreloadNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
-            }
+            //     preloadIndex = nextIndex;
+            //     PreloadNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
+            // }
 
             soundStr.WhenAnyValue(x => x.Position)
                 .Subscribe(x =>
@@ -83,24 +83,27 @@ namespace Synfonia.Backend
 
 
             soundStr.WhenAnyValue(x => x.State)
-                .DistinctUntilChanged()
                 .Subscribe(async x =>
                 {
-                    if (!_userOperation && x == SoundStreamState.Stop)
+                    // if (!_userOperation && x == SoundStreamState.Stop)
+                    // {
+                    //     if (PreloadNextTrack != null)
+                    //     {
+                    //         CurrentlyPlayingTrack?.Dispose();
+                    //         CurrentlyPlayingTrack = PreloadNextTrack;
+                    //         PreloadNextTrack = null;
+
+                    //         _currentTrackIndex = preloadIndex;
+
+                    //         TrackChanged?.Invoke(this, EventArgs.Empty);
+                    //         DoPlay();
+                    //     }
+                    //     else
+                    // }
+
+                    if (x == SoundStreamState.Stop)
                     {
-                        if (PreloadNextTrack != null)
-                        {
-                            CurrentlyPlayingTrack?.Dispose();
-                            CurrentlyPlayingTrack = PreloadNextTrack;
-                            PreloadNextTrack = null;
-
-                            _currentTrackIndex = preloadIndex;
-
-                            TrackChanged?.Invoke(this, EventArgs.Empty);
-                            DoPlay();
-                        }
-                        else
-                            await Forward(false);
+                        await Forward(false);
                     }
 
                     IsPaused = x == SoundStreamState.Paused;
@@ -137,11 +140,11 @@ namespace Synfonia.Backend
             set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
         }
 
-        public bool GaplessPlaybackEnabled
-        {
-            get => _gaplessPlaybackEnabled;
-            set => this.RaiseAndSetIfChanged(ref _gaplessPlaybackEnabled, value, nameof(GaplessPlaybackEnabled));
-        }
+        // public bool GaplessPlaybackEnabled
+        // {
+        //     get => _gaplessPlaybackEnabled;
+        //     set => this.RaiseAndSetIfChanged(ref _gaplessPlaybackEnabled, value, nameof(GaplessPlaybackEnabled));
+        // }
 
         public int GetNextTrackIndex(int index, TrackIndexDirection direction)
         {
@@ -189,8 +192,8 @@ namespace Synfonia.Backend
                 return;
             }
 
-            if (_userOperation)
-                PreloadNextTrack?.Dispose();
+            // if (_userOperation)
+            //     PreloadNextTrack?.Dispose();
 
             _currentTrackIndex = nextIndex;
 
@@ -215,8 +218,8 @@ namespace Synfonia.Backend
                 return;
             }
 
-            if (_userOperation)
-                PreloadNextTrack?.Dispose();
+            // if (_userOperation)
+            //     PreloadNextTrack?.Dispose();
 
             _currentTrackIndex = nextIndex;
 
