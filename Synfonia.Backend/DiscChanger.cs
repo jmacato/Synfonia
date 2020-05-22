@@ -23,7 +23,6 @@ namespace Synfonia.Backend
         private bool _gaplessPlaybackEnabled = true;
         private int preloadIndex;
         private TrackContainer CurrentlyPlayingTrack, PreloadNextTrack;
-        private bool preloadedNextTrack = false;
 
         CompositeDisposable disp;
         private SoundSink _soundSink;
@@ -56,37 +55,28 @@ namespace Synfonia.Backend
                 });
         }
 
-        private void OnTrackChanged(SoundStream soundStr)
+        private async void OnTrackChanged(SoundStream soundStr)
         {
             disp?.Dispose();
 
             disp = new CompositeDisposable();
 
+            if (_gaplessPlaybackEnabled & PreloadNextTrack is null)
+            {
+                var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
+
+                if (nextIndex == (int)TrackIndexDirection.Error)
+                {
+                    return;
+                }
+
+                preloadIndex = nextIndex;
+                PreloadNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
+            }
+
             soundStr.WhenAnyValue(x => x.Position)
                 .Subscribe(x =>
                 {
-                    // Preload the next track for gapless playback.
-
-                    if (_gaplessPlaybackEnabled
-                        && _isPlaying
-                        && !preloadedNextTrack
-                        && x > (CurrentlyPlayingTrack.SoundStream.Duration / 2))
-                    {
-                        _ = Task.Factory.StartNew(async delegate
-                        {
-                            var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
-
-                            if (nextIndex == (int)TrackIndexDirection.Error)
-                            {
-                                return;
-                            }
-
-                            preloadIndex = nextIndex;
-                            PreloadNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
-                            preloadedNextTrack = true;
-                        });
-                    }
-
                     TrackPositionChanged?.Invoke(this, EventArgs.Empty);
                 })
                 .DisposeWith(disp);
@@ -98,13 +88,14 @@ namespace Synfonia.Backend
                 {
                     if (!_userOperation && x == SoundStreamState.Stop)
                     {
-                        if (preloadedNextTrack)
+                        if (PreloadNextTrack != null)
                         {
                             CurrentlyPlayingTrack?.Dispose();
                             CurrentlyPlayingTrack = PreloadNextTrack;
                             PreloadNextTrack = null;
+
                             _currentTrackIndex = preloadIndex;
-                            preloadedNextTrack = false;
+
                             TrackChanged?.Invoke(this, EventArgs.Empty);
                             DoPlay();
                         }
@@ -198,6 +189,9 @@ namespace Synfonia.Backend
                 return;
             }
 
+            if (_userOperation)
+                PreloadNextTrack?.Dispose();
+
             _currentTrackIndex = nextIndex;
 
             ChangeTrackAndPlay(_currentTrackIndex);
@@ -221,7 +215,11 @@ namespace Synfonia.Backend
                 return;
             }
 
+            if (_userOperation)
+                PreloadNextTrack?.Dispose();
+
             _currentTrackIndex = nextIndex;
+
             ChangeTrackAndPlay(_currentTrackIndex);
 
             _userOperation = false;
