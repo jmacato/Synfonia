@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reactive.Linq;
 using ReactiveUI;
 using Synfonia.Backend;
@@ -8,30 +7,26 @@ namespace Synfonia.ViewModels
 {
     public class VolumeControlViewModel : ViewModelBase
     {
-        private DiscChanger discChanger;
         private bool _isMuted;
         private double _volume = 1d;
+        private DiscChanger discChanger;
 
         public VolumeControlViewModel(DiscChanger discChanger)
         {
             this.discChanger = discChanger;
 
             Observable.FromEventPattern(discChanger, nameof(discChanger.TrackChanged))
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(_ =>
-                    {
-                        if (IsMuted)
-                        {
-                            discChanger.Volume = 0;
-                        }
-                        else
-                        {
-                            discChanger.Volume = this.Volume;
-                        }
-                    });
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ =>
+                {
+                    if (IsMuted)
+                        discChanger.Volume = 0;
+                    else
+                        discChanger.Volume = Volume;
+                });
 
             this.WhenAnyValue(x => x.Volume,
-                              x => x.IsMuted)
+                    x => x.IsMuted)
                 .Where(x => !x.Item2)
                 .Subscribe(x => discChanger.Volume = x.Item1);
 

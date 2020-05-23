@@ -7,39 +7,11 @@ using Avalonia.VisualTree;
 namespace Synfonia.Behaviors
 {
     /// <summary>
-    /// Default drop handler.
+    ///     Default drop handler.
     /// </summary>
     public abstract class DefaultDropHandler : IDropHandler
     {
-        /// <summary>
-        /// Calculates fixed drag position relative to event source.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        /// <returns>The fixed drag position relative to event source.</returns>
-        public static Point GetPosition(object sender, DragEventArgs e)
-        {
-            var relativeTo = e.Source as IControl;
-            var point = e.GetPosition(relativeTo);
-            return point;
-        }
-
-        /// <summary>
-        /// Calculates fixed drag position relative to event source and translated to screen coordinates.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        /// <returns>The fixed drag position relative to event source and translated to screen coordinates.</returns>
-        public static Point GetPositionScreen(object sender, DragEventArgs e)
-        {
-            var relativeTo = e.Source as IControl;
-            var point = e.GetPosition(relativeTo);
-            var visual = relativeTo as IVisual;
-            var screenPoint = visual.PointToScreen(point).ToPoint(1.0);
-            return screenPoint;
-        }
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Enter(object sender, DragEventArgs e, object sourceContext, object targetContext)
         {
             if (Validate(sender, e, sourceContext, targetContext, null) == false)
@@ -54,7 +26,7 @@ namespace Synfonia.Behaviors
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Over(object sender, DragEventArgs e, object sourceContext, object targetContext)
         {
             if (Validate(sender, e, sourceContext, targetContext, null) == false)
@@ -69,7 +41,7 @@ namespace Synfonia.Behaviors
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Drop(object sender, DragEventArgs e, object sourceContext, object targetContext)
         {
             if (Execute(sender, e, sourceContext, targetContext, null) == false)
@@ -84,27 +56,57 @@ namespace Synfonia.Behaviors
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Leave(object sender, RoutedEventArgs e)
         {
             Cancel(sender, e);
         }
 
-        /// <inheritdoc/>
-        public virtual bool Validate(object sender, DragEventArgs e, object sourceContext, object targetContext, object state)
+        /// <inheritdoc />
+        public virtual bool Validate(object sender, DragEventArgs e, object sourceContext, object targetContext,
+            object state)
         {
             return false;
         }
 
-        /// <inheritdoc/>
-        public virtual bool Execute(object sender, DragEventArgs e, object sourceContext, object targetContext, object state)
+        /// <inheritdoc />
+        public virtual bool Execute(object sender, DragEventArgs e, object sourceContext, object targetContext,
+            object state)
         {
             return false;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public virtual void Cancel(object sender, RoutedEventArgs e)
         {
+        }
+
+        /// <summary>
+        ///     Calculates fixed drag position relative to event source.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        /// <returns>The fixed drag position relative to event source.</returns>
+        public static Point GetPosition(object sender, DragEventArgs e)
+        {
+            var relativeTo = e.Source as IControl;
+            var point = e.GetPosition(relativeTo);
+            return point;
+        }
+
+        /// <summary>
+        ///     Calculates fixed drag position relative to event source and translated to screen coordinates.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        /// <returns>The fixed drag position relative to event source and translated to screen coordinates.</returns>
+        public static Point GetPositionScreen(object sender, DragEventArgs e)
+        {
+            var relativeTo = e.Source as IControl;
+            var point = e.GetPosition(relativeTo);
+            var visual = relativeTo as IVisual;
+            var screenPoint = visual.PointToScreen(point).ToPoint(1.0);
+            return screenPoint;
         }
     }
 }

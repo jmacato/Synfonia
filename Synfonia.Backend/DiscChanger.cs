@@ -1,58 +1,77 @@
-﻿using ReactiveUI;
-using SharpAudio;
-using SharpAudio.Codec;
-using SharpAudio.SpectrumAnalysis;
-using System;
+﻿using System;
 using System.IO;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using ReactiveUI;
+using SharpAudio;
+using SharpAudio.Codec;
+using SharpAudio.SpectrumAnalysis;
 
 namespace Synfonia.Backend
 {
     public class DiscChanger : ReactiveObject
     {
         private AudioEngine _audioEngine;
-        private Playlist _trackList;
         private int _currentTrackIndex;
-        private bool _isPlaying => CurrentlyPlayingTrack.SoundStream.IsPlaying;
-        private bool _userOperation = false;
-        private double[,] _lastSpectrumData;
-        private bool _isPaused = true;
         private bool _gaplessPlaybackEnabled = false;
-        private int preloadIndex;
+        private bool _isPaused = true;
+        private readonly SoundSink _soundSink;
+        private Playlist _trackList;
+        private bool _userOperation;
         private TrackContainer CurrentlyPlayingTrack;
 
-        CompositeDisposable disp;
-        private SoundSink _soundSink;
+        private CompositeDisposable disp;
+        private int preloadIndex;
 
         public DiscChanger()
         {
             _trackList = new Playlist();
             var audioEngine = AudioEngine.CreateDefault();
 
-            if (audioEngine == null)
-            {
-                throw new Exception("Failed to create an audio backend!");
-            }
+            if (audioEngine == null) throw new Exception("Failed to create an audio backend!");
 
             var specProcessor = new SpectrumProcessor();
 
             _soundSink = new SoundSink(audioEngine, specProcessor);
 
             Observable.FromEventPattern<EventArgs>(this, nameof(TrackChanged))
-                      .Select(x => this.CurrentlyPlayingTrack)
-                      .Where(x => x != null)
-                      .Select(x => x.SoundStream)
-                      .Subscribe(OnTrackChanged);
+                .Select(x => CurrentlyPlayingTrack)
+                .Where(x => x != null)
+                .Select(x => x.SoundStream)
+                .Subscribe(OnTrackChanged);
 
             Observable.FromEventPattern<double[,]>(specProcessor, nameof(specProcessor.FftDataReady))
                 .Subscribe(x =>
                 {
-                    _lastSpectrumData = x.EventArgs;
+                    CurrentSpectrumData = x.EventArgs;
                     SpectrumDataReady?.Invoke(this, EventArgs.Empty);
                 });
+        }
+
+        private bool _isPlaying => CurrentlyPlayingTrack.SoundStream.IsPlaying;
+
+        public Track CurrentTrack => CurrentlyPlayingTrack?.Track;
+
+        public TimeSpan CurrentTrackPosition => CurrentlyPlayingTrack?.SoundStream.Position ?? TimeSpan.Zero;
+
+        public TimeSpan CurrentTrackDuration => CurrentlyPlayingTrack?.SoundStream.Duration ?? TimeSpan.Zero;
+
+        public double[,] CurrentSpectrumData { get; private set; }
+
+        public double Volume
+        {
+            get => CurrentlyPlayingTrack.SoundStream?.Volume ?? 0d;
+            set
+            {
+                if (CurrentlyPlayingTrack != null) CurrentlyPlayingTrack.SoundStream.Volume = (float) value;
+            }
+        }
+
+        public bool IsPaused
+        {
+            get => _isPaused;
+            set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
         }
 
         private async void OnTrackChanged(SoundStream soundStr)
@@ -75,10 +94,7 @@ namespace Synfonia.Backend
             // }
 
             soundStr.WhenAnyValue(x => x.Position)
-                .Subscribe(x =>
-                {
-                    TrackPositionChanged?.Invoke(this, EventArgs.Empty);
-                })
+                .Subscribe(x => { TrackPositionChanged?.Invoke(this, EventArgs.Empty); })
                 .DisposeWith(disp);
 
 
@@ -101,10 +117,7 @@ namespace Synfonia.Backend
                     //     else
                     // }
 
-                    if (x == SoundStreamState.Stop)
-                    {
-                        await Forward(false);
-                    }
+                    if (x == SoundStreamState.Stop) await Forward(false);
 
                     IsPaused = x == SoundStreamState.Paused;
                 })
@@ -116,29 +129,6 @@ namespace Synfonia.Backend
         public event EventHandler SpectrumDataReady;
 
         public event EventHandler TrackPositionChanged;
-
-        public Track CurrentTrack => CurrentlyPlayingTrack?.Track;
-
-        public TimeSpan CurrentTrackPosition => CurrentlyPlayingTrack?.SoundStream.Position ?? TimeSpan.Zero;
-
-        public TimeSpan CurrentTrackDuration => CurrentlyPlayingTrack?.SoundStream.Duration ?? TimeSpan.Zero;
-
-        public double[,] CurrentSpectrumData => _lastSpectrumData;
-
-        public double Volume
-        {
-            get => CurrentlyPlayingTrack.SoundStream?.Volume ?? 0d;
-            set
-            {
-                if (CurrentlyPlayingTrack != null) CurrentlyPlayingTrack.SoundStream.Volume = (float)value;
-            }
-        }
-
-        public bool IsPaused
-        {
-            get => _isPaused;
-            set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
-        }
 
         // public bool GaplessPlaybackEnabled
         // {
@@ -172,7 +162,7 @@ namespace Synfonia.Backend
                         return _trackList.Tracks.Count - 1;
                     }
                 default:
-                    return (int)TrackIndexDirection.Error;
+                    return (int) TrackIndexDirection.Error;
             }
         }
 
@@ -180,17 +170,11 @@ namespace Synfonia.Backend
         {
             _userOperation = byUser;
 
-            if (_trackList is null)
-            {
-                return;
-            }
+            if (_trackList is null) return;
 
             var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
 
-            if (nextIndex == (int)TrackIndexDirection.Error)
-            {
-                return;
-            }
+            if (nextIndex == (int) TrackIndexDirection.Error) return;
 
             // if (_userOperation)
             //     PreloadNextTrack?.Dispose();
@@ -206,17 +190,11 @@ namespace Synfonia.Backend
         {
             _userOperation = byUser;
 
-            if (_trackList is null)
-            {
-                return;
-            }
+            if (_trackList is null) return;
 
             var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Backward);
 
-            if (nextIndex == (int)TrackIndexDirection.Error)
-            {
-                return;
-            }
+            if (nextIndex == (int) TrackIndexDirection.Error) return;
 
             // if (_userOperation)
             //     PreloadNextTrack?.Dispose();
@@ -230,10 +208,7 @@ namespace Synfonia.Backend
 
         public void Seek(TimeSpan seektime)
         {
-            if (_isPlaying)
-            {
-                CurrentlyPlayingTrack?.SoundStream.TrySeek(seektime);
-            }
+            if (_isPlaying) CurrentlyPlayingTrack?.SoundStream.TrySeek(seektime);
         }
 
         public async Task Play()
@@ -251,16 +226,13 @@ namespace Synfonia.Backend
 
         public async Task AppendTrackList(ITrackList trackList)
         {
-            bool isEmpty = _trackList.Tracks.Count == 0;
+            var isEmpty = _trackList.Tracks.Count == 0;
 
             _trackList.AddTracks(trackList);
 
             if (_isPaused || isEmpty)
             {
-                if (isEmpty)
-                {
-                    _currentTrackIndex = 0;
-                }
+                if (isEmpty) _currentTrackIndex = 0;
 
                 ChangeTrackAndPlay(_currentTrackIndex);
             }
@@ -297,10 +269,8 @@ namespace Synfonia.Backend
                 soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
                 return new TrackContainer(track, soundStr);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

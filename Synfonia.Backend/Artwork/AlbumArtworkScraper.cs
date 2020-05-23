@@ -1,9 +1,9 @@
-﻿using FuzzyString;
-using iTunesSearch.Library;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FuzzyString;
+using iTunesSearch.Library;
 
 namespace Synfonia.Backend.Artwork
 {
@@ -17,10 +17,7 @@ namespace Synfonia.Backend.Artwork
 
             var foundArtist = artists.Artists.FirstOrDefault();
 
-            if (foundArtist is null)
-            {
-                return null;
-            }
+            if (foundArtist is null) return null;
 
             var albums = await searchManager.GetAlbumsByArtistIdAsync(foundArtist.ArtistId);
 
@@ -31,7 +28,9 @@ namespace Synfonia.Backend.Artwork
                 FuzzyStringComparisonOptions.UseLongestCommonSubstring
             };
 
-            var bestMatches = albums.Albums.Where(x => x.CollectionName != null && albumName.ApproximatelyEquals(x.CollectionName, FuzzyStringComparisonTolerance.Strong, options.ToArray())).ToList();
+            var bestMatches = albums.Albums.Where(x =>
+                x.CollectionName != null && albumName.ApproximatelyEquals(x.CollectionName,
+                    FuzzyStringComparisonTolerance.Strong, options.ToArray())).ToList();
 
             return bestMatches.Concat(albums.Albums.Where(x => x.CollectionName != null && !bestMatches.Contains(x)))
                 .Concat(albums.Albums.Where(x => x.CollectionName is null))
@@ -53,14 +52,13 @@ namespace Synfonia.Backend.Artwork
 
             var foundArtist = artists.Artists.FirstOrDefault();
 
-            if (foundArtist is null)
-            {
-                return null;
-            }
+            if (foundArtist is null) return null;
 
             var albums = await searchManager.GetAlbumsByArtistIdAsync(foundArtist.ArtistId);
 
-            var album = albums.Albums.FirstOrDefault(x => x.CollectionName != null && x.CollectionName.Contains(albumName) && !string.IsNullOrWhiteSpace(x.ArtworkUrl100));
+            var album = albums.Albums.FirstOrDefault(x =>
+                x.CollectionName != null && x.CollectionName.Contains(albumName) &&
+                !string.IsNullOrWhiteSpace(x.ArtworkUrl100));
 
             if (album != null)
             {

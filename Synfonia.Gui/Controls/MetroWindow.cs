@@ -1,21 +1,19 @@
+using System;
+using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Media;
-using System;
-using System.Linq;
 using Avalonia.Controls.Shapes;
+using Avalonia.Input;
 using Avalonia.Styling;
-using System.Runtime.InteropServices;
 using ReactiveUI;
-using System.Reactive.Linq;
 
 namespace Synfonia.Controls
 {
     public class MetroWindow : Window, IStyleable
     {
-        public enum ClassLongIndex : int
+        public enum ClassLongIndex
         {
             GCLP_MENUNAME = -8,
             GCLP_HBRBACKGROUND = -10,
@@ -30,35 +28,38 @@ namespace Synfonia.Controls
             GCW_ATOM = -32
         }
 
-        [DllImport("user32.dll", EntryPoint = "SetClassLongPtr")]
-        private static extern IntPtr SetClassLong64(IntPtr hWnd, ClassLongIndex nIndex, IntPtr dwNewLong);
+        public static readonly StyledProperty<Control> TitleBarContentProperty =
+            AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarContent));
 
-        [DllImport("user32.dll", EntryPoint = "SetClassLong")]
-        private static extern IntPtr SetClassLong32(IntPtr hWnd, ClassLongIndex nIndex, IntPtr dwNewLong);
+        public static readonly StyledProperty<Control> SideBarContentProperty =
+            AvaloniaProperty.Register<MetroWindow, Control>(nameof(SideBarContent));
 
-        public static IntPtr SetClassLong(IntPtr hWnd, ClassLongIndex nIndex, IntPtr dwNewLong)
-        {
-            if (IntPtr.Size == 4)
-            {
-                return SetClassLong32(hWnd, nIndex, dwNewLong);
-            }
+        public static readonly StyledProperty<bool> ClientDecorationsProperty =
+            AvaloniaProperty.Register<MetroWindow, bool>(nameof(ClientDecorations));
 
-            return SetClassLong64(hWnd, nIndex, dwNewLong);
-        }
+        public static readonly StyledProperty<bool> SideBarEnabledProperty =
+            AvaloniaProperty.Register<MetroWindow, bool>(nameof(SideBarEnabled));
 
-        public static IntPtr GetClassLongPtr(IntPtr hWnd, int nIndex)
-        {
-            if (IntPtr.Size > 4)
-                return GetClassLongPtr64(hWnd, nIndex);
-            else
-                return new IntPtr(GetClassLongPtr32(hWnd, nIndex));
-        }
+        private Panel _bottomHorizontalGrip,
+            _bottomLeftGrip,
+            _bottomRightGrip,
+            _leftVerticalGrip,
+            _rightVerticalGrip,
+            _topHorizontalGrip,
+            _topLeftGrip,
+            _topRightGrip;
 
-        [DllImport("user32.dll", EntryPoint = "GetClassLong")]
-        public static extern uint GetClassLongPtr32(IntPtr hWnd, int nIndex);
+        private Button _closeButton;
 
-        [DllImport("user32.dll", EntryPoint = "GetClassLongPtr")]
-        public static extern IntPtr GetClassLongPtr64(IntPtr hWnd, int nIndex);
+        private Button _minimiseButton;
+
+
+        private bool _mouseDown;
+        private Point _mouseDownPosition;
+        private Button _restoreButton;
+        private Path _restoreButtonPanelPath;
+        private Button _sidebar_button;
+        private DockPanel _titleBar;
 
         static MetroWindow()
         {
@@ -74,11 +75,11 @@ namespace Synfonia.Controls
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    var classes = (int)GetClassLongPtr(this.PlatformImpl.Handle.Handle, (int)ClassLongIndex.GCL_STYLE);
+                    var classes = (int) GetClassLongPtr(PlatformImpl.Handle.Handle, (int) ClassLongIndex.GCL_STYLE);
 
-                    classes |= (int)0x00020000;
+                    classes |= 0x00020000;
 
-                    SetClassLong(this.PlatformImpl.Handle.Handle, ClassLongIndex.GCL_STYLE, new IntPtr(classes));
+                    SetClassLong(PlatformImpl.Handle.Handle, ClassLongIndex.GCL_STYLE, new IntPtr(classes));
                 }
             }
             else
@@ -87,53 +88,20 @@ namespace Synfonia.Controls
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
                 HasSystemDecorations = true;
 
-                // This will need implementing properly once this is supported by avalonia itself.
-                // var color = (ColorTheme.CurrentTheme.Background as SolidColorBrush).Color;
-                // (PlatformImpl as Avalonia.Native.WindowImpl).SetTitleBarColor(color);
-            }
+            // This will need implementing properly once this is supported by avalonia itself.
+            // var color = (ColorTheme.CurrentTheme.Background as SolidColorBrush).Color;
+            // (PlatformImpl as Avalonia.Native.WindowImpl).SetTitleBarColor(color);
 
             this.WhenAnyValue(x => x.WindowState)
                 .Select(x => x == WindowState.Maximized)
-                .Subscribe(x =>
-                {
-                    PseudoClasses.Set(":maximised", x);
-                });
+                .Subscribe(x => { PseudoClasses.Set(":maximised", x); });
 
             this.WhenAnyValue(x => x.SideBarEnabled)
                 .DistinctUntilChanged()
-                .Subscribe(x =>
-                {
-                    PseudoClasses.Set(":sidebar", x);
-                });
+                .Subscribe(x => { PseudoClasses.Set(":sidebar", x); });
         }
-
-        public static readonly StyledProperty<Control> TitleBarContentProperty =
-            AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarContent));
-
-        public static readonly StyledProperty<Control> SideBarContentProperty =
-            AvaloniaProperty.Register<MetroWindow, Control>(nameof(SideBarContent));
-
-        public static readonly StyledProperty<bool> ClientDecorationsProperty =
-            AvaloniaProperty.Register<MetroWindow, bool>(nameof(ClientDecorations));
-
-        public static readonly StyledProperty<bool> SideBarEnabledProperty =
-            AvaloniaProperty.Register<MetroWindow, bool>(nameof(SideBarEnabled));
-
-        private Panel _bottomHorizontalGrip, _bottomLeftGrip, _bottomRightGrip, _leftVerticalGrip, _rightVerticalGrip, _topHorizontalGrip, _topLeftGrip, _topRightGrip;
-
-        private Button _minimiseButton;
-        private Button _closeButton;
-        private Button _sidebar_button;
-
-
-        private bool _mouseDown;
-        private Point _mouseDownPosition;
-        private Button _restoreButton;
-        private Path _restoreButtonPanelPath;
-        private DockPanel _titleBar;
 
         public bool SideBarEnabled
         {
@@ -149,17 +117,43 @@ namespace Synfonia.Controls
 
         public Control TitleBarContent
         {
-            get { return GetValue(TitleBarContentProperty); }
-            set { SetValue(TitleBarContentProperty, value); }
+            get => GetValue(TitleBarContentProperty);
+            set => SetValue(TitleBarContentProperty, value);
         }
 
         public Control SideBarContent
         {
-            get { return GetValue(SideBarContentProperty); }
-            set { SetValue(SideBarContentProperty, value); }
+            get => GetValue(SideBarContentProperty);
+            set => SetValue(SideBarContentProperty, value);
         }
 
         Type IStyleable.StyleKey => typeof(MetroWindow);
+
+        [DllImport("user32.dll", EntryPoint = "SetClassLongPtr")]
+        private static extern IntPtr SetClassLong64(IntPtr hWnd, ClassLongIndex nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetClassLong")]
+        private static extern IntPtr SetClassLong32(IntPtr hWnd, ClassLongIndex nIndex, IntPtr dwNewLong);
+
+        public static IntPtr SetClassLong(IntPtr hWnd, ClassLongIndex nIndex, IntPtr dwNewLong)
+        {
+            if (IntPtr.Size == 4) return SetClassLong32(hWnd, nIndex, dwNewLong);
+
+            return SetClassLong64(hWnd, nIndex, dwNewLong);
+        }
+
+        public static IntPtr GetClassLongPtr(IntPtr hWnd, int nIndex)
+        {
+            if (IntPtr.Size > 4)
+                return GetClassLongPtr64(hWnd, nIndex);
+            return new IntPtr(GetClassLongPtr32(hWnd, nIndex));
+        }
+
+        [DllImport("user32.dll", EntryPoint = "GetClassLong")]
+        public static extern uint GetClassLongPtr32(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "GetClassLongPtr")]
+        public static extern IntPtr GetClassLongPtr64(IntPtr hWnd, int nIndex);
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {

@@ -1,7 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using ReactiveUI;
 
 namespace Synfonia.ViewModels
@@ -17,14 +14,14 @@ namespace Synfonia.ViewModels
 
         public IBitmap Cover
         {
-            get { return _cover; }
-            set { this.RaiseAndSetIfChanged(ref _cover, value); }
+            get => _cover;
+            set => this.RaiseAndSetIfChanged(ref _cover, value);
         }
 
         public string Url
         {
-            get { return _url; }
-            set { this.RaiseAndSetIfChanged(ref _url, value); }
+            get => _url;
+            set => this.RaiseAndSetIfChanged(ref _url, value);
         }
     }
 }

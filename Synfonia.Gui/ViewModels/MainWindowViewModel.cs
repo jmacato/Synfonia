@@ -1,17 +1,14 @@
 ﻿using ReactiveUI;
 using Synfonia.Backend;
-using System.Reactive.Concurrency;
 
 namespace Synfonia.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
         private CollectionExplorerViewModel _collectionExplorer;
-        private TrackStatusViewModel _trackStatus;
         private DiscChangerViewModel _discChanger;
+        private TrackStatusViewModel _trackStatus;
         private VolumeControlViewModel _volumeControl;
-
-        public static MainWindowViewModel Instance { get; set; }
 
         public MainWindowViewModel(DiscChanger discChanger, LibraryManager libraryManager)
         {
@@ -21,28 +18,30 @@ namespace Synfonia.ViewModels
             VolumeControl = new VolumeControlViewModel(discChanger);
         }
 
+        public static MainWindowViewModel Instance { get; set; }
+
         public DiscChangerViewModel DiscChanger
         {
-            get { return _discChanger; }
-            set { this.RaiseAndSetIfChanged(ref _discChanger, value); }
+            get => _discChanger;
+            set => this.RaiseAndSetIfChanged(ref _discChanger, value);
         }
 
         public TrackStatusViewModel TrackStatus
         {
-            get { return _trackStatus; }
-            set { this.RaiseAndSetIfChanged(ref _trackStatus, value); }
+            get => _trackStatus;
+            set => this.RaiseAndSetIfChanged(ref _trackStatus, value);
         }
 
         public CollectionExplorerViewModel CollectionExplorer
         {
-            get { return _collectionExplorer; }
-            set { this.RaiseAndSetIfChanged(ref _collectionExplorer, value); }
+            get => _collectionExplorer;
+            set => this.RaiseAndSetIfChanged(ref _collectionExplorer, value);
         }
 
         public VolumeControlViewModel VolumeControl
         {
-            get { return _volumeControl; }
-            set { this.RaiseAndSetIfChanged(ref _volumeControl, value); }
+            get => _volumeControl;
+            set => this.RaiseAndSetIfChanged(ref _volumeControl, value);
         }
     }
 }

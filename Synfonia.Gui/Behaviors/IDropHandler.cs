@@ -4,12 +4,12 @@ using Avalonia.Interactivity;
 namespace Synfonia.Behaviors
 {
     /// <summary>
-    /// Drop handler contract.
+    ///     Drop handler contract.
     /// </summary>
     public interface IDropHandler
     {
         /// <summary>
-        /// Perform enter operation.
+        ///     Perform enter operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The drag event arguments.</param>
@@ -18,7 +18,7 @@ namespace Synfonia.Behaviors
         void Enter(object sender, DragEventArgs e, object sourceContext, object targetContext);
 
         /// <summary>
-        /// Perform over operation.
+        ///     Perform over operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The drag event arguments.</param>
@@ -27,7 +27,7 @@ namespace Synfonia.Behaviors
         void Over(object sender, DragEventArgs e, object sourceContext, object targetContext);
 
         /// <summary>
-        /// Perform drop operation.
+        ///     Perform drop operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The drag event arguments.</param>
@@ -36,14 +36,14 @@ namespace Synfonia.Behaviors
         void Drop(object sender, DragEventArgs e, object sourceContext, object targetContext);
 
         /// <summary>
-        /// Perform leave operation.
+        ///     Perform leave operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The routed event arguments.</param>
         void Leave(object sender, RoutedEventArgs e);
 
         /// <summary>
-        /// Validate drag operation.
+        ///     Validate drag operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The drag event arguments.</param>
@@ -54,7 +54,7 @@ namespace Synfonia.Behaviors
         bool Validate(object sender, DragEventArgs e, object sourceContext, object targetContext, object state);
 
         /// <summary>
-        /// Execute drag operation.
+        ///     Execute drag operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The drag event arguments.</param>
@@ -65,7 +65,7 @@ namespace Synfonia.Behaviors
         bool Execute(object sender, DragEventArgs e, object sourceContext, object targetContext, object state);
 
         /// <summary>
-        /// Cancel drag operation.
+        ///     Cancel drag operation.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">The routed event arguments.</param>

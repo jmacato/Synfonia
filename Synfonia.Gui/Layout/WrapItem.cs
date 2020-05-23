@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Avalonia.Controls;
 using Avalonia.Layout;
 
 namespace Synfonia.Layout
@@ -11,7 +10,7 @@ namespace Synfonia.Layout
     {
         public WrapItem(int index)
         {
-            this.Index = index;
+            Index = index;
         }
 
         public int Index { get; }

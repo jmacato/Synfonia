@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using Synfonia.Controls;
 
 namespace Synfonia.Views
 {
@@ -26,12 +25,8 @@ namespace Synfonia.Views
             var point = e.GetCurrentPoint(this);
 
             if (point.Properties.IsLeftButtonPressed)
-            {
                 if (point.Position.Y < 20)
-                {
                     BeginMoveDrag(e);
-                }
-            }
         }
     }
 }
