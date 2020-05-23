@@ -9,8 +9,7 @@ namespace Synfonia.Converters
 {
     public class AlbumTitleToPlaceholderConverter : IValueConverter
     {
-        private static readonly (Color StartColor, Color EndColor)[]
-placeholderColors =
+        private static readonly (Color StartColor, Color EndColor)[] placeholderColors =
         {
             (Color.Parse("#38ADAE"), Color.Parse("#CD295A")),
             (Color.Parse("#F1EAB9"), Color.Parse("#FF8C8C")),
@@ -28,7 +27,7 @@ placeholderColors =
             if (value is string s)
             {
                 var selector = s.Select(x => (uint) x)
-                    .Aggregate((x, y) => x ^ y) % (uint) PlaceholderColors.Length;
+                    .Aggregate((x, y) => x ^ y) % (uint) placeholderColors.Length;
 
                 return new LinearGradientBrush
                 {
@@ -36,8 +35,8 @@ placeholderColors =
                     EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
                     GradientStops = new GradientStops
                     {
-                        new GradientStop(PlaceholderColors[selector].StartColor, 0),
-                        new GradientStop(PlaceholderColors[selector].EndColor, 1)
+                        new GradientStop(placeholderColors[selector].StartColor, 0),
+                        new GradientStop(placeholderColors[selector].EndColor, 1)
                     }
                 };
             }
