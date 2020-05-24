@@ -11,7 +11,7 @@ using SharpAudio.SpectrumAnalysis;
 namespace Synfonia.Backend
 {
     public class DiscChanger : ReactiveObject
-    { 
+    {
         private readonly SoundSink _soundSink;
         private int _currentTrackIndex;
         private bool _isPaused = true;
@@ -109,6 +109,7 @@ namespace Synfonia.Backend
                             _preloadedTrack = null;
                             _currentTrackIndex = preloadIndex;
                             TrackChanged?.Invoke(this, EventArgs.Empty);
+                            DoPlay();
                         }
                         else
                         {
@@ -217,7 +218,8 @@ namespace Synfonia.Backend
 
         private void DoPlay()
         {
-            _currentTrack.SoundStream.PlayPause();
+            if (_currentTrack.SoundStream.State == SoundStreamState.Paused)
+                _currentTrack.SoundStream.PlayPause();
         }
 
         public async Task AppendTrackList(ITrackList trackList)
@@ -228,8 +230,8 @@ namespace Synfonia.Backend
 
             if (isEmpty)
             {
-                _currentTrackIndex = 0;
-                ChangeTrackAndPlay(_currentTrackIndex);
+                _currentTrackIndex = -1;
+                await Forward(false);
             }
         }
 
