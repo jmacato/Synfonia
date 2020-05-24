@@ -218,8 +218,9 @@ namespace Synfonia.Backend
 
         private void DoPlay()
         {
-            if (_currentTrack.SoundStream.State == SoundStreamState.Paused)
-                _currentTrack.SoundStream.PlayPause();
+            if (_currentTrack != null)
+                if (_currentTrack.SoundStream.State == SoundStreamState.Paused)
+                    _currentTrack.SoundStream.PlayPause();
         }
 
         public async Task AppendTrackList(ITrackList trackList)
