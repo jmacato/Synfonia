@@ -109,7 +109,7 @@ namespace Synfonia.Backend
                             _preloadedTrack = null;
                             _currentTrackIndex = preloadIndex;
                             TrackChanged?.Invoke(this, EventArgs.Empty);
-                            DoPlay();
+                            DoPlay(false);
                         }
                         else
                         {
@@ -213,14 +213,22 @@ namespace Synfonia.Backend
             if (_currentTrack is null && _trackList.Tracks.Count > 0)
                 await Forward(false);
             else
-                DoPlay();
+                DoPlay(true);
         }
 
-        private void DoPlay()
+        private void DoPlay(bool userOp = true)
         {
-            if (_currentTrack != null)
+            if (_currentTrack == null) return;
+
+            if (!userOp)
+            {
                 if (_currentTrack.SoundStream.State == SoundStreamState.Paused)
                     _currentTrack.SoundStream.PlayPause();
+            }
+            else
+            {
+                _currentTrack.SoundStream.PlayPause();
+            }
         }
 
         public async Task AppendTrackList(ITrackList trackList)
@@ -241,7 +249,7 @@ namespace Synfonia.Backend
             _currentTrack?.Dispose();
             _currentTrack = await LoadTrackAsync(_trackList.Tracks[index]);
             TrackChanged?.Invoke(this, EventArgs.Empty);
-            DoPlay();
+            DoPlay(false);
         }
 
         public async Task LoadTrackList(ITrackList trackList)
