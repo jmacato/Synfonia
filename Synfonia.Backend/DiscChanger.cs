@@ -100,7 +100,7 @@ namespace Synfonia.Backend
                 .DistinctUntilChanged()
                 .Subscribe(async x =>
                 {
-                    if (x == SoundStreamState.Stop)
+                    if (!_userOperation & x == SoundStreamState.Stop)
                     {
                         if (GaplessPlaybackEnabled && _preloadedTrack != null)
                         {
