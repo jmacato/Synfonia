@@ -79,7 +79,7 @@ namespace Synfonia.Backend
 
             _disposables = new CompositeDisposable();
 
-            if (GaplessPlaybackEnabled & _preloadedTrack is null)
+            if (_preloadedTrack is null)
             {
                 var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
 
@@ -102,7 +102,7 @@ namespace Synfonia.Backend
                 {
                     if (!_userOperation & x == SoundStreamState.Stop)
                     {
-                        if (GaplessPlaybackEnabled && _preloadedTrack != null)
+                        if (_preloadedTrack != null)
                         {
                             _currentTrack?.Dispose();
                             _currentTrack = _preloadedTrack;
@@ -127,13 +127,6 @@ namespace Synfonia.Backend
         public event EventHandler SpectrumDataReady;
 
         public event EventHandler TrackPositionChanged;
-
-        private bool _gaplessPlaybackEnabled = true;
-        public bool GaplessPlaybackEnabled
-        {
-            get => _gaplessPlaybackEnabled;
-            set => this.RaiseAndSetIfChanged(ref _gaplessPlaybackEnabled, value, nameof(GaplessPlaybackEnabled));
-        }
 
         public int GetNextTrackIndex(int index, TrackIndexDirection direction)
         {
@@ -177,8 +170,6 @@ namespace Synfonia.Backend
 
             _currentTrackIndex = nextIndex;
 
-            Console.WriteLine(_currentTrackIndex);
-
             ChangeTrackAndPlay(_currentTrackIndex);
 
             _userOperation = false;
@@ -195,8 +186,6 @@ namespace Synfonia.Backend
             if (nextIndex == (int)TrackIndexDirection.Error) return;
 
             _currentTrackIndex = nextIndex;
-
-            Console.WriteLine(_currentTrackIndex);
 
             ChangeTrackAndPlay(_currentTrackIndex);
 
@@ -264,11 +253,9 @@ namespace Synfonia.Backend
         {
             var targetPath = track.Path;
 
-            SoundStream soundStr;
-
             if (File.Exists(targetPath))
             {
-                soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
+                var soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
                 return new TrackContainer(track, soundStr);
             }
 
