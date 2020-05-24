@@ -4,14 +4,15 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using LiteDB;
 using Nito.AsyncEx;
 using File = TagLib.File;
 
 namespace Synfonia.Backend
 {
+
     public class LibraryManager
     {
+
         private static readonly List<string> SupportedFileExtensions = new List<string>
         {
             "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff",
@@ -21,162 +22,156 @@ namespace Synfonia.Backend
             "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
         };
 
-        private readonly AsyncLock _dbLock;
+        public LibraryDbContext DatabaseContext { get; private set; }
+
+        private AsyncLock _dbLock;
+
+        // private readonly AsyncLock _dbLock;
 
         public LibraryManager()
         {
-            Database = new LiteDatabase("library.db");
+            // Database = new LiteDatabase("");
+            DatabaseContext = new LibraryDbContext();
+
             _dbLock = new AsyncLock();
             Albums = new ObservableCollection<Album>();
         }
 
         public ObservableCollection<Album> Albums { get; }
 
-        private LiteDatabase Database { get; }
-
         public event EventHandler<string> StatusChanged;
+
+        public async Task LoadLibrary()
+        {
+            // foreach (var artistEntry in DatabaseContext.Albums artistsCollection.Include(x => x.Albums).FindAll())
+            //     foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
+            //     {
+            //         var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
+
+            //         albumEntry.Artist = artistEntry;
+
+            //         foreach (var track in albumEntry.Tracks) track.Album = albumEntry;
+
+            //         Albums.Add(albumEntry);
+
+            //     }
+
+            using var dbLock = await LockDatabaseAsync();
+
+            foreach (var album in DatabaseContext.Artists)
+            {
+
+            }
+            foreach (var album in DatabaseContext.Albums)
+            {
+
+            }
+
+        }
 
         private async Task<IDisposable> LockDatabaseAsync()
         {
             return await _dbLock.LockAsync();
         }
 
-        public async Task LoadLibrary()
-        {
-            using (await LockDatabaseAsync())
-            {
-                var db = Database;
-
-                var artistsCollection = db.GetCollection<Artist>(Artist.CollectionName);
-                var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
-                var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
-
-                foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll())
-                foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
-                {
-                    var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
-
-                    albumEntry.Artist = artistEntry;
-
-                    foreach (var track in albumEntry.Tracks) track.Album = albumEntry;
-
-                    Albums.Add(albumEntry);
-                }
-            }
-        }
-
         public async Task ScanMusicFolder(string path)
         {
             var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
 
-            var albumDictionary = new Dictionary<int, Album>();
-
-            using (var dbLock = await LockDatabaseAsync())
+            Parallel.ForEach(files.Select(x => new FileInfo(x).FullName), async (file) =>
             {
-                var db = Database;
-                var artistsCollection = db.GetCollection<Artist>(Artist.CollectionName);
-                var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
-                var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
+                if (!SupportedFileExtensions.Any(x => $".{x}" == Path.GetExtension(file).ToLower()))
+                    return;
 
-                foreach (var file in files.Select(x => new FileInfo(x).FullName))
+                try
                 {
-                    if (!SupportedFileExtensions.Any(x => $".{x}" == Path.GetExtension(file).ToLower()))
-                        continue;
+                    using var tagFile = File.Create(file);
 
-                    try
+                    var tag = tagFile.Tag;
+
+                    if (tag is null) return;
+
+                    var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
+
+                    if (artistName is null) artistName = "Unknown Artist";
+
+                    var albumName = tag.Album ?? "Unknown Album";
+
+                    var trackName = tag.Title ?? "Unknown Track";
+
+                    // TODO other what to do if we dont know anything about the track, ignore?
+
+                    StatusChanged?.Invoke(this, $"Processing: {artistName}, {albumName}, {trackName}");
+
+                    using var dbLock = await LockDatabaseAsync();
+
+                    var existingArtist = DatabaseContext.Artists.FirstOrDefault(x => x.Name == artistName.Trim());
+
+                    if (existingArtist is null)
                     {
-                        using (var tagFile = File.Create(file))
+                        existingArtist = new Artist
                         {
-                            var tag = tagFile.Tag;
+                            ArtistGuid = new Guid(),
+                            Name = artistName
+                        };
 
-                            if (tag is null) continue;
-
-                            var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
-
-                            if (artistName is null) artistName = "Unknown Artist";
-
-                            var albumName = tag.Album ?? "Unknown Album";
-
-                            var trackName = tag.Title ?? "Unknown Track";
-
-                            // TODO other what to do if we dont know anything about the track, ignore?
-
-                            StatusChanged?.Invoke(this, $"Processing: {artistName}, {albumName}, {trackName}");
-
-                            var existingArtist = artistsCollection.FindOne(x => x.Name == artistName.Trim());
-
-                            if (existingArtist is null)
-                            {
-                                existingArtist = new Artist
-                                {
-                                    Name = artistName
-                                };
-
-                                artistsCollection.Insert(existingArtist);
-                            }
-
-                            var existingAlbum = albumsCollection.FindOne(x =>
-                                x.ArtistId == existingArtist.ArtistId && x.Title == tag.Album.Trim());
-
-                            var albumAdded = false;
-
-                            if (existingAlbum is null)
-                            {
-                                albumAdded = true;
-
-                                existingAlbum = new Album
-                                {
-                                    Title = albumName,
-                                    ArtistId = existingArtist.ArtistId,
-                                    Artist = existingArtist
-                                };
-
-                                albumsCollection.Insert(existingAlbum);
-
-                                existingArtist.Albums.Add(existingAlbum);
-
-                                artistsCollection.Update(existingArtist);
-
-                                albumDictionary.Add(existingAlbum.AlbumId, existingAlbum);
-
-                                Albums.Add(existingAlbum);
-                            }
-                            else
-                            {
-                                if (albumDictionary.ContainsKey(existingAlbum.AlbumId))
-                                    existingAlbum = albumDictionary[existingAlbum.AlbumId];
-                                else
-                                    albumDictionary[existingAlbum.AlbumId] = existingAlbum;
-                            }
-
-                            var existingTrack = tracksCollection.FindOne(x => x.Path == file);
-
-                            if (existingTrack is null)
-                            {
-                                existingTrack = new Track
-                                {
-                                    Path = new FileInfo(file).FullName,
-                                    Title = trackName,
-                                    Album = existingAlbum
-                                };
-
-                                tracksCollection.Insert(existingTrack);
-
-                                existingAlbum.Tracks.Add(existingTrack);
-
-                                albumsCollection.Update(existingAlbum);
-                            }
-                            else
-                            {
-                                existingTrack.Album = existingAlbum;
-                            }
-                        }
+                        DatabaseContext.Artists.Add(existingArtist);
+                        DatabaseContext.SaveChanges();
                     }
-                    catch (Exception e)
+
+                    var existingAlbum = DatabaseContext.Albums.FirstOrDefault(x =>
+                         x.Artist.Name == existingArtist.Name && x.Title == tag.Album.Trim());
+
+                    if (existingAlbum is null)
                     {
+                        existingAlbum = new Album
+                        {
+                            AlbumGuid = new Guid(),
+                            Title = albumName,
+                            Artist = existingArtist
+                        };
+
+                        DatabaseContext.Albums.Add(existingAlbum);
+                        DatabaseContext.SaveChanges();
+                    }
+
+                    existingArtist.Albums.Add(existingAlbum);
+                    DatabaseContext.Artists.Update(existingArtist);
+                    DatabaseContext.SaveChanges();
+
+                    var existingTrack = DatabaseContext.Tracks.FirstOrDefault(x => x.Path == file);
+
+                    if (existingTrack is null)
+                    {
+                        existingTrack = new Track
+                        {
+                            TrackGuid = new Guid(),
+                            Path = new FileInfo(file).FullName,
+                            Title = trackName,
+                            Album = existingAlbum
+                        };
+
+
+                        DatabaseContext.Tracks.Add(existingTrack);
+                        DatabaseContext.SaveChanges();
+                    }
+
+                    existingAlbum.Tracks.Add(existingTrack);
+                    DatabaseContext.Albums.Update(existingAlbum);
+                    DatabaseContext.SaveChanges();
+
+                    if (!Albums.Any(x => x.Title == existingAlbum.Title))
+                    {
+                        Albums.Add(existingAlbum);
                     }
                 }
-            }
+                catch (Exception e)
+                {
+                }
+
+
+            });
         }
+        // }
     }
 }

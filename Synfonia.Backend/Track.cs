@@ -1,22 +1,19 @@
-﻿using System.Text.RegularExpressions;
-using LiteDB;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
+
 
 namespace Synfonia.Backend
 {
     public class Track
     {
-        public const string CollectionName = "tracks";
-        private string _title;
+        [Key, ForeignKey(nameof(Track))]
+        public Guid TrackGuid { get; set; }
+ 
+        public string Title {get;set;}
 
-        public int TrackId { get; set; }
-
-        public string Title
-        {
-            get => Regex.Unescape(_title);
-            set => _title = value;
-        }
-
-        [BsonIgnore]
+        public Guid AlbumGuid {get;set;}
         public Album Album { get; set; }
 
         public string Path { get; set; }

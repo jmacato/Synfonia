@@ -1,41 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using LiteDB;
 using TagLib;
 
 namespace Synfonia.Backend
 {
     public class Album : ITrackList
-    {
-        public const string CollectionName = "albums";
+    { 
+        [Key]
+        public Guid AlbumGuid { get; set; }
+        public string Title { get; set; }
 
-        private string _title;
-
-        public Album()
-        {
-            Tracks = new ObservableCollection<Track>();
-        }
-
-        public int AlbumId { get; set; }
-
-        public int ArtistId { get; set; }
-
-        public string Title
-        {
-            get => Regex.Unescape(_title);
-            set => _title = value;
-        }
-
-        [BsonIgnore]
+        public Guid ArtistGuid { get; set; }
         public Artist Artist { get; set; }
 
-        [BsonRef(Track.CollectionName)]
-        public ObservableCollection<Track> Tracks { get; set; }
+        [ForeignKey(nameof(Track))]
+        public ObservableCollection<Track> Tracks { get; set; } = new ObservableCollection<Track>();
 
+        [NotMapped]
         IList<Track> ITrackList.Tracks => Tracks;
 
         public byte[] LoadCoverArt()
