@@ -18,7 +18,18 @@ namespace Synfonia.Backend
             _dbInitialized = true;
         }
 
- 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Album>()
+                .HasMany(c => c.Tracks)
+                .WithOne(e => e.Album); 
+
+            modelBuilder.Entity<Artist>()
+                .HasMany(c => c.Albums)
+                .WithOne(e => e.Artist); 
+        }
+
 
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Album> Albums { get; set; }

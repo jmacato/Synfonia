@@ -8,14 +8,13 @@ namespace Synfonia.Backend
 {
     public class Track
     {
-        [Key, ForeignKey(nameof(Track))]
-        public Guid TrackGuid { get; set; }
- 
-        public string Title {get;set;}
-
-        public Guid AlbumGuid {get;set;}
-        public Album Album { get; set; }
-
+        public int TrackId { get; set; }
+        public string Title { get; set; }
         public string Path { get; set; }
+
+        public int TrackNumber { get; set; }
+
+        public int AlbumId { get; set; }
+        public Album Album { get; set; }
     }
 }

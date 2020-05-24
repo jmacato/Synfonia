@@ -43,30 +43,21 @@ namespace Synfonia.Backend
 
         public async Task LoadLibrary()
         {
-            // foreach (var artistEntry in DatabaseContext.Albums artistsCollection.Include(x => x.Albums).FindAll())
-            //     foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
-            //     {
-            //         var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
-
-            //         albumEntry.Artist = artistEntry;
-
-            //         foreach (var track in albumEntry.Tracks) track.Album = albumEntry;
-
-            //         Albums.Add(albumEntry);
-
-            //     }
-
             using var dbLock = await LockDatabaseAsync();
-
+            
+            // Hack for disabling lazy loading. 
             foreach (var album in DatabaseContext.Artists)
-            {
+            { }
 
-            }
+            // Hack for disabling lazy loading.
+            foreach (var album in DatabaseContext.Tracks)
+            { }
+
             foreach (var album in DatabaseContext.Albums)
             {
-
+                album.Tracks = new ObservableCollection<Track>(album.Tracks.OrderBy(x => x.TrackNumber).ToList());
+                Albums.Add(album);
             }
-
         }
 
         private async Task<IDisposable> LockDatabaseAsync()
@@ -99,6 +90,8 @@ namespace Synfonia.Backend
 
                     var trackName = tag.Title ?? "Unknown Track";
 
+                    var trackNumber = tag.Track;
+
                     // TODO other what to do if we dont know anything about the track, ignore?
 
                     StatusChanged?.Invoke(this, $"Processing: {artistName}, {albumName}, {trackName}");
@@ -111,8 +104,7 @@ namespace Synfonia.Backend
                     {
                         existingArtist = new Artist
                         {
-                            ArtistGuid = new Guid(),
-                            Name = artistName
+                            Name = artistName,
                         };
 
                         DatabaseContext.Artists.Add(existingArtist);
@@ -126,7 +118,6 @@ namespace Synfonia.Backend
                     {
                         existingAlbum = new Album
                         {
-                            AlbumGuid = new Guid(),
                             Title = albumName,
                             Artist = existingArtist
                         };
@@ -137,6 +128,7 @@ namespace Synfonia.Backend
 
                     existingArtist.Albums.Add(existingAlbum);
                     DatabaseContext.Artists.Update(existingArtist);
+                    DatabaseContext.Albums.Update(existingAlbum);
                     DatabaseContext.SaveChanges();
 
                     var existingTrack = DatabaseContext.Tracks.FirstOrDefault(x => x.Path == file);
@@ -145,12 +137,11 @@ namespace Synfonia.Backend
                     {
                         existingTrack = new Track
                         {
-                            TrackGuid = new Guid(),
                             Path = new FileInfo(file).FullName,
                             Title = trackName,
-                            Album = existingAlbum
+                            Album = existingAlbum,
+                            TrackNumber = (int)trackNumber
                         };
-
 
                         DatabaseContext.Tracks.Add(existingTrack);
                         DatabaseContext.SaveChanges();

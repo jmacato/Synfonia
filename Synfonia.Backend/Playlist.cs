@@ -5,12 +5,7 @@ namespace Synfonia.Backend
 {
     public class Playlist : ITrackList
     {
-        public Playlist()
-        {
-            Tracks = new ObservableCollection<Track>();
-        }
-
-        public ObservableCollection<Track> Tracks { get; set; }
+        public ObservableCollection<Track> Tracks { get; set; } = new ObservableCollection<Track>();
 
         IList<Track> ITrackList.Tracks => Tracks;
 

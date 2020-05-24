@@ -245,8 +245,11 @@ namespace Synfonia.Backend
         {
             if (trackList.Tracks.Count > 0)
             {
-                await AppendTrackList(trackList);
+                _currentTrack?.Dispose();
+                _trackList.Tracks.Clear();
             }
+
+            await AppendTrackList(trackList);
         }
 
         private async Task<TrackContainer> LoadTrackAsync(Track track)

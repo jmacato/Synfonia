@@ -12,15 +12,13 @@ using TagLib;
 namespace Synfonia.Backend
 {
     public class Album : ITrackList
-    { 
-        [Key]
-        public Guid AlbumGuid { get; set; }
+    {
+        public int AlbumId { get; set; }
+
+        public int ArtistId { get; set; }
+        public Artist Artist { get; set; }
         public string Title { get; set; }
 
-        public Guid ArtistGuid { get; set; }
-        public Artist Artist { get; set; }
-
-        [ForeignKey(nameof(Track))]
         public ObservableCollection<Track> Tracks { get; set; } = new ObservableCollection<Track>();
 
         [NotMapped]
