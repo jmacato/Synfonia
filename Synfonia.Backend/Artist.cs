@@ -1,6 +1,6 @@
-﻿using LiteDB;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using LiteDB;
 
 namespace Synfonia.Backend
 {
@@ -17,14 +17,14 @@ namespace Synfonia.Backend
             {
                 if (string.IsNullOrEmpty(_name))
                     return "Unknown Artist";
-                    
+
                 return Regex.Unescape(_name);
             }
-            set { _name = value; }
+            set => _name = value;
         }
 
 
         [BsonRef(Album.CollectionName)]
-        public List<Album> Albums { get; set; } = new List<Album>();
+public List<Album> Albums { get; set; } = new List<Album>();
     }
 }

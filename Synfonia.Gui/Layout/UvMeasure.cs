@@ -1,14 +1,16 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+
+using System.Diagnostics;
 using Avalonia.Layout;
 
 namespace Synfonia.Layout
 {
-    [System.Diagnostics.DebuggerDisplay("U = {U} V = {V}")]
+    [DebuggerDisplay("U = {U} V = {V}")]
     internal struct UvMeasure
     {
-        internal static readonly UvMeasure Zero = default(UvMeasure);
+        internal static readonly UvMeasure Zero = default;
 
         internal double U { get; set; }
 
@@ -30,10 +32,7 @@ namespace Synfonia.Layout
 
         public override bool Equals(object obj)
         {
-            if (obj is UvMeasure measure)
-            {
-                return (measure.U == U) && (measure.V == V);
-            }
+            if (obj is UvMeasure measure) return measure.U == U && measure.V == V;
 
             return false;
         }

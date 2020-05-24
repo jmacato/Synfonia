@@ -1,10 +1,11 @@
-﻿using LiteDB;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using LiteDB;
+using TagLib;
 
 namespace Synfonia.Backend
 {
@@ -20,13 +21,13 @@ namespace Synfonia.Backend
         }
 
         public int AlbumId { get; set; }
-        
+
         public int ArtistId { get; set; }
 
         public string Title
         {
             get => Regex.Unescape(_title);
-            set { _title = value; }
+            set => _title = value;
         }
 
         [BsonIgnore]
@@ -43,16 +44,14 @@ namespace Synfonia.Backend
 
             if (track != null)
             {
-                using var tagFile = TagLib.File.Create(track.Path);
+                using var tagFile = File.Create(track.Path);
 
                 var tag = tagFile.Tag;
 
-                var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures).FirstOrDefault();
+                var cover = tag.Pictures.Where(x => x.Type == PictureType.FrontCover).Concat(tag.Pictures)
+                    .FirstOrDefault();
 
-                if (cover != null)
-                {
-                    return cover.Data.Data;
-                }
+                if (cover != null) return cover.Data.Data;
             }
 
             return null;
@@ -70,24 +69,20 @@ namespace Synfonia.Backend
                 var data = await client.GetByteArrayAsync(url);
 
                 if (data != null)
-                {
                     foreach (var track in Tracks)
-                    {
-                        using (var tagFile = TagLib.File.Create(track.Path))
+                        using (var tagFile = File.Create(track.Path))
                         {
-                            tagFile.Tag.Pictures = new TagLib.Picture[]
+                            tagFile.Tag.Pictures = new[]
                             {
-                                new TagLib.Picture(new TagLib.ByteVector(data, data.Length))
+                                new Picture(new ByteVector(data, data.Length))
                                 {
-                                     Type = TagLib.PictureType.FrontCover,
-                                     MimeType = "image/jpeg"
+                                    Type = PictureType.FrontCover,
+                                    MimeType = "image/jpeg"
                                 }
                             };
 
                             tagFile.Save();
                         }
-                    }
-                }
             }
         }
     }

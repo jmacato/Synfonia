@@ -1,27 +1,28 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
-using System;
 
 namespace Synfonia.Behaviors
 {
     public class HideWhenClickedOutsideBehavior : Behavior<Control>
     {
-        private IDisposable _disposable;
-        private Control _hitTarget;
-
         public static readonly DirectProperty<HideWhenClickedOutsideBehavior, Control> HitTargetProperty =
             AvaloniaProperty.RegisterDirect<HideWhenClickedOutsideBehavior, Control>(
                 nameof(HitTarget),
                 o => o.HitTarget,
                 (o, v) => o.HitTarget = v);
 
+        private IDisposable _disposable;
+        private Control _hitTarget;
+
         public Control HitTarget
         {
-            get { return _hitTarget; }
-            set { SetAndRaise(HitTargetProperty, ref _hitTarget, value); }
+            get => _hitTarget;
+            set => SetAndRaise(HitTargetProperty, ref _hitTarget, value);
         }
 
         protected override void OnAttached()
@@ -42,7 +43,7 @@ namespace Synfonia.Behaviors
         {
             var toplevel = e.Root as TopLevel;
 
-            _disposable = toplevel.AddDisposableHandler(TopLevel.PointerPressedEvent, (sender, ee) =>
+            _disposable = toplevel.AddDisposableHandler(InputElement.PointerPressedEvent, (sender, ee) =>
             {
                 if (AssociatedObject.IsVisible)
                 {
@@ -50,10 +51,7 @@ namespace Synfonia.Behaviors
 
                     var hit = target.GetVisualAt(ee.GetCurrentPoint(target).Position);
 
-                    if (hit is null)
-                    {
-                        AssociatedObject.IsVisible = false;
-                    }
+                    if (hit is null) AssociatedObject.IsVisible = false;
                 }
             }, RoutingStrategies.Tunnel);
         }

@@ -23,7 +23,7 @@ namespace Synfonia
                 MainWindowViewModel.Instance = new MainWindowViewModel(new DiscChanger(), new LibraryManager());
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = MainWindowViewModel.Instance,
+                    DataContext = MainWindowViewModel.Instance
                 };
             }
 

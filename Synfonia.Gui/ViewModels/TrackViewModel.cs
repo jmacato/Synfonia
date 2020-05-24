@@ -4,15 +4,13 @@ namespace Synfonia.ViewModels
 {
     public class TrackViewModel
     {
-        private Track _track;
-
         public TrackViewModel(Track track)
         {
-            _track = track;
+            Model = track;
         }
 
-        public string Title => _track.Title;
+        public string Title => Model.Title;
 
-        public Track Model => _track;
+        public Track Model { get; }
     }
 }

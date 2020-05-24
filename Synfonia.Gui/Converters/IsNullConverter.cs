@@ -1,6 +1,6 @@
 using System;
-using Avalonia.Data.Converters;
 using System.Globalization;
+using Avalonia.Data.Converters;
 
 namespace Synfonia.Converters
 {
@@ -10,7 +10,7 @@ namespace Synfonia.Converters
         {
             if (parameter != null)
             {
-                var k = (string)parameter;
+                var k = (string) parameter;
                 if (k.ToLowerInvariant().Contains("invert"))
                     return value != null;
             }

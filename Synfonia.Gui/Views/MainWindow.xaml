@@ -1,36 +1,37 @@
-<Window xmlns="https://github.com/avaloniaui" 
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:vm="clr-namespace:Synfonia.ViewModels;assembly=Synfonia.Gui" 
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Synfonia.ViewModels;assembly=Synfonia.Gui"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui" 
-        xmlns:local="clr-namespace:Synfonia.Views" 
+        xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui"
+        xmlns:local="clr-namespace:Synfonia.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"        
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Synfonia.Views.MainWindow"
         SystemDecorations="BorderOnly"
-        Icon="/Assets/avalonia-logo.ico" Title="Synfonia"> 
+        Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
     <DockPanel LastChildFill="True">
-      <Border DockPanel.Dock="Top" Height="100" Background="LightGray" ZIndex="5"  BoxShadow="0 0 5 0 Black">
+        <Border DockPanel.Dock="Top" Height="100" Background="LightGray" ZIndex="5" BoxShadow="0 0 5 0 Black">
+            <DockPanel>
+                <DockPanel.Background>
+                    <RadialGradientBrush SpreadMethod="Reflect" Radius="1" Center="0.5 0.7">
+                        <RadialGradientBrush.GradientStops>
+                            <GradientStop Color="#AAAAAA" Offset="0" />
+                            <GradientStop Color="LightGray" Offset="0.25" />
+                            <GradientStop Color="#BBBBBB" Offset="0.5" />
+                            <GradientStop Color="LightGray" Offset="0.75" />
+                            <GradientStop Color="#AAAAAA" Offset="1" />
+                        </RadialGradientBrush.GradientStops>
+                    </RadialGradientBrush>
+                </DockPanel.Background>
+                <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" Margin="40 0" />
+                <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
+                <TextBlock Text="Synfonia" FontSize="10" DockPanel.Dock="Top" Opacity="0.5" Margin="1"
+                           HorizontalAlignment="Center" />
+                <local:TrackStatusView DataContext="{Binding TrackStatus}" />
+            </DockPanel>
+        </Border>
         <DockPanel>
-          <DockPanel.Background>
-            <RadialGradientBrush SpreadMethod="Reflect" Radius="1" Center="0.5 0.7">
-              <RadialGradientBrush.GradientStops>
-                <GradientStop Color="#AAAAAA" Offset="0" />
-                <GradientStop Color="LightGray" Offset="0.25" />
-                <GradientStop Color="#BBBBBB" Offset="0.5" />
-                <GradientStop Color="LightGray" Offset="0.75" />
-                <GradientStop Color="#AAAAAA" Offset="1" />
-              </RadialGradientBrush.GradientStops>
-            </RadialGradientBrush>
-          </DockPanel.Background>
-          <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" Margin="40 0" />
-          <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
-          <TextBlock Text="Synfonia" FontSize="10" DockPanel.Dock="Top" Opacity="0.5" Margin="1" HorizontalAlignment="Center" />          
-          <local:TrackStatusView DataContext="{Binding TrackStatus}" />          
-        </DockPanel>
-      </Border>
-      <DockPanel>
-        <!--
+            <!--
         <Border DockPanel.Dock="Right" Width="250" BoxShadow="0 0 5 0 Black" ZIndex="10">
           <Panel>
             <Panel.Background>
@@ -58,7 +59,7 @@
             </StackPanel>
           </Panel>
         </Border>-->
-        <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />        
-      </DockPanel>      
-    </DockPanel>      
+            <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
+        </DockPanel>
+    </DockPanel>
 </Window>

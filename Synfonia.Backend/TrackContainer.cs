@@ -1,28 +1,23 @@
-using SharpAudio.Codec;
 using System;
-using System.Reactive.Disposables;
+using SharpAudio.Codec;
 
 namespace Synfonia.Backend
 {
     public class TrackContainer : IDisposable
     {
-        private Track _track;
-        private SoundStream _soundStream;
-        private CompositeDisposable _disp;
-
-        public TrackContainer(Track track, SoundStream soundStream, CompositeDisposable disposable)
+        public TrackContainer(Track track, SoundStream soundStream)
         {
-            _track = track;
-            _soundStream = soundStream;
-            _disp = disposable;
+            Track = track;
+            SoundStream = soundStream;
         }
 
-        public Track Track => _track;
-        public SoundStream SoundStream => _soundStream;
+        public Track Track { get; }
+
+        public SoundStream SoundStream { get; }
 
         public void Dispose()
         {
-            _disp?.Dispose();
+            SoundStream?.Dispose();
         }
     }
 }

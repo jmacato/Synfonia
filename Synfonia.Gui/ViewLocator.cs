@@ -18,13 +18,8 @@ namespace Synfonia
             var type = Type.GetType(name);
 
             if (type != null)
-            {
-                return (Control)Activator.CreateInstance(type);
-            }
-            else
-            {
-                return new TextBlock { Text = "Not Found: " + name };
-            }
+                return (Control) Activator.CreateInstance(type);
+            return new TextBlock {Text = "Not Found: " + name};
         }
 
         public bool Match(object data)

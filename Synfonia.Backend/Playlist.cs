@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace Synfonia.Backend
 {
@@ -14,14 +12,11 @@ namespace Synfonia.Backend
 
         public ObservableCollection<Track> Tracks { get; set; }
 
+        IList<Track> ITrackList.Tracks => Tracks;
+
         public void AddTracks(ITrackList tracks)
         {
-            foreach(var track in tracks.Tracks)
-            {
-                Tracks.Add(track);
-            }
+            foreach (var track in tracks.Tracks) Tracks.Add(track);
         }
-
-        IList<Track> ITrackList.Tracks => Tracks;
     }
 }

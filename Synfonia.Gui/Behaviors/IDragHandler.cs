@@ -3,12 +3,12 @@
 namespace Synfonia.Behaviors
 {
     /// <summary>
-    /// Drag handler contract.
+    ///     Drag handler contract.
     /// </summary>
     public interface IDragHandler
     {
         /// <summary>
-        /// Called before drag starts.
+        ///     Called before drag starts.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">Pointer event arguments.</param>
@@ -16,7 +16,7 @@ namespace Synfonia.Behaviors
         void BeforeDragDrop(object sender, PointerEventArgs e, object context);
 
         /// <summary>
-        /// Called after drag finished.
+        ///     Called after drag finished.
         /// </summary>
         /// <param name="sender">The sender object.</param>
         /// <param name="e">Pointer event arguments.</param>

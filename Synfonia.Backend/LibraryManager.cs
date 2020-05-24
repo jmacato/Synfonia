@@ -1,22 +1,18 @@
-﻿using LiteDB;
-using Nito.AsyncEx;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using LiteDB;
+using Nito.AsyncEx;
+using File = TagLib.File;
 
 namespace Synfonia.Backend
 {
     public class LibraryManager
     {
-        private LiteDatabase _db;
-        private AsyncLock _dbLock;
-        private ObservableCollection<Album> _albums;
-
-        private static readonly List<string> SupportedFileExtensions = new List<string>()
+        private static readonly List<string> SupportedFileExtensions = new List<string>
         {
             "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff",
             "amb", "amr", "aob", "ape", "au", "awb", "caf", "dts", "dsf", "dff", "flac", "it", "kar",
@@ -25,23 +21,25 @@ namespace Synfonia.Backend
             "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
         };
 
+        private readonly AsyncLock _dbLock;
+
         public LibraryManager()
         {
-            _db = new LiteDatabase("library.db");
-            _dbLock = new Nito.AsyncEx.AsyncLock();
-            _albums = new ObservableCollection<Album>();
+            Database = new LiteDatabase("library.db");
+            _dbLock = new AsyncLock();
+            Albums = new ObservableCollection<Album>();
         }
 
-        public event EventHandler<string> StatusChanged;
+        public ObservableCollection<Album> Albums { get; }
 
-        public ObservableCollection<Album> Albums => _albums;
+        private LiteDatabase Database { get; }
+
+        public event EventHandler<string> StatusChanged;
 
         private async Task<IDisposable> LockDatabaseAsync()
         {
             return await _dbLock.LockAsync();
         }
-
-        private LiteDatabase Database => _db;
 
         public async Task LoadLibrary()
         {
@@ -54,20 +52,15 @@ namespace Synfonia.Backend
                 var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
 
                 foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll())
+                foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
                 {
-                    foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
-                    {
-                        var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
+                    var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
 
-                        albumEntry.Artist = artistEntry;
+                    albumEntry.Artist = artistEntry;
 
-                        foreach (var track in albumEntry.Tracks)
-                        {
-                            track.Album = albumEntry;
-                        }
+                    foreach (var track in albumEntry.Tracks) track.Album = albumEntry;
 
-                        _albums.Add(albumEntry);
-                    }
+                    Albums.Add(albumEntry);
                 }
             }
         }
@@ -92,21 +85,15 @@ namespace Synfonia.Backend
 
                     try
                     {
-                        using (var tagFile = TagLib.File.Create(file))
+                        using (var tagFile = File.Create(file))
                         {
                             var tag = tagFile.Tag;
 
-                            if (tag is null)
-                            {
-                                continue;
-                            }
+                            if (tag is null) continue;
 
                             var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
 
-                            if (artistName is null)
-                            {
-                                artistName = "Unknown Artist";
-                            }
+                            if (artistName is null) artistName = "Unknown Artist";
 
                             var albumName = tag.Album ?? "Unknown Album";
 
@@ -128,9 +115,10 @@ namespace Synfonia.Backend
                                 artistsCollection.Insert(existingArtist);
                             }
 
-                            var existingAlbum = albumsCollection.FindOne(x => x.ArtistId == existingArtist.ArtistId && x.Title == tag.Album.Trim());
+                            var existingAlbum = albumsCollection.FindOne(x =>
+                                x.ArtistId == existingArtist.ArtistId && x.Title == tag.Album.Trim());
 
-                            bool albumAdded = false;
+                            var albumAdded = false;
 
                             if (existingAlbum is null)
                             {
@@ -151,18 +139,14 @@ namespace Synfonia.Backend
 
                                 albumDictionary.Add(existingAlbum.AlbumId, existingAlbum);
 
-                                _albums.Add(existingAlbum);
+                                Albums.Add(existingAlbum);
                             }
                             else
                             {
                                 if (albumDictionary.ContainsKey(existingAlbum.AlbumId))
-                                {
                                     existingAlbum = albumDictionary[existingAlbum.AlbumId];
-                                }
                                 else
-                                {
                                     albumDictionary[existingAlbum.AlbumId] = existingAlbum;
-                                }
                             }
 
                             var existingTrack = tracksCollection.FindOne(x => x.Path == file);
