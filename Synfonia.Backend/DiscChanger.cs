@@ -14,7 +14,7 @@ namespace Synfonia.Backend
     {
         private AudioEngine _audioEngine;
         private int _currentTrackIndex;
-        private bool _gaplessPlaybackEnabled = false;
+        private bool _gaplessPlaybackEnabled = true;
         private bool _isPaused = true;
         private readonly SoundSink _soundSink;
         private Playlist _trackList;
@@ -23,10 +23,12 @@ namespace Synfonia.Backend
 
         private CompositeDisposable disp;
         private int preloadIndex;
+        private TrackContainer PreloadNextTrack;
 
         public DiscChanger()
         {
             _trackList = new Playlist();
+
             var audioEngine = AudioEngine.CreateDefault();
 
             if (audioEngine == null) throw new Exception("Failed to create an audio backend!");
@@ -64,7 +66,7 @@ namespace Synfonia.Backend
             get => CurrentlyPlayingTrack.SoundStream?.Volume ?? 0d;
             set
             {
-                if (CurrentlyPlayingTrack != null) CurrentlyPlayingTrack.SoundStream.Volume = (float) value;
+                if (CurrentlyPlayingTrack != null) CurrentlyPlayingTrack.SoundStream.Volume = (float)value;
             }
         }
 
@@ -80,44 +82,43 @@ namespace Synfonia.Backend
 
             disp = new CompositeDisposable();
 
-            // if (_gaplessPlaybackEnabled & PreloadNextTrack is null)
-            // {
-            //     var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
+            if (_gaplessPlaybackEnabled & PreloadNextTrack is null)
+            {
+                var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
 
-            //     if (nextIndex == (int)TrackIndexDirection.Error)
-            //     {
-            //         return;
-            //     }
+                if (nextIndex == (int)TrackIndexDirection.Error)
+                {
+                    return;
+                }
 
-            //     preloadIndex = nextIndex;
-            //     PreloadNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
-            // }
+                preloadIndex = nextIndex;
+                PreloadNextTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
+            }
 
             soundStr.WhenAnyValue(x => x.Position)
                 .Subscribe(x => { TrackPositionChanged?.Invoke(this, EventArgs.Empty); })
                 .DisposeWith(disp);
-
-
+                
             soundStr.WhenAnyValue(x => x.State)
                 .Subscribe(async x =>
                 {
-                    // if (!_userOperation && x == SoundStreamState.Stop)
-                    // {
-                    //     if (PreloadNextTrack != null)
-                    //     {
-                    //         CurrentlyPlayingTrack?.Dispose();
-                    //         CurrentlyPlayingTrack = PreloadNextTrack;
-                    //         PreloadNextTrack = null;
+                    if (x == SoundStreamState.Stop)
+                    {
+                        if (_gaplessPlaybackEnabled && PreloadNextTrack != null)
+                        {
+                            CurrentlyPlayingTrack?.Dispose();
+                            CurrentlyPlayingTrack = PreloadNextTrack;
+                            PreloadNextTrack = null;
 
-                    //         _currentTrackIndex = preloadIndex;
+                            _currentTrackIndex = preloadIndex;
 
-                    //         TrackChanged?.Invoke(this, EventArgs.Empty);
-                    //         DoPlay();
-                    //     }
-                    //     else
-                    // }
+                            TrackChanged?.Invoke(this, EventArgs.Empty);
+                            DoPlay();
+                        }
+                        else await Forward(false);
+                    }
 
-                    if (x == SoundStreamState.Stop) await Forward(false);
+                    // if (x == SoundStreamState.Stop) await Forward(false);
 
                     IsPaused = x == SoundStreamState.Paused;
                 })
@@ -130,11 +131,11 @@ namespace Synfonia.Backend
 
         public event EventHandler TrackPositionChanged;
 
-        // public bool GaplessPlaybackEnabled
-        // {
-        //     get => _gaplessPlaybackEnabled;
-        //     set => this.RaiseAndSetIfChanged(ref _gaplessPlaybackEnabled, value, nameof(GaplessPlaybackEnabled));
-        // }
+        public bool GaplessPlaybackEnabled
+        {
+            get => _gaplessPlaybackEnabled;
+            set => this.RaiseAndSetIfChanged(ref _gaplessPlaybackEnabled, value, nameof(GaplessPlaybackEnabled));
+        }
 
         public int GetNextTrackIndex(int index, TrackIndexDirection direction)
         {
@@ -162,7 +163,7 @@ namespace Synfonia.Backend
                         return _trackList.Tracks.Count - 1;
                     }
                 default:
-                    return (int) TrackIndexDirection.Error;
+                    return (int)TrackIndexDirection.Error;
             }
         }
 
@@ -174,13 +175,12 @@ namespace Synfonia.Backend
 
             var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
 
-            if (nextIndex == (int) TrackIndexDirection.Error) return;
-
-            // if (_userOperation)
-            //     PreloadNextTrack?.Dispose();
-
+            if (nextIndex == (int)TrackIndexDirection.Error) return;
+ 
             _currentTrackIndex = nextIndex;
 
+            Console.WriteLine(_currentTrackIndex);
+            
             ChangeTrackAndPlay(_currentTrackIndex);
 
             _userOperation = false;
@@ -194,12 +194,11 @@ namespace Synfonia.Backend
 
             var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Backward);
 
-            if (nextIndex == (int) TrackIndexDirection.Error) return;
-
-            // if (_userOperation)
-            //     PreloadNextTrack?.Dispose();
+            if (nextIndex == (int)TrackIndexDirection.Error) return;
 
             _currentTrackIndex = nextIndex;
+
+            Console.WriteLine(_currentTrackIndex);
 
             ChangeTrackAndPlay(_currentTrackIndex);
 
@@ -230,10 +229,9 @@ namespace Synfonia.Backend
 
             _trackList.AddTracks(trackList);
 
-            if (_isPaused || isEmpty)
+            if (isEmpty)
             {
-                if (isEmpty) _currentTrackIndex = 0;
-
+                _currentTrackIndex = 0;
                 ChangeTrackAndPlay(_currentTrackIndex);
             }
         }
@@ -250,11 +248,7 @@ namespace Synfonia.Backend
         {
             if (trackList.Tracks.Count > 0)
             {
-                _trackList = new Playlist();
-                _trackList.AddTracks(trackList);
-                _currentTrackIndex = 0;
-
-                ChangeTrackAndPlay(_currentTrackIndex);
+                await AppendTrackList(trackList);
             }
         }
 
