@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using File = TagLib.File;
 
 namespace Synfonia.Backend
 {
-
     public class LibraryManager
     {
+        public static string AlbumPicStore = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".synfonia/AlbumPictureStore");
 
         private static readonly List<string> SupportedFileExtensions = new List<string>
         {
@@ -33,6 +34,11 @@ namespace Synfonia.Backend
             // Database = new LiteDatabase("");
             DatabaseContext = new LibraryDbContext();
 
+            if (!Directory.Exists(AlbumPicStore))
+            {
+                Directory.CreateDirectory(AlbumPicStore);
+            }
+
             _dbLock = new AsyncLock();
             Albums = new ObservableCollection<Album>();
         }
@@ -44,7 +50,7 @@ namespace Synfonia.Backend
         public async Task LoadLibrary()
         {
             using var dbLock = await LockDatabaseAsync();
-            
+
             // Hack for disabling lazy loading. 
             foreach (var album in DatabaseContext.Artists)
             { }
@@ -65,6 +71,24 @@ namespace Synfonia.Backend
             return await _dbLock.LockAsync();
         }
 
+        private static string ComputeSha256Hash(byte[] rawData)
+        {
+            // Create a SHA256   
+            using SHA256 sha256Hash = SHA256.Create();
+
+            // ComputeHash - returns byte array  
+            byte[] bytes = sha256Hash.ComputeHash(rawData);
+
+            // Convert byte array to a string   
+            var builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+
+            return builder.ToString();
+        }
+
         public async Task ScanMusicFolder(string path)
         {
             var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
@@ -76,13 +100,13 @@ namespace Synfonia.Backend
 
                 try
                 {
-                    using var tagFile = File.Create(file);
+                    using var tagFile = TagLib.File.Create(file);
 
                     var tag = tagFile.Tag;
 
                     if (tag is null) return;
 
-                    var artistName = tag.AlbumArtists.Concat(tag.Artists).FirstOrDefault();
+                    var artistName = tag.AlbumArtists.Concat(tag.Performers).FirstOrDefault();
 
                     if (artistName is null) artistName = "Unknown Artist";
 
@@ -92,11 +116,32 @@ namespace Synfonia.Backend
 
                     var trackNumber = tag.Track;
 
+                    var cover = tag.Pictures.Where(x => x.Type == TagLib.PictureType.FrontCover).Concat(tag.Pictures)
+                                      .FirstOrDefault();
+
+                    var coverHash = "NONE";
+
+                    var coverData = cover.Data.Data;
+
+                    using var dbLock = await LockDatabaseAsync();
+
+                    if (cover != null)
+                    {
+                        coverHash = ComputeSha256Hash(coverData);
+                        var coverPath = Path.Combine(AlbumPicStore, coverHash);
+
+                        if (!File.Exists(coverPath))
+                        {
+                            using (var filex = File.OpenWrite(coverPath))
+                            {
+                                await filex.WriteAsync(coverData);
+                            }
+                        }
+                    }
+
                     // TODO other what to do if we dont know anything about the track, ignore?
 
                     StatusChanged?.Invoke(this, $"Processing: {artistName}, {albumName}, {trackName}");
-
-                    using var dbLock = await LockDatabaseAsync();
 
                     var existingArtist = DatabaseContext.Artists.FirstOrDefault(x => x.Name == artistName.Trim());
 
@@ -119,7 +164,8 @@ namespace Synfonia.Backend
                         existingAlbum = new Album
                         {
                             Title = albumName,
-                            Artist = existingArtist
+                            Artist = existingArtist,
+                            CoverHash = coverHash
                         };
 
                         DatabaseContext.Albums.Add(existingAlbum);
