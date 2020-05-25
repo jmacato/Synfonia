@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 
@@ -71,24 +69,6 @@ namespace Synfonia.Backend
             return await _dbLock.LockAsync();
         }
 
-        private static string ComputeSha256Hash(byte[] rawData)
-        {
-            // Create a SHA256   
-            using SHA256 sha256Hash = SHA256.Create();
-
-            // ComputeHash - returns byte array  
-            byte[] bytes = sha256Hash.ComputeHash(rawData);
-
-            // Convert byte array to a string   
-            var builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                builder.Append(bytes[i].ToString("x2"));
-            }
-
-            return builder.ToString();
-        }
-
         public async Task ScanMusicFolder(string path)
         {
             var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
@@ -127,15 +107,13 @@ namespace Synfonia.Backend
 
                     if (cover != null)
                     {
-                        coverHash = ComputeSha256Hash(coverData);
+                        coverHash = CryptoMethods.ComputeSha256Hash(coverData);
                         var coverPath = Path.Combine(AlbumPicStore, coverHash);
 
                         if (!File.Exists(coverPath))
                         {
-                            using (var filex = File.OpenWrite(coverPath))
-                            {
-                                await filex.WriteAsync(coverData);
-                            }
+                            using var filex = File.OpenWrite(coverPath);
+                            await filex.WriteAsync(coverData);
                         }
                     }
 
