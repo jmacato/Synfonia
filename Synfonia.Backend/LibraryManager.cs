@@ -49,17 +49,19 @@ namespace Synfonia.Backend
         {
             using var dbLock = await LockDatabaseAsync();
 
-            // Hack for disabling lazy loading. 
-            foreach (var album in DatabaseContext.Artists)
-            { }
-
-            // Hack for disabling lazy loading.
-            foreach (var album in DatabaseContext.Tracks)
-            { }
-
             foreach (var album in DatabaseContext.Albums)
             {
-                album.Tracks = new ObservableCollection<Track>(album.Tracks.OrderBy(x => x.TrackNumber).ToList());
+                DatabaseContext.Entry(album)
+                    .Collection(b => b.Tracks)
+                    .Load();
+
+                var sortedTracks = album.Tracks.OrderBy(x => x.TrackNumber).ToList();
+
+                album.Tracks.Clear();
+
+                foreach (var track in sortedTracks)
+                    album.Tracks.Add(track);
+
                 Albums.Add(album);
             }
         }
