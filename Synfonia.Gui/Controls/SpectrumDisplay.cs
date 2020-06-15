@@ -67,7 +67,7 @@ namespace Synfonia.Controls
                 var gaps = length * 2 + 1;
 
                 var gapSize = 1.0;
-                //if ((gaps * gapSize) > Bounds.Width)
+                if ((gaps * gapSize) > Bounds.Width)
                 {
                     gapSize = 0.25;
                 }
