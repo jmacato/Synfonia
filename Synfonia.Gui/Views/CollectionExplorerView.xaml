@@ -8,25 +8,26 @@
              xmlns:layout="clr-namespace:Synfonia.Layout"
              mc:Ignorable="d"
              d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.CollectionExplorerView">
-    <Panel Background="White">
-        <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
-            <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="0 0 0 0">
-                <ItemsRepeater.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
-                    </ContextMenu>
-                </ItemsRepeater.ContextMenu>
-                <ItemsRepeater.Layout>
-                    <UniformGridLayout ItemsJustification="SpaceEvenly" MinRowSpacing="20" Orientation="Horizontal"
-                                       MaximumRowsOrColumns="4" />
-                </ItemsRepeater.Layout>
-                <ItemsRepeater.ItemTemplate>
-                    <DataTemplate>
-                        <local:AlbumView />
-                    </DataTemplate>
-                </ItemsRepeater.ItemTemplate>
-            </ItemsRepeater>
-        </ScrollViewer>
-        <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
-    </Panel>
+
+  <Panel MinWidth="100" MinHeight="100">
+    <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="0 0 0 0">
+        <ItemsRepeater.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
+          </ContextMenu>
+        </ItemsRepeater.ContextMenu>
+        <ItemsRepeater.Layout>
+          <UniformGridLayout ItemsJustification="SpaceEvenly" MinRowSpacing="20" Orientation="Horizontal"
+                             MaximumRowsOrColumns="4" />
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <local:AlbumView />
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
+    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
+  </Panel>
 </UserControl>

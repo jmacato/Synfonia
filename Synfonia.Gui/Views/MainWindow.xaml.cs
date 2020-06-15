@@ -1,7 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 
 namespace Synfonia.Views
 {
@@ -9,7 +11,8 @@ namespace Synfonia.Views
     {
         public MainWindow()
         {
-            InitializeComponent();
+            ExtendClientAreaTitleBarHeightHint = -1;
+            InitializeComponent();            
         }
 
         private void InitializeComponent()
@@ -18,15 +21,13 @@ namespace Synfonia.Views
             this.AttachDevTools();
         }
 
-        protected override void OnPointerPressed(PointerPressedEventArgs e)
+        protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
-            base.OnPointerPressed(e);
-
-            var point = e.GetCurrentPoint(this);
-
-            if (point.Properties.IsLeftButtonPressed)
-                if (point.Position.Y < 20)
-                    BeginMoveDrag(e);
+            base.OnApplyTemplate(e);
+            ExtendClientAreaChromeHints =
+                ExtendClientAreaChromeHints.SystemChromeButtons |
+                ExtendClientAreaChromeHints.ManagedChromeButtons |
+                ExtendClientAreaChromeHints.OSXThickTitleBar;
         }
     }
 }

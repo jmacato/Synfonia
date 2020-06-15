@@ -1,23 +1,26 @@
 <Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui">
+  <Design.PreviewWith>
+    <Border Background="Black" Padding="20" Width="100">
+      <c:SeekSlider Value="0" Maximum="1" />
+    </Border>    
+  </Design.PreviewWith>
     <Style Selector="c|SeekSlider">
-        <Setter Property="MinHeight" Value="6" />
+        <Setter Property="MinHeight" Value="4" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid Name="grid">
+                <Grid Name="grid" Margin="4 0">
                     <Border Name="TrackBackground" />
                     <Track Name="PART_Track" Orientation="Horizontal">
                         <Track.DecreaseButton>
-                            <c:SeekTrackButton Name="PART_DecreaseButton" Classes="dec_track" />
+                            <c:SeekTrackButton Name="PART_DecreaseButton" Classes="dec_track" Height="4" />
                         </Track.DecreaseButton>
                         <Track.IncreaseButton>
-                            <c:SeekTrackButton Name="PART_IncreaseButton" Classes="inc_track" />
+                            <c:SeekTrackButton Name="PART_IncreaseButton" Classes="inc_track" Height="4" Margin="-4 0 0 0" />
                         </Track.IncreaseButton>
-                        <Thumb Name="thumb">
+                        <Thumb Name="thumb" Margin="-4.4 0 0 0">
                             <Thumb.Template>
                                 <ControlTemplate>
-                                    <Grid Margin="-9,0,0,0">
-                                        <Rectangle Width="18" Fill="Black" Opacity="0.5" />
-                                    </Grid>
+                                  <Ellipse  Width="9" Height="9" Fill="#C0C0C0" />
                                 </ControlTemplate>
                             </Thumb.Template>
                         </Thumb>
@@ -39,7 +42,7 @@
         <Setter Property="Foreground" Value="Transparent" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="Transparent" />
+                <Border Background="#3f3f3f" CornerRadius="0 4 4 0" />
             </ControlTemplate>
         </Setter>
     </Style>
@@ -48,50 +51,11 @@
         <Setter Property="Foreground" Value="Transparent" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="InternalBorder" Background="Black" Opacity="0.2" />
+                <Border Name="InternalBorder" Background="#C8C8C8" CornerRadius="4 0 0 4" />
             </ControlTemplate>
         </Setter>
     </Style>
     <Style Selector="c|SeekSlider:disabled /template/ Grid#grid">
         <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
-    </Style>
-    <Style Selector="c|SeekSlider:pointerover">
-        <Style.Animations>
-            <Animation Duration="0:0:0.25" FillMode="Both" Easing="SineEaseIn">
-                <KeyFrame Cue="100%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="2" />
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-    </Style>
-    <Style Selector="c|SeekSlider:not(:pointerover)">
-        <Style.Animations>
-            <Animation Duration="0:0:0.25" FillMode="Both" Easing="SineEaseIn">
-                <KeyFrame Cue="0%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="2" />
-                </KeyFrame>
-                <KeyFrame Cue="100%">
-                    <Setter Property="ScaleTransform.ScaleY" Value="1" />
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-    </Style>
-    <Style Selector="c|SeekSlider:pointerover /template/ Thumb#thumb /template/ Rectangle">
-        <Style.Animations>
-            <Animation Duration="0:0:0.1" FillMode="Both" Easing="SineEaseOut">
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="0.5" />
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
-    </Style>
-    <Style Selector="c|SeekSlider:not(:pointerover) /template/ Thumb#thumb /template/ Rectangle">
-        <Style.Animations>
-            <Animation Duration="0:0:0.1" FillMode="Both" Easing="SineEaseOut">
-                <KeyFrame Cue="100%">
-                    <Setter Property="Opacity" Value="1" />
-                </KeyFrame>
-            </Animation>
-        </Style.Animations>
     </Style>
 </Styles>

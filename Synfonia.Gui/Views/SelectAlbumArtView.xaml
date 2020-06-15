@@ -9,9 +9,9 @@
     <i:Interaction.Behaviors>
         <behaviors:HideWhenClickedOutsideBehavior HitTarget="{Binding #PART_MainPanel}" />
     </i:Interaction.Behaviors>
-    <Panel Background="#77000000">
+    <Panel Width="100">
         <ListBox x:Name="PART_MainPanel" Height="320" Items="{Binding Covers}" SelectedItem="{Binding SelectedCover}"
-                 VerticalAlignment="Bottom">
+                 VerticalAlignment="Bottom" Background="Transparent">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" Spacing="8" />

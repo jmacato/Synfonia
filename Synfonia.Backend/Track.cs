@@ -10,6 +10,8 @@ namespace Synfonia.Backend
 
         public int TrackId { get; set; }
 
+        public uint TrackNumber { get; set; }
+
         public string Title
         {
             get => Regex.Unescape(_title);

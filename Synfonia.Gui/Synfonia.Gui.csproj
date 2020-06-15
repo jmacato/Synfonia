@@ -21,10 +21,10 @@
     <Folder Include="Scrobbler\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.999-cibuild0007516-beta" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.999-cibuild0007516-beta" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.9.999-cibuild0007516-beta" />
-    <PackageReference Include="Avalonia.Win32" Version="0.9.999-cibuild0007516-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.999-cibuild0008349-beta" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.999-cibuild0008349-beta" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.9.999-cibuild0008349-beta" />
+    <PackageReference Include="Avalonia.Win32" Version="0.9.999-cibuild0008349-beta" />
     <PackageReference Include="DynamicData" Version="6.14.14" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />    

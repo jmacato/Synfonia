@@ -7,59 +7,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Synfonia.Views.MainWindow"
-        SystemDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        Background="{x:Null}"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
-    <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Top" Height="100" Background="LightGray" ZIndex="5" BoxShadow="0 0 5 0 Black">
-            <DockPanel>
-                <DockPanel.Background>
-                    <RadialGradientBrush SpreadMethod="Reflect" Radius="1" Center="0.5 0.7">
-                        <RadialGradientBrush.GradientStops>
-                            <GradientStop Color="#AAAAAA" Offset="0" />
-                            <GradientStop Color="LightGray" Offset="0.25" />
-                            <GradientStop Color="#BBBBBB" Offset="0.5" />
-                            <GradientStop Color="LightGray" Offset="0.75" />
-                            <GradientStop Color="#AAAAAA" Offset="1" />
-                        </RadialGradientBrush.GradientStops>
-                    </RadialGradientBrush>
-                </DockPanel.Background>
-                <local:AudioControlPanel DockPanel.Dock="Left" DataContext="{Binding DiscChanger}" Margin="40 0" />
-                <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
-                <TextBlock Text="Synfonia" FontSize="10" DockPanel.Dock="Top" Opacity="0.5" Margin="1"
-                           HorizontalAlignment="Center" />
-                <local:TrackStatusView DataContext="{Binding TrackStatus}" />
-            </DockPanel>
-        </Border>
-        <DockPanel>
-            <!--
-        <Border DockPanel.Dock="Right" Width="250" BoxShadow="0 0 5 0 Black" ZIndex="10">
-          <Panel>
-            <Panel.Background>
-              <VisualBrush Stretch="Uniform" SourceRect="0 0 20 20" DestinationRect="-10 -20 20 20" TileMode="Tile">
-                <VisualBrush.Visual>
-                  <Panel>
-                    <Image Source="/Assets/noiselayer.png" Stretch="Uniform" />
-                    <Panel Background="#FFFFFF" Opacity="0.88" />
-                  </Panel>
-                </VisualBrush.Visual>
-              </VisualBrush>
-            </Panel.Background>
-            <StackPanel Margin="20" Spacing="5">
-              <TextBlock Text="01 - Song blah blah blah" />
-              <TextBlock Text="02 - Song" />
-              <TextBlock Text="03 - Song" />
-              <TextBlock Text="04 - Song 1" />
-              <TextBlock Text="05 - Song 1" />
-              <TextBlock Text="07 - Song 1" />
-              <TextBlock Text="08 - Song 1" />
-              <TextBlock Text="09 - Song 1" />
-              <TextBlock Text="10 - Song 1" />
-              <TextBlock Text="11 - Song 1" />
-              <TextBlock Text="12 - Song 1" />
+  <Panel>
+    <Border VerticalAlignment="Bottom" CornerRadius="12 0" Margin="20 0" Height="100" ZIndex="1" BoxShadow="0 0 28 0 #7F000000">
+      <Border.Background>
+        <LinearGradientBrush>
+          <GradientStop Color="#404040" Offset="0"/>
+          <GradientStop Color="#1c1c1c" Offset="0.567"/>
+        </LinearGradientBrush>
+      </Border.Background>
+      <DockPanel>
+        <local:VolumeControlView DataContext="{Binding VolumeControl}" DockPanel.Dock="Right" Margin="40 0" />
+        
+        <StackPanel DataContext="{Binding TrackStatus}" DockPanel.Dock="Left" Orientation="Horizontal" Spacing="20" Width="300">
+            <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform"
+                   Source="{Binding AlbumCover}" Margin="10" />
+            <StackPanel VerticalAlignment="Center">
+              <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="18"
+                           FontFamily="Segoe UI" Foreground="#C0C0C0" />
+              <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#C0C0C0"
+                         FontSize="12" FontFamily="Segoe UI" />
             </StackPanel>
-          </Panel>
-        </Border>-->
-            <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
-        </DockPanel>
-    </DockPanel>
+          </StackPanel>
+        <Panel Margin="10 0">
+          <local:AudioControlPanel  DataContext="{Binding DiscChanger}" Margin="15" VerticalAlignment="Top" />
+          <local:TrackStatusView Margin="50 0" DataContext="{Binding TrackStatus}" VerticalAlignment="Bottom" />
+        </Panel>        
+      </DockPanel>
+    </Border>
+    <Panel>
+      <ExperimentalAcrylicBorder IsHitTestVisible="False">
+        <ExperimentalAcrylicBorder.Material>
+          <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="Black" TintOpacity="1" MaterialOpacity="0.6" />
+        </ExperimentalAcrylicBorder.Material>
+      </ExperimentalAcrylicBorder>
+      <DockPanel>
+        <Panel DockPanel.Dock="Top" Margin="20">
+          <AutoCompleteBox Watermark="Search" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" />
+          <c:SpectrumDisplay Width="300" DataContext="{Binding TrackStatus}" DockPanel.Dock="Left" FFTData="{Binding InFFTData}" Foreground="#AFFFFFFF" Margin="40 0" HorizontalAlignment="Left" />
+        </Panel>
+        <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+      </DockPanel>
+    </Panel>
+  </Panel>
 </Window>

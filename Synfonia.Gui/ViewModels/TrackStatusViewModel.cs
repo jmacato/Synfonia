@@ -15,6 +15,7 @@ namespace Synfonia.ViewModels
         private bool _albumCoverVisible;
         private string _artist;
         private string _currentTime;
+        private string _currentDuration;
         private TimeSpan _duration;
         private double[,] _fftData;
         private bool _isSeekbarActive = true;
@@ -106,7 +107,14 @@ namespace Synfonia.ViewModels
         {
             get => _currentTime;
             private set => this.RaiseAndSetIfChanged(ref _currentTime, value);
+        }        
+
+        public string CurrentDuration
+        {
+            get { return _currentDuration; }
+            set { this.RaiseAndSetIfChanged(ref _currentDuration, value); }
         }
+
 
         public bool IsSeekbarActive
         {
@@ -130,7 +138,7 @@ namespace Synfonia.ViewModels
 
         private string FormatTimeSpan(TimeSpan x)
         {
-            return $"{x.Hours:00}:{x.Minutes:00}:{x.Seconds:00}.{x.Milliseconds / 100:0}";
+            return $"{x.Minutes:00}:{x.Seconds:00}.{x.Milliseconds / 100:0}";
         }
 
         private void UpdateCurrentPlayTime(TimeSpan time)
@@ -170,6 +178,8 @@ namespace Synfonia.ViewModels
             TrackTitle = track.Title;
 
             Duration = Model.CurrentTrackDuration;
+
+            CurrentDuration = FormatTimeSpan(Duration);
         }
     }
 }

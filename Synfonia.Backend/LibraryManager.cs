@@ -51,7 +51,7 @@ namespace Synfonia.Backend
                 var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
                 var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
 
-                foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll())
+                foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll().OrderBy(x=>x.Name))
                 foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
                 {
                     var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
@@ -98,6 +98,8 @@ namespace Synfonia.Backend
                             var albumName = tag.Album ?? "Unknown Album";
 
                             var trackName = tag.Title ?? "Unknown Track";
+
+                            var trackNumber = tag.Track;
 
                             // TODO other what to do if we dont know anything about the track, ignore?
 
@@ -157,7 +159,8 @@ namespace Synfonia.Backend
                                 {
                                     Path = new FileInfo(file).FullName,
                                     Title = trackName,
-                                    Album = existingAlbum
+                                    Album = existingAlbum,
+                                    TrackNumber = trackNumber
                                 };
 
                                 tracksCollection.Insert(existingTrack);

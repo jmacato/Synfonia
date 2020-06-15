@@ -46,9 +46,9 @@
                 </Panel>
             </Border>
         </DockPanel>
-        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold"
+        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" Foreground="#F9F9F9"
                    FontFamily="Segoe UI" />
-        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#686858"
+        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#A1A1A1"
                    FontFamily="Segoe UI" />
     </StackPanel>
 </UserControl>
