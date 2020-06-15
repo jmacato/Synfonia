@@ -11,9 +11,7 @@
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="{x:Null}"
-
-        FontFamily="avares://Synfonia.Gui/Assets/Fonts#Roboto"
-
+        FontFamily="avares://Synfonia.Gui/Assets/Fonts#Lato"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
   <Panel>
     <Border VerticalAlignment="Bottom" CornerRadius="12 0" Margin="20 0" Height="100" ZIndex="1" BoxShadow="0 0 28 0 #7F000000">
