@@ -19,18 +19,18 @@
         <DockPanel Margin="0 5">
           <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                      Text="{Binding CurrentTime}" Foreground="#C0C0C0" FontSize="12"
-                     FontFamily="Segoe UI" />
+                      />
 
           <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                      Text="{Binding CurrentDuration}" Foreground="#C0C0C0" FontSize="12"
-                     FontFamily="Segoe UI" />
+                      />
 
           <c:SeekSlider Margin="20 0" Height="12" Value="{Binding Position}" Maximum="1.0" Minimum="0"
                 IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}"
                 SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
 
         </DockPanel>
-        <TextBlock Text="{Binding Status}" Margin="10 0 0 0" FontFamily="Segoe UI" FontSize="10"
+        <TextBlock Text="{Binding Status}" Margin="10 0 0 0" FontSize="10"
                    VerticalAlignment="Bottom" Foreground="#C0C0C0" />
       </StackPanel>
     </Panel>

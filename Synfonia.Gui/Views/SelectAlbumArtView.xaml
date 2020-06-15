@@ -16,7 +16,7 @@
         </ExperimentalAcrylicBorder.Material>
       </ExperimentalAcrylicBorder>
         <ListBox x:Name="PART_MainPanel" Height="345" BorderThickness="0" Items="{Binding Covers}" SelectedItem="{Binding SelectedCover}"
-                 VerticalAlignment="Bottom" Background="Transparent">
+                 VerticalAlignment="Bottom" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" Spacing="8" />
@@ -38,9 +38,9 @@
                             </Panel>
                         </Panel>
                         <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12"
-                                   FontWeight="Bold" FontFamily="Segoe UI" />
+                                   FontWeight="Bold" />
                         <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10"
-                                   Foreground="#686858" FontFamily="Segoe UI" />
+                                   Foreground="#686858" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -11,6 +11,9 @@
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="{x:Null}"
+
+        FontFamily="avares://Synfonia.Gui/Assets/Fonts#Roboto"
+
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
   <Panel>
     <Border VerticalAlignment="Bottom" CornerRadius="12 0" Margin="20 0" Height="100" ZIndex="1" BoxShadow="0 0 28 0 #7F000000">
@@ -28,9 +31,9 @@
                    Source="{Binding AlbumCover}" Margin="10" />
             <StackPanel VerticalAlignment="Center">
               <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="18"
-                           FontFamily="Segoe UI" Foreground="#C0C0C0" />
+                          Foreground="#C0C0C0" />
               <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#C0C0C0"
-                         FontSize="12" FontFamily="Segoe UI" />
+                         FontSize="12" />
             </StackPanel>
           </StackPanel>
         <Panel Margin="10 0">
