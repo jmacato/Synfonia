@@ -15,7 +15,7 @@
           <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="Black" TintOpacity="1" MaterialOpacity="0.9" />
         </ExperimentalAcrylicBorder.Material>
       </ExperimentalAcrylicBorder>
-        <ListBox x:Name="PART_MainPanel" Height="360" Items="{Binding Covers}" SelectedItem="{Binding SelectedCover}"
+        <ListBox x:Name="PART_MainPanel" Height="345" BorderThickness="0" Items="{Binding Covers}" SelectedItem="{Binding SelectedCover}"
                  VerticalAlignment="Bottom" Background="Transparent">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
