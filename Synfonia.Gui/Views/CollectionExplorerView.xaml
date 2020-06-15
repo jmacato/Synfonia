@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.CollectionExplorerView">
 
-  <Panel MinWidth="100" MinHeight="100" Margin="0 0 0 50">
+  <Panel MinWidth="100" MinHeight="100" Margin="0 0 0 100">
     <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
       <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="40 0">
         <ItemsRepeater.ContextMenu>
