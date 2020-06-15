@@ -8,7 +8,7 @@
         <Setter Property="MinHeight" Value="4" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid Name="grid" Margin="4 0">
+                <Grid Name="grid" Margin="6 0">
                     <Border Name="TrackBackground" />
                     <Track Name="PART_Track" Orientation="Horizontal">
                         <Track.DecreaseButton>

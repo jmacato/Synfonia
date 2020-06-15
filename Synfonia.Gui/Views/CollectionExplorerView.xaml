@@ -28,6 +28,6 @@
         </ItemsRepeater.ItemTemplate>
       </ItemsRepeater>
     </ScrollViewer>
-    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" />
+    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0 0 0 50" />
   </Panel>
 </UserControl>
