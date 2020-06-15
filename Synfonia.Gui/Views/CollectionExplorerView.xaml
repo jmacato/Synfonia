@@ -11,7 +11,7 @@
 
   <Panel MinWidth="100" MinHeight="100">
     <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="0 0 0 0">
+      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="40 0">
         <ItemsRepeater.ContextMenu>
           <ContextMenu>
             <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
@@ -19,7 +19,7 @@
         </ItemsRepeater.ContextMenu>
         <ItemsRepeater.Layout>
           <UniformGridLayout ItemsJustification="SpaceEvenly" MinRowSpacing="20" Orientation="Horizontal"
-                             MaximumRowsOrColumns="4" />
+                             MaximumRowsOrColumns="6" />
         </ItemsRepeater.Layout>
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>
