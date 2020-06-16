@@ -10,7 +10,7 @@ using SharpAudio.SpectrumAnalysis;
 
 namespace Synfonia.Backend
 {
-    public class DiscChanger : ReactiveObject
+    public class DiscChanger : ReactiveObject, IDisposable
     {
         private readonly SoundSink _soundSink;
         private int _currentTrackIndex;
@@ -260,6 +260,26 @@ namespace Synfonia.Backend
             }
 
             return null;
+        }
+
+        public void Dispose()
+        {
+            if(!IsPaused)
+            {
+                _currentTrack.SoundStream.PlayPause();                
+            }
+
+            _currentTrack?.Dispose();
+            _preloadedTrack?.Dispose();
+            _disposables?.Dispose();
+
+            try
+            {
+                _soundSink?.Dispose();
+            }
+            catch(Exception)
+            {
+            }
         }
     }
 }

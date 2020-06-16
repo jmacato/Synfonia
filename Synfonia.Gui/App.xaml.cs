@@ -13,21 +13,27 @@ namespace Synfonia
         {
             AvaloniaXamlLoader.Load(this);
 
-            Name = "Synfonia";
+            Name = "Synfonia";            
         }
 
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MainWindowViewModel.Instance = new MainWindowViewModel(new DiscChanger(), new LibraryManager());
+                var dc = new DiscChanger();
+                MainWindowViewModel.Instance = new MainWindowViewModel(dc, new LibraryManager());
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = MainWindowViewModel.Instance
                 };
+
+                desktop.MainWindow.Closing += (sender, e) =>
+                {
+                    dc.Dispose();
+                };
             }
 
             base.OnFrameworkInitializationCompleted();
-        }
+        }        
     }
 }
