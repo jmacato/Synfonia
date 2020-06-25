@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -20,14 +21,11 @@ namespace Synfonia.Controls
         private double[,] _averagedData;
         private readonly int _averageLevel = 5;
         private bool _center = false;
+        private volatile bool _isRenderFinished = false;
 
         private double[,] _fftData;
         private double _lastStrokeThickness;
         private IPen _linePen;
-
-        static SpectrumDisplay()
-        {
-        }
 
         public SpectrumDisplay()
         {
@@ -37,8 +35,17 @@ namespace Synfonia.Controls
                 .Subscribe(x =>
                 {
                     if (FFTData != null) FFTData = new double[FFTData.GetLength(0), FFTData.GetLength(1)];
-                    
                 });
+
+            Clock = new Clock();
+            Clock.Subscribe(Tick);
+        }
+
+        private void Tick(TimeSpan obj)
+        {
+            if (!_isRenderFinished) return;
+
+            Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
         }
 
         public double[,] FFTData
@@ -50,6 +57,8 @@ namespace Synfonia.Controls
         public override void Render(DrawingContext context)
         {
             base.Render(context);
+
+            _isRenderFinished = false;
 
             if (FFTData != null)
             {
@@ -67,15 +76,16 @@ namespace Synfonia.Controls
                 var gaps = length * 2 + 1;
 
                 var gapSize = 1.0;
+
                 if ((gaps * gapSize) > Bounds.Width)
                 {
                     gapSize = 0.25;
                 }
 
-                gapSize = Math.Ceiling(gapSize);
+                gapSize = Math.Floor(gapSize);
 
                 var binStroke = (Bounds.Width - gaps * gapSize) / (length * 2);
-                binStroke = Math.Ceiling(binStroke);
+                binStroke = Math.Floor(binStroke);
 
                 if (_lastStrokeThickness != binStroke)
                 {
@@ -105,8 +115,9 @@ namespace Synfonia.Controls
                             x += binStroke + gapSize;
                         }
 
-                Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
             }
+
+            _isRenderFinished = true;
         }
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
