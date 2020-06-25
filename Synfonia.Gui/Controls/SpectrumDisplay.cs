@@ -27,7 +27,6 @@ namespace Synfonia.Controls
 
         static SpectrumDisplay()
         {
-            AffectsMeasure<SpectrumDisplay>(FFTDataProperty);
         }
 
         public SpectrumDisplay()
@@ -38,6 +37,7 @@ namespace Synfonia.Controls
                 .Subscribe(x =>
                 {
                     if (FFTData != null) FFTData = new double[FFTData.GetLength(0), FFTData.GetLength(1)];
+                    
                 });
         }
 
@@ -72,7 +72,10 @@ namespace Synfonia.Controls
                     gapSize = 0.25;
                 }
 
+                gapSize = Math.Ceiling(gapSize);
+
                 var binStroke = (Bounds.Width - gaps * gapSize) / (length * 2);
+                binStroke = Math.Ceiling(binStroke);
 
                 if (_lastStrokeThickness != binStroke)
                 {
