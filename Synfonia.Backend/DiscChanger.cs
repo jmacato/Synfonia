@@ -55,7 +55,6 @@ namespace Synfonia.Backend
                 .DisposeWith(_internalDisposables);
 
             InternalState = (DiscChangerState.Idle);
-
         }
 
         public async Task LoadTrackList(ITrackList trackList)
@@ -173,7 +172,8 @@ namespace Synfonia.Backend
         {
             if (_trackList.Tracks.Count == 0) return;
 
-            _currentTrackContainer.SoundStream.Stop();
+            _currentTrackContainer?.SoundStream.Stop();
+            _preloadedTrackContainer?.Dispose();
 
             _currentTrackIndex = GetNextTrackIndex(dir);
 
