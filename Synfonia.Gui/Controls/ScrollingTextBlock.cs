@@ -16,7 +16,6 @@ namespace Synfonia.Controls
 
         public ScrollingTextBlock()
         {
-            AffectsRender<ScrollingTextBlock>(BoundsProperty);
             Clock = new Clock();
             Clock.Subscribe(Tick);
         }
@@ -59,7 +58,7 @@ namespace Synfonia.Controls
             if (TextLayout != null)
             {
                 _textWidth = TextLayout.Bounds.Width;
-                _isConstrained = _textWidth >= this.Bounds.Width;
+                _isConstrained = _textWidth >= this.Bounds.Deflate(Padding).Width;
 
                 if (_isConstrained)
                 {
@@ -75,12 +74,5 @@ namespace Synfonia.Controls
                 }
             }
         }
-
-        protected override Size MeasureOverride(Size availableSize)
-        {
-            this._constraints = availableSize;
-            return base.MeasureOverride(availableSize);
-        }
-
     }
 }
