@@ -32,6 +32,8 @@ namespace Synfonia.Controls
                 {
                     WaitCounter = TimeSpan.Zero;
                     _waiting = false;
+                    Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
+
                 }
             }
             else if (_animate)
@@ -56,7 +58,9 @@ namespace Synfonia.Controls
         private TimeSpan WaitCounter;
 
         private double _textWidth;
+        private double _textHeight;
         private double _textGap = 40;
+        private double[] offsets = new double[3];
 
 
         public override void Render(DrawingContext context)
@@ -73,25 +77,29 @@ namespace Synfonia.Controls
             if (TextLayout != null)
             {
                 _textWidth = TextLayout.Bounds.Width;
-                var containerWidth = this.Bounds.Deflate(Padding).Width;
-                _isConstrained = _textWidth >= containerWidth;
+                _textHeight = TextLayout.Bounds.Height;
+                var constraints = this.Bounds.Deflate(Padding);
+                var constraintsWidth = constraints.Width;
+                _isConstrained = _textWidth >= constraintsWidth;
 
-                if (_isConstrained)
+                if (_isConstrained & !_waiting)
                 {
                     _animate = true;
                     var tOffset = padding.Left - _offset;
 
-                    var _1stOffset = tOffset;
-                    var _2ndOffset = tOffset + _textWidth + _textGap;
-                    var _3rdOffset = tOffset + (_textWidth + _textGap) * 2;
-
-                    double[] offsets = new double[] { _1stOffset, _2ndOffset, _3rdOffset };
+                    offsets[0] = tOffset;
+                    offsets[1] = tOffset + _textWidth + _textGap;
+                    offsets[2] = tOffset + (_textWidth + _textGap) * 2;
 
                     foreach (var offset in offsets)
                     {
-                        var renderTextWidth = (offset + _textWidth);
-                        if (renderTextWidth >= 0d || renderTextWidth <= containerWidth)
+                        var nR = new Rect(offset, padding.Top, _textWidth, _textHeight);
+                        var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
+
+                        if (nC.Intersects(nR))
+                        {
                             TextLayout.Draw(context.PlatformImpl, new Point(offset, padding.Top));
+                        }
                     }
                 }
                 else
