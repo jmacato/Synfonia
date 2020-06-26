@@ -6,23 +6,46 @@ using System.Reactive;
 using Avalonia.Media;
 using Avalonia.Animation.Animators;
 using Avalonia.Threading;
+using ReactiveUI;
 
 namespace Synfonia.Controls
 {
     public class ScrollingTextBlock : TextBlock
     {
-        private bool _isConstrained;
-
         public ScrollingTextBlock()
         {
+            this.WhenAnyValue(x => x.Text)
+                .Subscribe(OnTextChanged);
+
             Clock = new Clock();
             Clock.Subscribe(Tick);
         }
 
-        private void Tick(TimeSpan x)
+        private void OnTextChanged(string obj)
         {
-            var frameDelta = x - oldFrameTime;
-            oldFrameTime = x;
+            WaitCounter = TimeSpan.Zero;
+            _offset = 0;
+            _waiting = true;
+            Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
+        }
+
+        private bool _isConstrained;
+        private TimeSpan oldFrameTime = TimeSpan.Zero;
+        private TimeSpan WaitDuration = TimeSpan.FromSeconds(2);
+        private TimeSpan WaitCounter;
+
+        private bool _waiting = false;
+        private bool _animate = false;
+        private double _offset;
+        private double _textWidth;
+        private double _textHeight;
+        private double _textGap = 40;
+        private double[] offsets = new double[3];
+
+        private void Tick(TimeSpan curFrameTime)
+        {
+            var frameDelta = curFrameTime - oldFrameTime;
+            oldFrameTime = curFrameTime;
 
             if (_waiting)
             {
@@ -33,7 +56,6 @@ namespace Synfonia.Controls
                     WaitCounter = TimeSpan.Zero;
                     _waiting = false;
                     Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
-
                 }
             }
             else if (_animate)
@@ -50,19 +72,6 @@ namespace Synfonia.Controls
             }
         }
 
-        private TimeSpan oldFrameTime = TimeSpan.Zero;
-        private bool _waiting = false;
-        private bool _animate = false;
-        private double _offset;
-        private TimeSpan WaitDuration = TimeSpan.FromSeconds(2);
-        private TimeSpan WaitCounter;
-
-        private double _textWidth;
-        private double _textHeight;
-        private double _textGap = 40;
-        private double[] offsets = new double[3];
-
-
         public override void Render(DrawingContext context)
         {
             var background = Background;
@@ -78,8 +87,10 @@ namespace Synfonia.Controls
             {
                 _textWidth = TextLayout.Bounds.Width;
                 _textHeight = TextLayout.Bounds.Height;
+
                 var constraints = this.Bounds.Deflate(Padding);
                 var constraintsWidth = constraints.Width;
+
                 _isConstrained = _textWidth >= constraintsWidth;
 
                 if (_isConstrained & !_waiting)
@@ -97,9 +108,7 @@ namespace Synfonia.Controls
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
 
                         if (nC.Intersects(nR))
-                        {
                             TextLayout.Draw(context.PlatformImpl, new Point(offset, padding.Top));
-                        }
                     }
                 }
                 else
