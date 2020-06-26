@@ -38,7 +38,7 @@ namespace Synfonia.Controls
             {
                 _offset += 1;
 
-                if (_offset >= _textWidth + _textGap)
+                if (_offset >= ((_textWidth + _textGap) * 2))
                 {
                     _offset = 0;
                     _waiting = true;
@@ -81,6 +81,7 @@ namespace Synfonia.Controls
                     var tOffset = padding.Left - _offset;
                     TextLayout.Draw(context.PlatformImpl, new Point(tOffset, padding.Top));
                     TextLayout.Draw(context.PlatformImpl, new Point(tOffset + _textWidth + _textGap, padding.Top));
+                    TextLayout.Draw(context.PlatformImpl, new Point(tOffset + (_textWidth + _textGap) * 2, padding.Top));
                 }
                 else
                 {
