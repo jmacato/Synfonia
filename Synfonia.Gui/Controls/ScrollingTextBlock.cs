@@ -12,21 +12,63 @@ namespace Synfonia.Controls
 {
     public class ScrollingTextBlock : TextBlock
     {
+        /// <summary>
+        /// Defines the <see cref="TextGap"/> property.
+        /// </summary>
+        public static readonly StyledProperty<double> TextGapProperty =
+            AvaloniaProperty.Register<ScrollingTextBlock, double>(nameof(TextGap), 30d);
+
+        /// <summary>
+        /// Defines the <see cref="MarqueeSpeed"/> property.
+        /// </summary>
+        public static readonly StyledProperty<double> MarqueeSpeedProperty =
+            AvaloniaProperty.Register<ScrollingTextBlock, double>(nameof(MarqueeSpeed), 1d);
+
         public ScrollingTextBlock()
         {
             this.WhenAnyValue(x => x.Text)
                 .Subscribe(OnTextChanged);
 
-            Clock = new Clock();
+            // Initialize fields with default values.
+            _textGap = TextGap;
+            _offsetSpeed = MarqueeSpeed;
+
+            if (Clock is null) Clock = new Clock();
             Clock.Subscribe(Tick);
         }
 
         private void OnTextChanged(string obj)
         {
-            WaitCounter = TimeSpan.Zero;
             _offset = 0;
             _waiting = true;
+            WaitCounter = TimeSpan.Zero;
             Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
+        }
+
+        /// <summary>
+        /// Gets or sets the gap between animated text.
+        /// </summary>
+        public double TextGap
+        {
+            get { return GetValue(TextGapProperty); }
+            set
+            {
+                _textGap = value;
+                SetValue(TextGapProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the speed of text scrolling.
+        /// </summary>
+        public double MarqueeSpeed
+        {
+            get { return GetValue(MarqueeSpeedProperty); }
+            set
+            {
+                _offsetSpeed = value;
+                SetValue(MarqueeSpeedProperty, value);
+            }
         }
 
         private bool _isConstrained;
@@ -37,9 +79,11 @@ namespace Synfonia.Controls
         private bool _waiting = false;
         private bool _animate = false;
         private double _offset;
+        private double _offsetSpeed;
+
         private double _textWidth;
         private double _textHeight;
-        private double _textGap = 40;
+        private double _textGap;
         private double[] offsets = new double[3];
 
         private void Tick(TimeSpan curFrameTime)
@@ -60,7 +104,7 @@ namespace Synfonia.Controls
             }
             else if (_animate)
             {
-                _offset += 1;
+                _offset += _offsetSpeed;
 
                 if (_offset >= ((_textWidth + _textGap) * 2))
                 {
