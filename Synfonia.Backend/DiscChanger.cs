@@ -62,7 +62,10 @@ namespace Synfonia.Backend
             if (wasEmpty)
             {
                 _currentTrackIndex = -1;
-                ForwardCore();
+                _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
+                var track = _trackList.Tracks[_currentTrackIndex];
+                _currentTrackContainer = await LoadTrackAsync(track).ConfigureAwait(false);
+                await TrackContainerPlay(_currentTrackContainer).ConfigureAwait(false);
             }
         }
 
@@ -151,6 +154,9 @@ namespace Synfonia.Backend
 
         private async void ForwardCore()
         {
+            _trackDisposables?.Dispose();
+            _trackDisposables = new CompositeDisposable();
+
             _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
             var track = _trackList.Tracks[_currentTrackIndex];
             _currentTrackContainer = await LoadTrackAsync(track).ConfigureAwait(false);
@@ -161,6 +167,9 @@ namespace Synfonia.Backend
 
         private async void BackCore()
         {
+            _trackDisposables?.Dispose();
+            _trackDisposables = new CompositeDisposable();
+
             _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Backward);
             var track = _trackList.Tracks[_currentTrackIndex];
             _currentTrackContainer = await LoadTrackAsync(track).ConfigureAwait(false);
@@ -201,16 +210,17 @@ namespace Synfonia.Backend
 
         private async Task PreloadNext(int preloadIndex)
         {
-            _preloadedTrackContainer?.Dispose();
+                _preloadedTrackContainer?.Dispose();
+
             _preloadedTrackContainer = await LoadTrackAsync(_trackList.Tracks[preloadIndex]).ConfigureAwait(false);
             _preloadedTrackIndex = preloadIndex;
         }
 
         private async Task TrackContainerPlay(TrackContainer trackContainer)
         {
-            _trackDisposables?.Dispose();
 
-            _trackDisposables = new CompositeDisposable();
+            if (_trackDisposables is null)
+                _trackDisposables = new CompositeDisposable();
 
             _trackDisposables.Add(trackContainer);
 
@@ -240,6 +250,11 @@ namespace Synfonia.Backend
 
         private async void CurrentTrackFinished(SoundStreamState obj)
         {
+
+            _trackDisposables?.Dispose();
+            _trackDisposables = new CompositeDisposable();
+
+
             _currentTrackContainer = _preloadedTrackContainer;
             _currentTrackIndex = _preloadedTrackIndex;
             await PreloadNext(GetNextTrackIndex(TrackIndexDirection.Forward)).ConfigureAwait(false);
