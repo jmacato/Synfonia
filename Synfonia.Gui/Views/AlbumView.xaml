@@ -5,6 +5,7 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:b="clr-namespace:Synfonia.Behaviors"
              xmlns:converters="clr-namespace:Synfonia.Converters;assembly=Synfonia.Gui"
+             xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui"
              xmlns:behaviors="clr-namespace:Synfonia.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Synfonia.Views.AlbumView">
@@ -46,7 +47,8 @@
                 </Panel>
             </Border>
         </DockPanel>
-        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12" FontWeight="Bold" Foreground="#F9F9F9" />
-        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10" Foreground="#A1A1A1" />
+ 
+        <c:ScrollingTextBlock Width="200" Text="{Binding Title}" FontSize="12" FontWeight="Bold" Foreground="#F9F9F9" />
+        <c:ScrollingTextBlock Width="200" Text="{Binding Artist}" FontSize="10" Foreground="#A1A1A1" />
     </StackPanel>
 </UserControl>
