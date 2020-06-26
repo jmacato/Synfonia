@@ -64,8 +64,8 @@ namespace Synfonia.Backend
                 _currentTrackIndex = -1;
                 _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
                 var track = _trackList.Tracks[_currentTrackIndex];
-                _currentTrackContainer = await LoadTrackAsync(track).ConfigureAwait(false);
-                await TrackContainerPlay(_currentTrackContainer).ConfigureAwait(false);
+                _currentTrackContainer = await LoadTrackAsync(track);
+                await TrackContainerPlay(_currentTrackContainer);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Synfonia.Backend
             _trackList.AddTracks(trackList);
 
             if (isLast)
-                await PreloadNext().ConfigureAwait(false);
+                await PreloadNext();
         }
 
         private void CommandLock(Action CoreMethod)
@@ -162,9 +162,9 @@ namespace Synfonia.Backend
 
             var track = _trackList.Tracks[_currentTrackIndex];
 
-            _currentTrackContainer = await LoadTrackAsync(track).ConfigureAwait(false);
+            _currentTrackContainer = await LoadTrackAsync(track);
 
-            await TrackContainerPlay(_currentTrackContainer).ConfigureAwait(false);
+            await TrackContainerPlay(_currentTrackContainer);
         }
 
         private int GetNextTrackIndex(TrackIndexDirection direction)
@@ -200,7 +200,7 @@ namespace Synfonia.Backend
         private async Task PreloadNext()
         {
             _preloadedTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
-            _preloadedTrackContainer = await LoadTrackAsync(_trackList.Tracks[_preloadedTrackIndex]).ConfigureAwait(false);
+            _preloadedTrackContainer = await LoadTrackAsync(_trackList.Tracks[_preloadedTrackIndex]);
         }
 
         private async Task TrackContainerPlay(TrackContainer trackContainer)
@@ -230,7 +230,7 @@ namespace Synfonia.Backend
                          .Take(1)
                          .Subscribe(CurrentTrackFinished);
 
-            await PreloadNext().ConfigureAwait(false);
+            await PreloadNext();
 
             PlayCore();
         }
@@ -239,7 +239,7 @@ namespace Synfonia.Backend
         {
             _currentTrackContainer = _preloadedTrackContainer;
             _currentTrackIndex = _preloadedTrackIndex;
-            await TrackContainerPlay(_currentTrackContainer).ConfigureAwait(false);
+            await TrackContainerPlay(_currentTrackContainer);
         }
 
         private async Task<TrackContainer> LoadTrackAsync(Track track)
