@@ -24,6 +24,12 @@ namespace Synfonia.Controls
         public static readonly StyledProperty<double> MarqueeSpeedProperty =
             AvaloniaProperty.Register<ScrollingTextBlock, double>(nameof(MarqueeSpeed), 1d);
 
+        /// <summary>
+        /// Defines the <see cref="DelayProperty"/> property.
+        /// </summary>
+        public static readonly StyledProperty<TimeSpan> DelayProperty =
+            AvaloniaProperty.Register<ScrollingTextBlock, TimeSpan>(nameof(Delay), TimeSpan.FromSeconds(2));
+
         public ScrollingTextBlock()
         {
             this.WhenAnyValue(x => x.Text)
@@ -32,7 +38,8 @@ namespace Synfonia.Controls
             // Initialize fields with default values.
             _textGap = TextGap;
             _offsetSpeed = MarqueeSpeed;
-
+            _waitDuration = Delay;
+            
             if (Clock is null) Clock = new Clock();
             Clock.Subscribe(Tick);
         }
@@ -71,9 +78,22 @@ namespace Synfonia.Controls
             }
         }
 
+        /// <summary>
+        /// Gets or sets the delay between text animations.
+        /// </summary>
+        public TimeSpan Delay
+        {
+            get { return GetValue(DelayProperty); }
+            set
+            {
+                _waitDuration = value;
+                SetValue(DelayProperty, value);
+            }
+        }
+
         private bool _isConstrained;
-        private TimeSpan oldFrameTime = TimeSpan.Zero;
-        private TimeSpan WaitDuration = TimeSpan.FromSeconds(2);
+        private TimeSpan oldFrameTime;
+        private TimeSpan _waitDuration;
         private TimeSpan WaitCounter;
 
         private bool _waiting = false;
@@ -95,7 +115,7 @@ namespace Synfonia.Controls
             {
                 WaitCounter += frameDelta;
 
-                if (WaitCounter >= WaitDuration)
+                if (WaitCounter >= _waitDuration)
                 {
                     WaitCounter = TimeSpan.Zero;
                     _waiting = false;
