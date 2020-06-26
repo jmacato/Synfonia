@@ -7,7 +7,7 @@ namespace Synfonia.ViewModels
 {
     public class DiscChangerViewModel : ViewModelBase
     {
-        private readonly ObservableAsPropertyHelper<bool> _isPaused;
+        private readonly ObservableAsPropertyHelper<bool> _isPlaying;
         private readonly DiscChanger _discChanger;
         private bool _sliderClicked;
 
@@ -15,24 +15,24 @@ namespace Synfonia.ViewModels
         {
             _discChanger = discChanger;
 
-            _isPaused = _discChanger.WhenAnyValue(x => x.IsPaused)
-                .ToProperty(this, nameof(IsPaused));
+            _isPlaying = _discChanger.WhenAnyValue(x => x.IsPlaying)
+                .ToProperty(this, nameof(IsPlaying));
 
-            PlayCommand = ReactiveCommand.CreateFromTask(async () =>
+            PlayCommand = ReactiveCommand.Create(() =>
             {
                 if (_discChanger.IsPlaying)
                 {
-                    await _discChanger.Pause();
+                    _discChanger.Pause();
                 }
                 else
                 {
-                    await _discChanger.Play();
+                    _discChanger.Play();
                 }
-            }, _discChanger.CanPlay);
+            });
 
-            ForwardCommand = ReactiveCommand.CreateFromTask(async () => { await _discChanger.Forward(); });
+            ForwardCommand = ReactiveCommand.Create(_discChanger.Forward);
 
-            BackCommand = ReactiveCommand.CreateFromTask(async () => { await _discChanger.Back(); });
+            BackCommand = ReactiveCommand.Create(_discChanger.Back);
         }
 
         public ReactiveCommand<Unit, Unit> PlayCommand { get; }
@@ -47,7 +47,7 @@ namespace Synfonia.ViewModels
             set => this.RaiseAndSetIfChanged(ref _sliderClicked, value, nameof(SliderClicked));
         }
 
-        public bool IsPaused => _isPaused?.Value ?? false;
+        public bool IsPlaying => _isPlaying?.Value ?? false;
 
         public async Task AppendTrackList(ITrackList trackList)
         {
@@ -56,7 +56,7 @@ namespace Synfonia.ViewModels
 
         public async Task LoadTrackList(ITrackList trackList)
         {
-            await _discChanger.LoadTrackList(trackList);
+            await _discChanger.AppendTrackList(trackList);
         }
     }
 }

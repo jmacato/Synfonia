@@ -30,7 +30,7 @@ namespace Synfonia.ViewModels
                 await MainWindowViewModel.Instance.CollectionExplorer.SelectArtwork.QueryAlbumCoverAsync(this);
             });
 
-            LoadAlbumCommand = ReactiveCommand.CreateFromTask(async () => { await changer.LoadTrackList(album); });
+            LoadAlbumCommand = ReactiveCommand.CreateFromTask(async () => { await changer.AppendTrackList(album); });
 
             Model.Tracks.ToObservableChangeSet()
                 .Transform(x => new TrackViewModel(x))
