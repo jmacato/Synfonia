@@ -167,9 +167,9 @@ namespace Synfonia.ViewModels
 
         private void LoadTrack(Track track)
         {
-            if (track is null) return;
-
             SeekPosition = 0;
+
+            if (track is null) return;
 
             RxApp.MainThreadScheduler.Schedule(async () => { AlbumCover = await LoadCoverAsync(track); });
 
