@@ -73,15 +73,26 @@ namespace Synfonia.Controls
             if (TextLayout != null)
             {
                 _textWidth = TextLayout.Bounds.Width;
-                _isConstrained = _textWidth >= this.Bounds.Deflate(Padding).Width;
+                var containerWidth = this.Bounds.Deflate(Padding).Width;
+                _isConstrained = _textWidth >= containerWidth;
 
                 if (_isConstrained)
                 {
                     _animate = true;
                     var tOffset = padding.Left - _offset;
-                    TextLayout.Draw(context.PlatformImpl, new Point(tOffset, padding.Top));
-                    TextLayout.Draw(context.PlatformImpl, new Point(tOffset + _textWidth + _textGap, padding.Top));
-                    TextLayout.Draw(context.PlatformImpl, new Point(tOffset + (_textWidth + _textGap) * 2, padding.Top));
+
+                    var _1stOffset = tOffset;
+                    var _2ndOffset = tOffset + _textWidth + _textGap;
+                    var _3rdOffset = tOffset + (_textWidth + _textGap) * 2;
+
+                    double[] offsets = new double[] { _1stOffset, _2ndOffset, _3rdOffset };
+
+                    foreach (var offset in offsets)
+                    {
+                        var renderTextWidth = (offset + _textWidth);
+                        if (renderTextWidth >= 0d || renderTextWidth <= containerWidth)
+                            TextLayout.Draw(context.PlatformImpl, new Point(offset, padding.Top));
+                    }
                 }
                 else
                 {
