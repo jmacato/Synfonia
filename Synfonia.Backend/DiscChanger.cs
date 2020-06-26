@@ -49,7 +49,12 @@ namespace Synfonia.Backend
                 })
                 .DisposeWith(_internalDisposables);
 
-            _internalState = (DiscChangerState.Idle);
+            this.WhenAnyValue(x => x.InternalState)
+                .DistinctUntilChanged()
+                .Subscribe(x => IsPlaying = (x == DiscChangerState.Playing))
+                .DisposeWith(_internalDisposables);
+
+            InternalState = (DiscChangerState.Idle);
 
         }
 
@@ -67,6 +72,12 @@ namespace Synfonia.Backend
                 _currentTrackContainer = await LoadTrackAsync(track);
                 await TrackContainerPlay(_currentTrackContainer);
             }
+        }
+
+        private DiscChangerState InternalState
+        {
+            get => _internalState;
+            set => this.RaiseAndSetIfChanged(ref _internalState, value, nameof(InternalState));
         }
 
         public Track CurrentTrack
@@ -136,25 +147,25 @@ namespace Synfonia.Backend
 
         private void SeekCore(TimeSpan seektime)
         {
-            if (_internalState == DiscChangerState.Playing)
+            if (InternalState == DiscChangerState.Playing)
                 _currentTrackContainer?.SoundStream.TrySeek(seektime);
         }
 
         private void PlayCore()
         {
-            if (_internalState == DiscChangerState.Paused)
+            if (InternalState == DiscChangerState.Paused)
             {
                 _currentTrackContainer?.SoundStream.PlayPause();
-                _internalState = DiscChangerState.Playing;
+                InternalState = DiscChangerState.Playing;
             }
         }
 
         private void PauseCore()
         {
-            if (_internalState == DiscChangerState.Playing)
+            if (InternalState == DiscChangerState.Playing)
             {
                 _currentTrackContainer?.SoundStream.PlayPause();
-                _internalState = DiscChangerState.Paused;
+                InternalState = DiscChangerState.Paused;
             }
         }
 
@@ -215,10 +226,10 @@ namespace Synfonia.Backend
             _trackDisposables = new CompositeDisposable();
             _trackDisposables.Add(trackContainer);
 
-            _internalState = DiscChangerState.Paused;
+            InternalState = DiscChangerState.Paused;
 
             trackContainer.SoundStream.WhenAnyValue(x => x.State)
-                          .Subscribe(x => _internalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
+                          .Subscribe(x => InternalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
                           .DisposeWith(_trackDisposables);
 
             trackContainer.SoundStream.WhenAnyValue(x => x.Position)
@@ -238,7 +249,7 @@ namespace Synfonia.Backend
 
             trackContainer.SoundStream.WhenAnyValue(x => x.State)
                           .DistinctUntilChanged()
-                          .Subscribe(x => IsPlaying = (x == SoundStreamState.Playing))
+                          .Subscribe(x => InternalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
                           .DisposeWith(_trackDisposables);
 
             CurrentTrack = trackContainer.Track;
