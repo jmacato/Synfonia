@@ -48,7 +48,7 @@ namespace Synfonia.Controls
         {
             _offset = 0;
             _waiting = true;
-            WaitCounter = TimeSpan.Zero;
+            _waitCounter = TimeSpan.Zero;
             Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
         }
 
@@ -92,9 +92,9 @@ namespace Synfonia.Controls
         }
 
         private bool _isConstrained;
-        private TimeSpan oldFrameTime;
+        private TimeSpan _oldFrameTime;
         private TimeSpan _waitDuration;
-        private TimeSpan WaitCounter;
+        private TimeSpan _waitCounter;
 
         private bool _waiting = false;
         private bool _animate = false;
@@ -104,20 +104,20 @@ namespace Synfonia.Controls
         private double _textWidth;
         private double _textHeight;
         private double _textGap;
-        private double[] offsets = new double[3];
+        private double[] _offsets = new double[3];
 
         private void Tick(TimeSpan curFrameTime)
         {
-            var frameDelta = curFrameTime - oldFrameTime;
-            oldFrameTime = curFrameTime;
+            var frameDelta = curFrameTime - _oldFrameTime;
+            _oldFrameTime = curFrameTime;
 
             if (_waiting)
             {
-                WaitCounter += frameDelta;
+                _waitCounter += frameDelta;
 
-                if (WaitCounter >= _waitDuration)
+                if (_waitCounter >= _waitDuration)
                 {
-                    WaitCounter = TimeSpan.Zero;
+                    _waitCounter = TimeSpan.Zero;
                     _waiting = false;
                     Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
                 }
@@ -162,11 +162,11 @@ namespace Synfonia.Controls
                     _animate = true;
                     var tOffset = padding.Left - _offset;
 
-                    offsets[0] = tOffset;
-                    offsets[1] = tOffset + _textWidth + _textGap;
-                    offsets[2] = tOffset + (_textWidth + _textGap) * 2;
+                    _offsets[0] = tOffset;
+                    _offsets[1] = tOffset + _textWidth + _textGap;
+                    _offsets[2] = tOffset + (_textWidth + _textGap) * 2;
 
-                    foreach (var offset in offsets)
+                    foreach (var offset in _offsets)
                     {
                         var nR = new Rect(offset, padding.Top, _textWidth, _textHeight);
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
