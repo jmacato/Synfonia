@@ -38,17 +38,17 @@ namespace Synfonia.ViewModels
 
             Model = discChanger;
 
-            Observable.FromEventPattern(Model, nameof(Model.TrackChanged))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => LoadTrack(Model.CurrentTrack));
+            Model.WhenAnyValue(x => x.CurrentTrack)
+                 .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x => LoadTrack(x));
 
-            Observable.FromEventPattern(Model, nameof(Model.TrackPositionChanged))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => UpdateCurrentPlayTime(Model.CurrentTrackPosition));
+            Model.WhenAnyValue(x => x.CurrentTrackPosition)
+                 .ObserveOn(RxApp.MainThreadScheduler)
+                 .Subscribe(x => UpdateCurrentPlayTime(x));
 
-            Observable.FromEventPattern(Model, nameof(Model.SpectrumDataReady))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => InFFTData = Model.CurrentSpectrumData);
+            Model.WhenAnyValue(x => x.CurrentSpectrumData)
+                 .ObserveOn(RxApp.MainThreadScheduler)
+                 .Subscribe(x => InFFTData = x);
 
             Observable.FromEventPattern<string>(libraryManager, nameof(libraryManager.StatusChanged))
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -107,7 +107,7 @@ namespace Synfonia.ViewModels
         {
             get => _currentTime;
             private set => this.RaiseAndSetIfChanged(ref _currentTime, value);
-        }        
+        }
 
         public string CurrentDuration
         {
@@ -167,6 +167,8 @@ namespace Synfonia.ViewModels
 
         private void LoadTrack(Track track)
         {
+            if (track is null) return;
+
             SeekPosition = 0;
 
             RxApp.MainThreadScheduler.Schedule(async () => { AlbumCover = await LoadCoverAsync(track); });

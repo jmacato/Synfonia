@@ -15,7 +15,7 @@ namespace Synfonia.ViewModels
         {
             this.discChanger = discChanger;
 
-            Observable.FromEventPattern(discChanger, nameof(discChanger.TrackChanged))
+            discChanger.WhenAnyValue(x => x.CurrentTrack)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ =>
                 {
