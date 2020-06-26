@@ -12,7 +12,6 @@ namespace Synfonia.Controls
     public class ScrollingTextBlock : TextBlock
     {
         private bool _isConstrained;
-        private Size _constraints = Size.Empty;
 
         public ScrollingTextBlock()
         {
@@ -22,19 +21,36 @@ namespace Synfonia.Controls
 
         private void Tick(TimeSpan x)
         {
-            if (_animate)
+            var frameDelta = x - oldFrameTime;
+            oldFrameTime = x;
+
+            if (_waiting)
             {
-                if(_offset == 0)
+                WaitCounter += frameDelta;
+
+                if (WaitCounter >= WaitDuration)
                 {
-
+                    WaitCounter = TimeSpan.Zero;
+                    _waiting = false;
                 }
+            }
 
+            if (!_waiting && _animate)
+            {
                 _offset += 1;
-                _offset %= _textWidth + _textGap;
+
+                if (_offset >= _textWidth + _textGap)
+                {
+                    _offset = 0;
+                    _waiting = true;
+                };
+
                 Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
             }
         }
 
+        private TimeSpan oldFrameTime = TimeSpan.Zero;
+        private bool _waiting = false;
         private bool _animate = false;
         private double _offset;
         private TimeSpan WaitDuration = TimeSpan.FromSeconds(2);
