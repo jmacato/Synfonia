@@ -34,8 +34,7 @@ namespace Synfonia.Controls
                     _waiting = false;
                 }
             }
-
-            if (!_waiting && _animate)
+            else if (_animate)
             {
                 _offset += 1;
 
