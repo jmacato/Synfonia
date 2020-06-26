@@ -28,9 +28,9 @@
             <Image IsVisible="{Binding AlbumCoverVisible}" Stretch="Uniform"
                    Source="{Binding AlbumCover}" Margin="10" />
             <StackPanel VerticalAlignment="Center">
-              <TextBlock HorizontalAlignment="Center" Text="{Binding TrackTitle}" FontSize="18"
+              <c:ScrollingTextBlock HorizontalAlignment="Center" Width="250" Text="{Binding TrackTitle}" FontSize="18"
                           Foreground="#C0C0C0" />
-              <TextBlock HorizontalAlignment="Center" Text="{Binding Artist}" Foreground="#C0C0C0"
+              <c:ScrollingTextBlock HorizontalAlignment="Center" Width="250" Text="{Binding Artist}" Foreground="#C0C0C0"
                          FontSize="12" />
             </StackPanel>
           </StackPanel>
