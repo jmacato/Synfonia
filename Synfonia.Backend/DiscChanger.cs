@@ -154,9 +154,9 @@ namespace Synfonia.Backend
 
         private async void NavigateCore(TrackIndexDirection dir)
         {
-            _trackDisposables?.Dispose();
+            if (_trackList.Tracks.Count == 0) return;
 
-            _trackDisposables = new CompositeDisposable();
+            _currentTrackContainer.SoundStream.Stop();
 
             _currentTrackIndex = GetNextTrackIndex(dir);
 
@@ -226,7 +226,7 @@ namespace Synfonia.Backend
             _internalState = DiscChangerState.Paused;
 
             trackContainer.SoundStream.WhenAnyValue(x => x.State)
-                         .Where(x => x == SoundStreamState.Stop)
+                         .Where(x => x == SoundStreamState.TrackEnd)
                          .Take(1)
                          .Subscribe(CurrentTrackFinished);
 
