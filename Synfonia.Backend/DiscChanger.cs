@@ -55,9 +55,11 @@ namespace Synfonia.Backend
 
         public async Task LoadTrackList(ITrackList trackList)
         {
+            var wasEmpty = _trackList.Tracks.Count == 0;
+
             await AppendTrackList(trackList);
 
-            if (_trackList.Tracks.Count == 0)
+            if (wasEmpty)
             {
                 _currentTrackIndex = -1;
                 ForwardCore();
