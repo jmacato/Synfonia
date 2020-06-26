@@ -242,7 +242,7 @@ namespace Synfonia.Backend
 
             trackContainer.SoundStream.WhenAnyValue(x => x.State)
                           .DistinctUntilChanged()
-                          .Where(x => x == SoundStreamState.TrackEnd)
+                          .Where(x => x == SoundStreamState.TrackFinished)
                           .Take(1)
                           .Subscribe(CurrentTrackFinished)
                           .DisposeWith(_trackDisposables);
