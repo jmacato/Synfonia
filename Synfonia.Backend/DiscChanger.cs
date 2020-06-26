@@ -26,7 +26,7 @@ namespace Synfonia.Backend
         private volatile bool IsBusy = false;
         private int _currentTrackIndex;
         private int _preloadedTrackIndex;
-
+        private bool _IsPlaying;
 
         public DiscChanger()
         {
@@ -86,6 +86,7 @@ namespace Synfonia.Backend
             get => _currentTrackPosition;
             private set => this.RaiseAndSetIfChanged(ref _currentTrackPosition, value, nameof(CurrentTrackPosition));
         }
+
         public double[,] CurrentSpectrumData
         {
             get => _currentSpectrumData;
@@ -101,7 +102,12 @@ namespace Synfonia.Backend
             }
         }
 
-        public bool IsPlaying => _internalState == DiscChangerState.Playing;
+        public bool IsPlaying
+        {
+            get => _IsPlaying;
+            private set => this.RaiseAndSetIfChanged(ref _IsPlaying, value, nameof(IsPlaying));
+        }
+
         public void Seek(TimeSpan seektime) => CommandLock(() => SeekCore(seektime));
         public void Play() => CommandLock(PlayCore);
         public void Pause() => CommandLock(PauseCore);
@@ -209,26 +215,33 @@ namespace Synfonia.Backend
             _trackDisposables = new CompositeDisposable();
             _trackDisposables.Add(trackContainer);
 
-            trackContainer.SoundStream.WhenAnyValue(x => x.State)
-                         .Subscribe(x => _internalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
-                         .DisposeWith(_trackDisposables);
-
-            trackContainer.SoundStream.WhenAnyValue(x => x.Position)
-                             .Subscribe(x => this.CurrentTrackPosition = x)
-                             .DisposeWith(_trackDisposables);
-
-            trackContainer.SoundStream.WhenAnyValue(x => x.Duration)
-                             .Subscribe(x => this.CurrentTrackDuration = x)
-                             .DisposeWith(_trackDisposables);
-
-            CurrentTrack = trackContainer.Track;
-
             _internalState = DiscChangerState.Paused;
 
             trackContainer.SoundStream.WhenAnyValue(x => x.State)
-                         .Where(x => x == SoundStreamState.TrackEnd)
-                         .Take(1)
-                         .Subscribe(CurrentTrackFinished);
+                          .Subscribe(x => _internalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
+                          .DisposeWith(_trackDisposables);
+
+            trackContainer.SoundStream.WhenAnyValue(x => x.Position)
+                          .Subscribe(x => this.CurrentTrackPosition = x)
+                          .DisposeWith(_trackDisposables);
+
+            trackContainer.SoundStream.WhenAnyValue(x => x.Duration)
+                          .Subscribe(x => this.CurrentTrackDuration = x)
+                          .DisposeWith(_trackDisposables);
+
+            trackContainer.SoundStream.WhenAnyValue(x => x.State)
+                          .DistinctUntilChanged()
+                          .Where(x => x == SoundStreamState.TrackEnd)
+                          .Take(1)
+                          .Subscribe(CurrentTrackFinished)
+                          .DisposeWith(_trackDisposables);
+
+            trackContainer.SoundStream.WhenAnyValue(x => x.State)
+                          .DistinctUntilChanged()
+                          .Subscribe(x => IsPlaying = (x == SoundStreamState.Playing))
+                          .DisposeWith(_trackDisposables);
+
+            CurrentTrack = trackContainer.Track;
 
             await PreloadNext();
 
