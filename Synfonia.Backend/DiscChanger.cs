@@ -12,15 +12,36 @@ namespace Synfonia.Backend
 {
     public class DiscChanger : ReactiveObject, IDisposable
     {
+        enum DiscChangerState
+        {
+            Idle,
+            PlayCmdTriggered,
+            LoadingTrack,
+            Playing,
+            NextTrackCmdTriggered,
+            PrevCmdTriggered,
+            StopCmdTriggered,
+            CurrentTrackDone,
+        }
+
+        private DiscChangerState State;
+
         private readonly SoundSink _soundSink;
         private int _currentTrackIndex;
-        private bool _isPaused = true;
+
         private Playlist _trackList;
-        private bool _userOperation;
+
+
         private TrackContainer _currentTrack;
         private TrackContainer _preloadedTrack;
-        private CompositeDisposable _disposables;
-        private int preloadIndex;
+
+        private CompositeDisposable _trackDisposables;
+        private CompositeDisposable _internalDisposables;
+
+        public Task Pause()
+        {
+            throw new NotImplementedException();
+        }
 
         public DiscChanger()
         {
@@ -34,21 +55,20 @@ namespace Synfonia.Backend
 
             _soundSink = new SoundSink(audioEngine, specProcessor);
 
-            Observable.FromEventPattern<EventArgs>(this, nameof(TrackChanged))
-                .Select(x => _currentTrack)
-                .Where(x => x != null)
-                .Select(x => x.SoundStream)
-                .Subscribe(OnTrackChanged);
+
+
+
 
             Observable.FromEventPattern<double[,]>(specProcessor, nameof(specProcessor.FftDataReady))
                 .Subscribe(x =>
                 {
                     CurrentSpectrumData = x.EventArgs;
                     SpectrumDataReady?.Invoke(this, EventArgs.Empty);
-                });
+                }).DisposeWith(_internalDisposables);
+
         }
 
-        private bool _isPlaying => _currentTrack.SoundStream.IsPlaying;
+        private bool _isPlaying => _currentTrack?.SoundStream.IsPlaying ?? false;
 
         public Track CurrentTrack => _currentTrack?.Track;
 
@@ -67,59 +87,17 @@ namespace Synfonia.Backend
             }
         }
 
-        public bool IsPaused
-        {
-            get => _isPaused;
-            set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
-        }
+        public IObservable<bool> CanPlay { get; }
+        public bool IsPlaying { get; }
 
         private async void OnTrackChanged(SoundStream soundStr)
         {
-            _disposables?.Dispose();
+            _trackDisposables?.Dispose();
 
-            _disposables = new CompositeDisposable();
+            _trackDisposables = new CompositeDisposable();
 
-            if (_preloadedTrack is null)
-            {
-                var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
 
-                if (nextIndex == (int)TrackIndexDirection.Error)
-                {
-                    return;
-                }
 
-                preloadIndex = nextIndex;
-                _preloadedTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
-            }
-
-            soundStr.WhenAnyValue(x => x.Position)
-                .Subscribe(x => { TrackPositionChanged?.Invoke(this, EventArgs.Empty); })
-                .DisposeWith(_disposables);
-
-            soundStr.WhenAnyValue(x => x.State)
-                .DistinctUntilChanged()
-                .Subscribe(async x =>
-                {
-                    if (!_userOperation & x == SoundStreamState.Stop)
-                    {
-                        if (_preloadedTrack != null)
-                        {
-                            _currentTrack?.Dispose();
-                            _currentTrack = _preloadedTrack;
-                            _preloadedTrack = null;
-                            _currentTrackIndex = preloadIndex;
-                            TrackChanged?.Invoke(this, EventArgs.Empty);
-                            DoPlay(false);
-                        }
-                        else
-                        {
-                            await Forward(false);
-                        }
-                    }
-
-                    IsPaused = x == SoundStreamState.Paused;
-                })
-                .DisposeWith(_disposables);
         }
 
         public event EventHandler TrackChanged;
@@ -158,38 +136,14 @@ namespace Synfonia.Backend
             }
         }
 
-        public async Task Forward(bool byUser = true)
+        public async Task Forward()
         {
-            _userOperation = byUser;
 
-            if (_trackList is null) return;
-
-            var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
-
-            if (nextIndex == (int)TrackIndexDirection.Error) return;
-
-            _currentTrackIndex = nextIndex;
-
-            ChangeTrackAndPlay(_currentTrackIndex);
-
-            _userOperation = false;
         }
 
-        public async Task Back(bool byUser = true)
+        public async Task Back()
         {
-            _userOperation = byUser;
 
-            if (_trackList is null) return;
-
-            var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Backward);
-
-            if (nextIndex == (int)TrackIndexDirection.Error) return;
-
-            _currentTrackIndex = nextIndex;
-
-            ChangeTrackAndPlay(_currentTrackIndex);
-
-            _userOperation = false;
         }
 
         public void Seek(TimeSpan seektime)
@@ -199,25 +153,7 @@ namespace Synfonia.Backend
 
         public async Task Play()
         {
-            if (_currentTrack is null && _trackList.Tracks.Count > 0)
-                await Forward(false);
-            else
-                DoPlay(true);
-        }
 
-        private void DoPlay(bool userOp = true)
-        {
-            if (_currentTrack == null) return;
-
-            if (!userOp)
-            {
-                if (_currentTrack.SoundStream.State == SoundStreamState.Paused)
-                    _currentTrack.SoundStream.PlayPause();
-            }
-            else
-            {
-                _currentTrack.SoundStream.PlayPause();
-            }
         }
 
         public async Task AppendTrackList(ITrackList trackList)
@@ -235,49 +171,43 @@ namespace Synfonia.Backend
 
         private async void ChangeTrackAndPlay(int index)
         {
-            _currentTrack?.Dispose();
-            _currentTrack = await LoadTrackAsync(_trackList.Tracks[index]);
-            TrackChanged?.Invoke(this, EventArgs.Empty);
-            DoPlay(false);
+
         }
 
         public async Task LoadTrackList(ITrackList trackList)
         {
-            if (trackList.Tracks.Count > 0)
-            {
-                await AppendTrackList(trackList);
-            }
+
         }
 
-        private async Task<TrackContainer> LoadTrackAsync(Track track)
+        private async Task<(TrackContainer, bool)> PlayTrackAsync(Track track)
         {
             var targetPath = track.Path;
 
             if (File.Exists(targetPath))
             {
                 var soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
-                return new TrackContainer(track, soundStr);
+                return (new TrackContainer(track, soundStr), true);
             }
 
-            return null;
+            return (null, false);
         }
 
         public void Dispose()
         {
-            if(!IsPaused)
+            if (!IsPaused)
             {
-                _currentTrack.SoundStream.PlayPause();                
+                _currentTrack.SoundStream.PlayPause();
             }
 
             _currentTrack?.Dispose();
             _preloadedTrack?.Dispose();
-            _disposables?.Dispose();
+            _trackDisposables?.Dispose();
 
             try
             {
                 _soundSink?.Dispose();
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
         }

@@ -34,9 +34,9 @@
             </Button>
             <Button Name="PlayButton" HorizontalAlignment="Center" Width="36" Command="{Binding PlayCommand}">
                 <Panel>
-                    <DrawingPresenter Drawing="{DynamicResource Play}" IsVisible="{Binding IsPaused}" Width="20"
+                    <DrawingPresenter Drawing="{DynamicResource Play}" IsVisible="{Binding !IsPlaying}" Width="20"
                                       Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <DrawingPresenter Drawing="{DynamicResource Pause}" IsVisible="{Binding !IsPaused}" Width="20"
+                    <DrawingPresenter Drawing="{DynamicResource Pause}" IsVisible="{Binding IsPlaying}" Width="20"
                                       Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Panel>
             </Button>

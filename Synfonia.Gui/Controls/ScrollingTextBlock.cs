@@ -154,7 +154,7 @@ namespace Synfonia.Controls
 
                 var constraints = this.Bounds.Deflate(Padding);
                 var constraintsWidth = constraints.Width;
-
+Do
                 _isConstrained = _textWidth >= constraintsWidth;
 
                 if (_isConstrained & !_waiting)

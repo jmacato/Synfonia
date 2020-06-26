@@ -18,7 +18,17 @@ namespace Synfonia.ViewModels
             _isPaused = _discChanger.WhenAnyValue(x => x.IsPaused)
                 .ToProperty(this, nameof(IsPaused));
 
-            PlayCommand = ReactiveCommand.CreateFromTask(async () => { await _discChanger.Play(); });
+            PlayCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                if (_discChanger.IsPlaying)
+                {
+                    await _discChanger.Pause();
+                }
+                else
+                {
+                    await _discChanger.Play();
+                }
+            }, _discChanger.CanPlay);
 
             ForwardCommand = ReactiveCommand.CreateFromTask(async () => { await _discChanger.Forward(); });
 
