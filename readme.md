@@ -8,5 +8,6 @@ A music-oriented media player built with [AvaloniaUI](https://github.com/Avaloni
 
 - It can play any audio format that FFMPEG supports. 
 - Gapless & seamless playback between tracks.
+- Custom album art fetching.
 - Can run on Windows, Linux and macOS. Will have mobile support too once Avalonia gets it done.
 - Uses modern Microsoft Fluent UI design language for that slick look.
