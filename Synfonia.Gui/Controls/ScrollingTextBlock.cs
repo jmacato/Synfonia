@@ -35,11 +35,6 @@ namespace Synfonia.Controls
             this.WhenAnyValue(x => x.Text)
                 .Subscribe(OnTextChanged);
 
-            // Initialize fields with default values.
-            _textGap = TextGap;
-            _offsetSpeed = MarqueeSpeed;
-            _waitDuration = Delay;
-            
             if (Clock is null) Clock = new Clock();
             Clock.Subscribe(Tick);
         }
@@ -58,11 +53,7 @@ namespace Synfonia.Controls
         public double TextGap
         {
             get { return GetValue(TextGapProperty); }
-            set
-            {
-                _textGap = value;
-                SetValue(TextGapProperty, value);
-            }
+            set { SetValue(TextGapProperty, value); }
         }
 
         /// <summary>
@@ -71,11 +62,7 @@ namespace Synfonia.Controls
         public double MarqueeSpeed
         {
             get { return GetValue(MarqueeSpeedProperty); }
-            set
-            {
-                _offsetSpeed = value;
-                SetValue(MarqueeSpeedProperty, value);
-            }
+            set { SetValue(MarqueeSpeedProperty, value); }
         }
 
         /// <summary>
@@ -84,26 +71,19 @@ namespace Synfonia.Controls
         public TimeSpan Delay
         {
             get { return GetValue(DelayProperty); }
-            set
-            {
-                _waitDuration = value;
-                SetValue(DelayProperty, value);
-            }
+            set { SetValue(DelayProperty, value); }
         }
 
         private bool _isConstrained;
         private TimeSpan _oldFrameTime;
-        private TimeSpan _waitDuration;
         private TimeSpan _waitCounter;
 
         private bool _waiting = false;
         private bool _animate = false;
         private double _offset;
-        private double _offsetSpeed;
 
         private double _textWidth;
         private double _textHeight;
-        private double _textGap;
         private double[] _offsets = new double[3];
 
         private void Tick(TimeSpan curFrameTime)
@@ -115,7 +95,7 @@ namespace Synfonia.Controls
             {
                 _waitCounter += frameDelta;
 
-                if (_waitCounter >= _waitDuration)
+                if (_waitCounter >= this.Delay)
                 {
                     _waitCounter = TimeSpan.Zero;
                     _waiting = false;
@@ -124,9 +104,9 @@ namespace Synfonia.Controls
             }
             else if (_animate)
             {
-                _offset += _offsetSpeed;
+                _offset += this.MarqueeSpeed;
 
-                if (_offset >= ((_textWidth + _textGap) * 2))
+                if (_offset >= ((_textWidth + this.TextGap) * 2))
                 {
                     _offset = 0;
                     _waiting = true;
@@ -163,8 +143,8 @@ namespace Synfonia.Controls
                     var tOffset = padding.Left - _offset;
 
                     _offsets[0] = tOffset;
-                    _offsets[1] = tOffset + _textWidth + _textGap;
-                    _offsets[2] = tOffset + (_textWidth + _textGap) * 2;
+                    _offsets[1] = tOffset + _textWidth + this.TextGap;
+                    _offsets[2] = tOffset + (_textWidth + this.TextGap) * 2;
 
                     foreach (var offset in _offsets)
                     {
