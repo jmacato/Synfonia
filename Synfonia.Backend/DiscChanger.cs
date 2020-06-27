@@ -13,14 +13,20 @@ namespace Synfonia.Backend
     public class DiscChanger : ReactiveObject, IDisposable
     {
         private readonly SoundSink _soundSink;
-        private int _currentTrackIndex;
-        private bool _isPaused = true;
+        private DiscChangerState _internalState;
         private Playlist _trackList;
-        private bool _userOperation;
-        private TrackContainer _currentTrack;
-        private TrackContainer _preloadedTrack;
-        private CompositeDisposable _disposables;
-        private int preloadIndex;
+        private TrackContainer _currentTrackContainer;
+        private TrackContainer _preloadedTrackContainer;
+        private CompositeDisposable _trackDisposables;
+        private CompositeDisposable _internalDisposables;
+        private Track _currentTrack;
+        private TimeSpan _currentTrackDuration;
+        private TimeSpan _currentTrackPosition;
+        private double[,] _currentSpectrumData;
+        private volatile bool IsBusy = false;
+        private int _currentTrackIndex;
+        private int _preloadedTrackIndex;
+        private bool _IsPlaying;
 
         public DiscChanger()
         {
@@ -30,112 +36,165 @@ namespace Synfonia.Backend
 
             if (audioEngine == null) throw new Exception("Failed to create an audio backend!");
 
-            var specProcessor = new SpectrumProcessor();
+            var spectrumProcessor = new SpectrumProcessor();
 
-            _soundSink = new SoundSink(audioEngine, specProcessor);
+            _soundSink = new SoundSink(audioEngine, spectrumProcessor);
 
-            Observable.FromEventPattern<EventArgs>(this, nameof(TrackChanged))
-                .Select(x => _currentTrack)
-                .Where(x => x != null)
-                .Select(x => x.SoundStream)
-                .Subscribe(OnTrackChanged);
+            _internalDisposables = new CompositeDisposable();
 
-            Observable.FromEventPattern<double[,]>(specProcessor, nameof(specProcessor.FftDataReady))
+            Observable.FromEventPattern<double[,]>(spectrumProcessor, nameof(spectrumProcessor.FftDataReady))
                 .Subscribe(x =>
                 {
                     CurrentSpectrumData = x.EventArgs;
-                    SpectrumDataReady?.Invoke(this, EventArgs.Empty);
-                });
+                })
+                .DisposeWith(_internalDisposables);
+
+            this.WhenAnyValue(x => x.InternalState)
+                .DistinctUntilChanged()
+                .Subscribe(x => IsPlaying = (x == DiscChangerState.Playing))
+                .DisposeWith(_internalDisposables);
+
+            InternalState = (DiscChangerState.Idle);
         }
 
-        private bool _isPlaying => _currentTrack.SoundStream.IsPlaying;
+        public async Task LoadTrackList(ITrackList trackList)
+        {
+            var wasEmpty = _trackList.Tracks.Count == 0;
 
-        public Track CurrentTrack => _currentTrack?.Track;
+            await AppendTrackList(trackList);
 
-        public TimeSpan CurrentTrackPosition => _currentTrack?.SoundStream.Position ?? TimeSpan.Zero;
+            if (wasEmpty)
+            {
+                _currentTrackIndex = -1;
+                _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
+                var track = _trackList.Tracks[_currentTrackIndex];
+                _currentTrackContainer = LoadTrack(track);
+                await TrackContainerPlay(_currentTrackContainer);
+            }
+        }
 
-        public TimeSpan CurrentTrackDuration => _currentTrack?.SoundStream.Duration ?? TimeSpan.Zero;
+        private DiscChangerState InternalState
+        {
+            get => _internalState;
+            set => this.RaiseAndSetIfChanged(ref _internalState, value, nameof(InternalState));
+        }
 
-        public double[,] CurrentSpectrumData { get; private set; }
+        public Track CurrentTrack
+        {
+            get => _currentTrack;
+            private set => this.RaiseAndSetIfChanged(ref _currentTrack, value, nameof(CurrentTrack));
+        }
+
+        public TimeSpan CurrentTrackDuration
+        {
+            get => _currentTrackDuration;
+            private set => this.RaiseAndSetIfChanged(ref _currentTrackDuration, value, nameof(CurrentTrackDuration));
+        }
+
+        public TimeSpan CurrentTrackPosition
+        {
+            get => _currentTrackPosition;
+            private set => this.RaiseAndSetIfChanged(ref _currentTrackPosition, value, nameof(CurrentTrackPosition));
+        }
+
+        public double[,] CurrentSpectrumData
+        {
+            get => _currentSpectrumData;
+            private set => this.RaiseAndSetIfChanged(ref _currentSpectrumData, value, nameof(CurrentSpectrumData));
+        }
 
         public double Volume
         {
-            get => _currentTrack.SoundStream?.Volume ?? 0d;
+            get => _currentTrackContainer.SoundStream?.Volume ?? 0d;
             set
             {
-                if (_currentTrack != null) _currentTrack.SoundStream.Volume = (float)value;
+                if (_currentTrackContainer != null) _currentTrackContainer.SoundStream.Volume = (float)value;
             }
         }
 
-        public bool IsPaused
+        public bool IsPlaying
         {
-            get => _isPaused;
-            set => this.RaiseAndSetIfChanged(ref _isPaused, value, nameof(IsPaused));
+            get => _IsPlaying;
+            private set => this.RaiseAndSetIfChanged(ref _IsPlaying, value, nameof(IsPlaying));
         }
 
-        private async void OnTrackChanged(SoundStream soundStr)
+        public void Seek(TimeSpan seektime) => CommandLock(() => SeekCore(seektime));
+        public void Play() => CommandLock(PlayCore);
+        public void Pause() => CommandLock(PauseCore);
+        public void Forward() => CommandLock(() => NavigateCore(TrackIndexDirection.Forward));
+        public void Back() => CommandLock(() => NavigateCore(TrackIndexDirection.Backward));
+
+        public async Task AppendTrackList(ITrackList trackList)
         {
-            _disposables?.Dispose();
+            var isLast = (_trackList.Tracks.Count - 1) == _currentTrackIndex;
 
-            _disposables = new CompositeDisposable();
+            _trackList.AddTracks(trackList);
 
-            if (_preloadedTrack is null)
+            if (isLast)
+                await PreloadNext();
+        }
+
+        private void CommandLock(Action CoreMethod)
+        {
+            if (!IsBusy)
             {
-                var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
-
-                if (nextIndex == (int)TrackIndexDirection.Error)
+                IsBusy = true;
+                Task.Factory.StartNew(() =>
                 {
-                    return;
-                }
-
-                preloadIndex = nextIndex;
-                _preloadedTrack = await LoadTrackAsync(_trackList.Tracks[preloadIndex]);
+                    CoreMethod();
+                    IsBusy = false;
+                });
             }
-
-            soundStr.WhenAnyValue(x => x.Position)
-                .Subscribe(x => { TrackPositionChanged?.Invoke(this, EventArgs.Empty); })
-                .DisposeWith(_disposables);
-
-            soundStr.WhenAnyValue(x => x.State)
-                .DistinctUntilChanged()
-                .Subscribe(async x =>
-                {
-                    if (!_userOperation & x == SoundStreamState.Stop)
-                    {
-                        if (_preloadedTrack != null)
-                        {
-                            _currentTrack?.Dispose();
-                            _currentTrack = _preloadedTrack;
-                            _preloadedTrack = null;
-                            _currentTrackIndex = preloadIndex;
-                            TrackChanged?.Invoke(this, EventArgs.Empty);
-                            DoPlay(false);
-                        }
-                        else
-                        {
-                            await Forward(false);
-                        }
-                    }
-
-                    IsPaused = x == SoundStreamState.Paused;
-                })
-                .DisposeWith(_disposables);
         }
 
-        public event EventHandler TrackChanged;
+        private void SeekCore(TimeSpan seektime)
+        {
+            if (InternalState == DiscChangerState.Playing)
+                _currentTrackContainer?.SoundStream.TrySeek(seektime);
+        }
 
-        public event EventHandler SpectrumDataReady;
+        private void PlayCore()
+        {
+            if (InternalState == DiscChangerState.Paused)
+            {
+                _currentTrackContainer?.SoundStream.PlayPause();
+                InternalState = DiscChangerState.Playing;
+            }
+        }
 
-        public event EventHandler TrackPositionChanged;
+        private void PauseCore()
+        {
+            if (InternalState == DiscChangerState.Playing)
+            {
+                _currentTrackContainer?.SoundStream.PlayPause();
+                InternalState = DiscChangerState.Paused;
+            }
+        }
 
-        public int GetNextTrackIndex(int index, TrackIndexDirection direction)
+        private async void NavigateCore(TrackIndexDirection dir)
+        {
+            if (_trackList.Tracks.Count == 0) return;
+
+            _currentTrackContainer?.SoundStream.Stop();
+            _preloadedTrackContainer?.Dispose();
+
+            _currentTrackIndex = GetNextTrackIndex(dir);
+
+            var track = _trackList.Tracks[_currentTrackIndex];
+
+            _currentTrackContainer = LoadTrack(track);
+
+            await TrackContainerPlay(_currentTrackContainer);
+        }
+
+        private int GetNextTrackIndex(TrackIndexDirection direction)
         {
             switch (direction)
             {
                 case TrackIndexDirection.Forward:
-                    if (index < _trackList.Tracks.Count - 1)
+                    if (_currentTrackIndex < _trackList.Tracks.Count - 1)
                     {
-                        var r = index + 1;
+                        var r = _currentTrackIndex + 1;
                         return r;
                     }
                     else
@@ -144,9 +203,9 @@ namespace Synfonia.Backend
                     }
 
                 case TrackIndexDirection.Backward:
-                    if (index > 0)
+                    if (_currentTrackIndex > 0)
                     {
-                        var r = index - 1;
+                        var r = _currentTrackIndex - 1;
                         return r;
                     }
                     else
@@ -158,98 +217,64 @@ namespace Synfonia.Backend
             }
         }
 
-        public async Task Forward(bool byUser = true)
+        private async Task PreloadNext()
         {
-            _userOperation = byUser;
-
-            if (_trackList is null) return;
-
-            var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Forward);
-
-            if (nextIndex == (int)TrackIndexDirection.Error) return;
-
-            _currentTrackIndex = nextIndex;
-
-            ChangeTrackAndPlay(_currentTrackIndex);
-
-            _userOperation = false;
-        }
-
-        public async Task Back(bool byUser = true)
-        {
-            _userOperation = byUser;
-
-            if (_trackList is null) return;
-
-            var nextIndex = GetNextTrackIndex(_currentTrackIndex, TrackIndexDirection.Backward);
-
-            if (nextIndex == (int)TrackIndexDirection.Error) return;
-
-            _currentTrackIndex = nextIndex;
-
-            ChangeTrackAndPlay(_currentTrackIndex);
-
-            _userOperation = false;
-        }
-
-        public void Seek(TimeSpan seektime)
-        {
-            if (_isPlaying) _currentTrack?.SoundStream.TrySeek(seektime);
-        }
-
-        public async Task Play()
-        {
-            if (_currentTrack is null && _trackList.Tracks.Count > 0)
-                await Forward(false);
-            else
-                DoPlay(true);
-        }
-
-        private void DoPlay(bool userOp = true)
-        {
-            if (_currentTrack == null) return;
-
-            if (!userOp)
+            await Task.Factory.StartNew(() =>
             {
-                if (_currentTrack.SoundStream.State == SoundStreamState.Paused)
-                    _currentTrack.SoundStream.PlayPause();
-            }
-            else
-            {
-                _currentTrack.SoundStream.PlayPause();
-            }
+                _preloadedTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
+                _preloadedTrackContainer = LoadTrack(_trackList.Tracks[_preloadedTrackIndex]);
+            }).ConfigureAwait(false);
         }
 
-        public async Task AppendTrackList(ITrackList trackList)
+        private async Task TrackContainerPlay(TrackContainer trackContainer)
         {
-            var isEmpty = _trackList.Tracks.Count == 0;
+            _trackDisposables?.Dispose();
+            _trackDisposables = new CompositeDisposable();
+            _trackDisposables.Add(trackContainer);
 
-            _trackList.AddTracks(trackList);
+            InternalState = DiscChangerState.Paused;
 
-            if (isEmpty)
-            {
-                _currentTrackIndex = -1;
-                await Forward(false);
-            }
+            var _trackSoundStrm = trackContainer.SoundStream;
+
+            _trackSoundStrm.WhenAnyValue(x => x.State)
+                           .Subscribe(x => InternalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
+                           .DisposeWith(_trackDisposables);
+
+            _trackSoundStrm.WhenAnyValue(x => x.Position)
+                           .Subscribe(x => this.CurrentTrackPosition = x)
+                           .DisposeWith(_trackDisposables);
+
+            _trackSoundStrm.WhenAnyValue(x => x.Duration)
+                           .Subscribe(x => this.CurrentTrackDuration = x)
+                           .DisposeWith(_trackDisposables);
+
+            _trackSoundStrm.WhenAnyValue(x => x.State)
+                           .DistinctUntilChanged()
+                           .Where(x => x == SoundStreamState.TrackFinished)
+                           .Take(1)
+                           .Subscribe(CurrentTrackFinished)
+                           .DisposeWith(_trackDisposables);
+
+            _trackSoundStrm.WhenAnyValue(x => x.State)
+                           .DistinctUntilChanged()
+                           .Subscribe(x => InternalState = x == SoundStreamState.Playing ? DiscChangerState.Playing : DiscChangerState.Paused)
+                           .DisposeWith(_trackDisposables);
+
+            CurrentTrack = trackContainer.Track;
+
+            await PreloadNext();
+
+            PlayCore();
         }
 
-        private async void ChangeTrackAndPlay(int index)
+        private async void CurrentTrackFinished(SoundStreamState obj)
         {
-            _currentTrack?.Dispose();
-            _currentTrack = await LoadTrackAsync(_trackList.Tracks[index]);
-            TrackChanged?.Invoke(this, EventArgs.Empty);
-            DoPlay(false);
+            _currentTrackContainer = _preloadedTrackContainer;
+            _currentTrackIndex = _preloadedTrackIndex;
+            await TrackContainerPlay(_currentTrackContainer);
         }
 
-        public async Task LoadTrackList(ITrackList trackList)
-        {
-            if (trackList.Tracks.Count > 0)
-            {
-                await AppendTrackList(trackList);
-            }
-        }
-
-        private async Task<TrackContainer> LoadTrackAsync(Track track)
+        private TrackContainer LoadTrack(Track track)
         {
             var targetPath = track.Path;
 
@@ -264,20 +289,15 @@ namespace Synfonia.Backend
 
         public void Dispose()
         {
-            if(!IsPaused)
-            {
-                _currentTrack.SoundStream.PlayPause();                
-            }
-
-            _currentTrack?.Dispose();
-            _preloadedTrack?.Dispose();
-            _disposables?.Dispose();
-
             try
             {
+                _currentTrackContainer?.Dispose();
+                _preloadedTrackContainer?.Dispose();
+                _trackDisposables?.Dispose();
+                _internalDisposables?.Dispose();
                 _soundSink?.Dispose();
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
         }
