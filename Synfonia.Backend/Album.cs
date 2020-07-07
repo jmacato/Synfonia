@@ -44,6 +44,8 @@ namespace Synfonia.Backend
 
             if (track != null)
             {
+                if(!System.IO.File.Exists(track.Path)) return null;
+                
                 using var tagFile = File.Create(track.Path);
 
                 var tag = tagFile.Tag;
