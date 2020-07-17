@@ -37,6 +37,8 @@ namespace Synfonia.Controls
 
             if (Clock is null) Clock = new Clock();
             Clock.Subscribe(Tick);
+
+            this.TextWrapping = TextWrapping.NoWrap;
         }
 
         private void OnTextChanged(string obj)
@@ -129,8 +131,8 @@ namespace Synfonia.Controls
 
             if (TextLayout != null)
             {
-                _textWidth = TextLayout.Bounds.Width;
-                _textHeight = TextLayout.Bounds.Height;
+                _textWidth = TextLayout.Size.Width;
+                _textHeight = TextLayout.Size.Height;
 
                 var constraints = this.Bounds.Deflate(Padding);
                 var constraintsWidth = constraints.Width;
@@ -152,13 +154,13 @@ namespace Synfonia.Controls
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
 
                         if (nC.Intersects(nR))
-                            TextLayout.Draw(context.PlatformImpl, new Point(offset, padding.Top));
+                            TextLayout.Draw(context, new Point(offset, padding.Top));
                     }
                 }
                 else
                 {
                     _animate = false;
-                    TextLayout.Draw(context.PlatformImpl, new Point(padding.Left, padding.Top));
+                    TextLayout.Draw(context, new Point(padding.Left, padding.Top));
                 }
             }
         }

@@ -26,8 +26,7 @@ namespace Synfonia.Views
         {
             base.OnApplyTemplate(e);
             ExtendClientAreaChromeHints =
-                ExtendClientAreaChromeHints.SystemChromeButtons |
-                ExtendClientAreaChromeHints.ManagedChromeButtons |
+                ExtendClientAreaChromeHints.PreferSystemChrome |
                 ExtendClientAreaChromeHints.OSXThickTitleBar;
         }
     }
