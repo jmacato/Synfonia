@@ -19,14 +19,78 @@
     <Setter Property="CompactPaneLength" Value="44" />
     <Setter Property="OpenPaneLength" Value="256" />
     <Setter Property="DisplayMode" Value="CompactInline" />
+    <Setter Property="IsPaneOpen" Value="True" />
+  </Style>
+
+  <Style Selector="SplitView AutoCompleteBox">
+    <Setter Property="(Grid.Row)" Value="1" />
+    <Setter Property="(Grid.RowSpan)" Value="1" />
+    <Setter Property="Margin" Value="6 0" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="00:00:00.2" Easing="0.1,0.9,0.2,1.0" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="SplitView Panel.Search">
+    <Setter Property="(Grid.Row)" Value="1" />
+    <Setter Property="(Grid.RowSpan)" Value="1" />
+    <Setter Property="Height" Value="24" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="00:00:00.1" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="SplitView Panel.Search.Left DrawingPresenter">
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+
+  <Style Selector="SplitView Panel.Search.Right DrawingPresenter">
+    <Setter Property="HorizontalAlignment" Value="Right" />
+  </Style>
+
+  <Style Selector="SplitView Panel.Search DrawingPresenter">
+    <Setter Property="Margin" Value="10 0" />
+  </Style>
+
+  <Style Selector="SplitView:open Panel.Search.Left">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="SplitView:closed Panel.Search.Left">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <Style Selector="SplitView:open Panel.Search.Right">
+    <Setter Property="Opacity" Value="0.5" />
+  </Style>
+
+  <Style Selector="SplitView:closed Panel.Search.Right">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="SplitView:open AutoCompleteBox">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <Style Selector="SplitView:closed AutoCompleteBox">
+    <Setter Property="Opacity" Value="0" />
   </Style>
 
   <Style Selector=":is(Button).Hamburger DrawingPresenter">
     <Setter Property="Drawing" Value="{DynamicResource Hamburger}" />
   </Style>
-  
+
   <Style Selector="DrawingPresenter.Hamburger">
     <Setter Property="Drawing" Value="{DynamicResource Hamburger}" />
+  </Style>
+
+  <Style Selector="DrawingPresenter.SearchRegular">
+    <Setter Property="Drawing" Value="{DynamicResource SearchRegular}" />
   </Style>
 
   <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
