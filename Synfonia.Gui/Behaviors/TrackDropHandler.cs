@@ -4,6 +4,8 @@ using Synfonia.ViewModels;
 
 namespace Synfonia.Behaviors
 {
+
+    
     /// <summary>
     ///     Project editor drop handler.
     /// </summary>

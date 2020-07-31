@@ -1,5 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Design.PreviewWith>
     <Border Padding="20">
       <StackPanel Spacing="5">
@@ -10,6 +10,38 @@
   <Styles.Resources>
     <Thickness x:Key="PageMargin">40 20 40 100</Thickness>
     <FontFamily x:Key="UiFontFamily">avares://Synfonia.Gui/Assets/Fonts#Lato</FontFamily>
-     <StaticResource x:Key="ContentControlThemeFontFamily" ResourceKey="UiFontFamily" />
+    <StaticResource x:Key="ContentControlThemeFontFamily" ResourceKey="UiFontFamily" />
+
+
   </Styles.Resources>
+
+  <Style Selector="SplitView">
+    <Setter Property="CompactPaneLength" Value="44" />
+    <Setter Property="OpenPaneLength" Value="256" />
+    <Setter Property="DisplayMode" Value="CompactInline" />
+  </Style>
+
+  <Style Selector=":is(Button).Hamburger DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Hamburger}" />
+  </Style>
+  
+  <Style Selector="DrawingPresenter.Hamburger">
+    <Setter Property="Drawing" Value="{DynamicResource Hamburger}" />
+  </Style>
+
+  <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector=":is(Button)#BackButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Back}" />
+  </Style>
+  <Style Selector=":is(Button)#FwdButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Forward}" />
+  </Style>
+  <Style Selector=":is(Button)#ShuffleButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Shuffle}" />
+  </Style>
+  <Style Selector=":is(Button)#LoopButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Loop}" />
+  </Style>
 </Styles>

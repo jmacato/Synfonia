@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 
 namespace Synfonia.Controls
 {
+
     public class VolumeSlider : RangeBase
     {
         private SeekTrackButton _decreaseButton;

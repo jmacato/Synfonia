@@ -1,28 +1,12 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" Name="audioControl" d:DesignHeight="450"
-             x:Class="Synfonia.Views.AudioControlPanel">
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" Name="audioControl" d:DesignHeight="450" x:Class="Synfonia.Views.AudioControlPanel">
     <Panel>
         <Panel.Styles>
             <Style Selector=":is(Button)">
                 <Setter Property="VerticalAlignment" Value="Stretch" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
-            </Style>
-            <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
-                <Setter Property="Background" Value="Transparent" />
-            </Style>
-            <Style Selector=":is(Button)#BackButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Back}" />
-            </Style>
-            <Style Selector=":is(Button)#FwdButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Forward}" />
-            </Style>
-            <Style Selector=":is(Button)#ShuffleButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Shuffle}" />
-            </Style>
-            <Style Selector=":is(Button)#LoopButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Loop}" />
             </Style>
         </Panel.Styles>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -34,10 +18,8 @@
             </Button>
             <Button Name="PlayButton" HorizontalAlignment="Center" Width="36" Command="{Binding PlayCommand}">
                 <Panel>
-                    <DrawingPresenter Drawing="{DynamicResource Play}" IsVisible="{Binding !IsPlaying}" Width="20"
-                                      Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <DrawingPresenter Drawing="{DynamicResource Pause}" IsVisible="{Binding IsPlaying}" Width="20"
-                                      Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <DrawingPresenter Drawing="{DynamicResource Play}" IsVisible="{Binding !IsPlaying}" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <DrawingPresenter Drawing="{DynamicResource Pause}" IsVisible="{Binding IsPlaying}" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Panel>
             </Button>
             <Button Name="FwdButton" HorizontalAlignment="Center" Width="36" Command="{Binding ForwardCommand}">
