@@ -20,10 +20,10 @@ namespace Synfonia.ViewModels
             VolumeControl = new VolumeControlViewModel(discChanger);
             PanelItems = new List<PanelItem>
             {
-                new PanelItem() { IconID = "Hamburger", Title = "Test Menu Item" },
-                new PanelItem() { IconID = "Hamburger", Title = "Test Menu Item" },
-                new PanelItem() { IconID = "Hamburger", Title = "Test Menu Item" },
-                new PanelItem() { IconID = "Hamburger", Title = "Test Menu Item" },
+                new PanelItem() { IconID = "Icon_Hamburger", Title = "Test Menu Item" },
+                new PanelItem() { IconID = "Icon_Hamburger", Title = "Test Menu Item" },
+                new PanelItem() { IconID = "Icon_Hamburger", Title = "Test Menu Item" },
+                new PanelItem() { IconID = "HambIcon_urger", Title = "Test Menu Item" },
             };
         }
 

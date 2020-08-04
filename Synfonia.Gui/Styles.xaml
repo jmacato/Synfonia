@@ -46,7 +46,7 @@
     <Setter Property="IsHitTestVisible" Value="False" />
   </Style>
 
-  <Style Selector="SplitView Panel.Search">
+  <Style Selector="SplitView Panel.SearchIcon">
     <Setter Property="(Grid.Row)" Value="1" />
     <Setter Property="(Grid.RowSpan)" Value="1" />
     <Setter Property="Height" Value="28" />
@@ -58,31 +58,31 @@
     </Setter>
   </Style>
 
-  <Style Selector="SplitView Panel.Search.Left DrawingPresenter">
+  <Style Selector="SplitView Panel.SearchIcon.Left DrawingPresenter">
     <Setter Property="HorizontalAlignment" Value="Left" />
   </Style>
 
-  <Style Selector="SplitView Panel.Search.Right DrawingPresenter">
+  <Style Selector="SplitView Panel.SearchIcon.Right DrawingPresenter">
     <Setter Property="HorizontalAlignment" Value="Right" />
   </Style>
 
-  <Style Selector="SplitView Panel.Search">
+  <Style Selector="SplitView Panel.SearchIcon">
     <Setter Property="Margin" Value="10 0" />
   </Style>
 
-  <Style Selector="SplitView:open Panel.Search.Left">
+  <Style Selector="SplitView:open Panel.SearchIcon.Left">
     <Setter Property="Opacity" Value="0" />
   </Style>
 
-  <Style Selector="SplitView:closed Panel.Search.Left">
+  <Style Selector="SplitView:closed Panel.SearchIcon.Left">
     <Setter Property="Opacity" Value="1" />
   </Style>
 
-  <Style Selector="SplitView:open Panel.Search.Right">
+  <Style Selector="SplitView:open Panel.SearchIcon.Right">
     <Setter Property="Opacity" Value="0.5" />
   </Style>
 
-  <Style Selector="SplitView:closed Panel.Search.Right">
+  <Style Selector="SplitView:closed Panel.SearchIcon.Right">
     <Setter Property="Opacity" Value="0" />
   </Style>
 
@@ -93,17 +93,13 @@
   <Style Selector="SplitView:closed AutoCompleteBox">
     <Setter Property="Opacity" Value="0" />
   </Style>
-
-  <Style Selector=":is(Button).Hamburger DrawingPresenter">
-    <Setter Property="Drawing" Value="{DynamicResource Hamburger}" />
+  
+  <Style Selector="DrawingPresenter.Icon_Hamburger">
+    <Setter Property="Drawing" Value="{DynamicResource Icon_Hamburger}" />
   </Style>
 
-  <Style Selector="DrawingPresenter.Hamburger">
-    <Setter Property="Drawing" Value="{DynamicResource Hamburger}" />
-  </Style>
-
-  <Style Selector="DrawingPresenter.SearchRegular">
-    <Setter Property="Drawing" Value="{DynamicResource SearchRegular}" />
+  <Style Selector="DrawingPresenter.Icon_SearchRegular">
+    <Setter Property="Drawing" Value="{DynamicResource Icon_SearchRegular}" />
   </Style>
 
   <Style Selector=":is(Button):not(:pointerover):not(:pressed)">

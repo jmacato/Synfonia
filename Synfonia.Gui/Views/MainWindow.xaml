@@ -23,7 +23,7 @@
 
           <Panel Grid.Row="0" Grid.RowSpan="1" Height="48">
             <Panel HorizontalAlignment="Left" Width="48" Height="48">
-              <DrawingPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" Classes="Hamburger" />
+              <DrawingPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" Classes="Icon_Hamburger" />
             </Panel>
 
             <ToggleButton Width="48" HorizontalAlignment="Left" IsChecked="{Binding $parent[SplitView].IsPaneOpen}">
@@ -33,12 +33,12 @@
 
           <AutoCompleteBox Name="SearchBox" Watermark="Search"/>
 
-          <Panel Classes="Search Right">
-            <DrawingPresenter Classes="SearchRegular"/>
+          <Panel Classes="SearchIcon Right">
+            <DrawingPresenter Classes="Icon_SearchRegular"/>
           </Panel>
 
-          <Panel Classes="Search Left">
-            <DrawingPresenter Classes="SearchRegular"/>
+          <Panel Classes="SearchIcon Left">
+            <DrawingPresenter Classes="Icon_SearchRegular"/>
           </Panel>
 
           <Panel Classes="SearchFocus">
@@ -49,8 +49,6 @@
                 </i:Interaction.Behaviors>
               </Panel>
             </ToggleButton>
-
-
           </Panel>
 
           <ScrollViewer Grid.Row="2" Grid.RowSpan="1">
@@ -72,9 +70,7 @@
                   </Grid>
                 </DataTemplate>
               </ItemsRepeater.ItemTemplate>
-
             </ItemsRepeater>
-
           </ScrollViewer>
 
           <TextBlock Grid.Row="3" Grid.RowSpan="1" Text="Item at bottom" Margin="60,12" />
