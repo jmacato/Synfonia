@@ -16,7 +16,7 @@
   </Styles.Resources>
 
   <Style Selector="SplitView">
-    <Setter Property="CompactPaneLength" Value="44" />
+    <Setter Property="CompactPaneLength" Value="48" />
     <Setter Property="OpenPaneLength" Value="256" />
     <Setter Property="DisplayMode" Value="CompactInline" />
     <Setter Property="IsPaneOpen" Value="True" />
@@ -33,10 +33,23 @@
     </Setter>
   </Style>
 
+  <Style Selector="SplitView Panel.SearchFocus">
+    <Setter Property="(Grid.Row)" Value="1" />
+    <Setter Property="(Grid.RowSpan)" Value="1" />
+    <Setter Property="Height" Value="28" /> 
+    <Setter Property="Width" Value="28" /> 
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="Margin" Value="10 0" />
+  </Style>
+
+  <Style Selector="SplitView:open Panel.SearchFocus">
+    <Setter Property="IsHitTestVisible" Value="False" />
+  </Style>
+
   <Style Selector="SplitView Panel.Search">
     <Setter Property="(Grid.Row)" Value="1" />
     <Setter Property="(Grid.RowSpan)" Value="1" />
-    <Setter Property="Height" Value="24" />
+    <Setter Property="Height" Value="28" />
     <Setter Property="IsHitTestVisible" Value="False" />
     <Setter Property="Transitions">
       <Transitions>
@@ -53,7 +66,7 @@
     <Setter Property="HorizontalAlignment" Value="Right" />
   </Style>
 
-  <Style Selector="SplitView Panel.Search DrawingPresenter">
+  <Style Selector="SplitView Panel.Search">
     <Setter Property="Margin" Value="10 0" />
   </Style>
 

@@ -8,24 +8,30 @@
   xmlns:local="clr-namespace:Synfonia.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.MainWindow" ExtendClientAreaToDecorationsHint="True" TransparencyLevelHint="AcrylicBlur" ExtendClientAreaTitleBarHeightHint="-1" Background="{x:Null}" FontFamily="avares://Synfonia.Gui/Assets/Fonts#Lato" Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
   <Panel>
+    <ExperimentalAcrylicBorder IsHitTestVisible="False" Grid.RowSpan="4">
+      <ExperimentalAcrylicBorder.Material>
+        <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="Black" TintOpacity="0.5" MaterialOpacity="1" />
+      </ExperimentalAcrylicBorder.Material>
+    </ExperimentalAcrylicBorder>
+
+
     <SplitView>
       <SplitView.Pane>
         <Grid RowDefinitions="Auto,Auto,*,Auto">
-          <ExperimentalAcrylicBorder IsHitTestVisible="False" Grid.RowSpan="4">
-            <ExperimentalAcrylicBorder.Material>
-              <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="Black" TintOpacity="0.5" MaterialOpacity="1" />
-            </ExperimentalAcrylicBorder.Material>
-          </ExperimentalAcrylicBorder>
 
           <Border IsHitTestVisible="False" Grid.RowSpan="4" BoxShadow="inset -80 15 60 -70 Black" />
 
-          <Panel Grid.Row="0" Grid.RowSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6" Width="32" Height="32">
-            <ToggleButton Background="White" IsChecked="{Binding $parent[SplitView].IsPaneOpen}">
-              <DrawingPresenter Classes="Hamburger"/>
+          <Panel Grid.Row="0" Grid.RowSpan="1" Height="48">
+            <Panel HorizontalAlignment="Left" Width="48" Height="48">
+              <DrawingPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" Classes="Hamburger" />
+            </Panel>
+
+            <ToggleButton Width="48" HorizontalAlignment="Left" IsChecked="{Binding $parent[SplitView].IsPaneOpen}">
+              <Panel Background="Transparent" Width="48" Height="48"/>
             </ToggleButton>
           </Panel>
 
-          <AutoCompleteBox Watermark="Search" />
+          <AutoCompleteBox Name="SearchBox" Watermark="Search"/>
 
           <Panel Classes="Search Right">
             <DrawingPresenter Classes="SearchRegular"/>
@@ -35,6 +41,18 @@
             <DrawingPresenter Classes="SearchRegular"/>
           </Panel>
 
+          <Panel Classes="SearchFocus">
+            <ToggleButton IsChecked="{Binding $parent[SplitView].IsPaneOpen}">
+              <Panel Background="Transparent" Width="28" Height="28">
+                <i:Interaction.Behaviors>
+                  <behaviors:RedirectFocusBehavior TargetControl="{Binding #SearchBox}" />
+                </i:Interaction.Behaviors>
+              </Panel>
+            </ToggleButton>
+
+
+          </Panel>
+
           <ScrollViewer Grid.Row="2" Grid.RowSpan="1">
             <ItemsRepeater Items="{Binding PanelItems}">
               <ItemsRepeater.Layout>
@@ -42,16 +60,16 @@
               </ItemsRepeater.Layout>
               <ItemsRepeater.ItemTemplate>
                 <DataTemplate>
-                  <StackPanel Orientation="Horizontal">
-                    <Panel Width="32" Height="32" Margin="6">
-                      <DrawingPresenter VerticalAlignment="Center" HorizontalAlignment="Center">
+                  <Grid ColumnDefinitions="48,*" Height="48">
+                    <Panel Grid.Column="0" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="28" Height="28">
+                      <DrawingPresenter >
                         <i:Interaction.Behaviors>
                           <behaviors:StringToClassBehavior ClassString="{Binding IconID}" />
                         </i:Interaction.Behaviors>
                       </DrawingPresenter>
                     </Panel>
-                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
-                  </StackPanel>
+                    <TextBlock Grid.Column="1" Grid.ColumnSpan="1" Text="{Binding Title}" VerticalAlignment="Center" />
+                  </Grid>
                 </DataTemplate>
               </ItemsRepeater.ItemTemplate>
 
