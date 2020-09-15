@@ -42,6 +42,16 @@
     <Setter Property="Margin" Value="10 0" />
   </Style>
 
+  <Style Selector="SplitView:open Panel.SearchFocus ToggleButton > Panel">
+
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+
   <Style Selector="SplitView:open Panel.SearchFocus">
     <Setter Property="IsHitTestVisible" Value="False" />
   </Style>
