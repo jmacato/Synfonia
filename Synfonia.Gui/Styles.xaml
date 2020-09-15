@@ -1,5 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Design.PreviewWith>
     <Border Padding="20">
       <StackPanel Spacing="5">
@@ -10,6 +10,121 @@
   <Styles.Resources>
     <Thickness x:Key="PageMargin">40 20 40 100</Thickness>
     <FontFamily x:Key="UiFontFamily">avares://Synfonia.Gui/Assets/Fonts#Lato</FontFamily>
-     <StaticResource x:Key="ContentControlThemeFontFamily" ResourceKey="UiFontFamily" />
+    <StaticResource x:Key="ContentControlThemeFontFamily" ResourceKey="UiFontFamily" />
+
+
   </Styles.Resources>
+
+  <Style Selector="SplitView">
+    <Setter Property="CompactPaneLength" Value="48" />
+    <Setter Property="OpenPaneLength" Value="256" />
+    <Setter Property="DisplayMode" Value="CompactInline" />
+    <Setter Property="IsPaneOpen" Value="True" />
+  </Style>
+
+  <Style Selector="SplitView AutoCompleteBox">
+    <Setter Property="(Grid.Row)" Value="1" />
+    <Setter Property="(Grid.RowSpan)" Value="1" />
+    <Setter Property="Margin" Value="6 0" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="00:00:00.2" Easing="0.1,0.9,0.2,1.0" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="SplitView Panel.SearchFocus">
+    <Setter Property="(Grid.Row)" Value="1" />
+    <Setter Property="(Grid.RowSpan)" Value="1" />
+    <Setter Property="Height" Value="28" /> 
+    <Setter Property="Width" Value="28" /> 
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="Margin" Value="10 0" />
+  </Style>
+
+  <Style Selector="SplitView:open Panel.SearchFocus ToggleButton > Panel">
+
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+
+  <Style Selector="SplitView:open Panel.SearchFocus">
+    <Setter Property="IsHitTestVisible" Value="False" />
+  </Style>
+
+  <Style Selector="SplitView Panel.SearchIcon">
+    <Setter Property="(Grid.Row)" Value="1" />
+    <Setter Property="(Grid.RowSpan)" Value="1" />
+    <Setter Property="Height" Value="28" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="00:00:00.1" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="SplitView Panel.SearchIcon.Left DrawingPresenter">
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+
+  <Style Selector="SplitView Panel.SearchIcon.Right DrawingPresenter">
+    <Setter Property="HorizontalAlignment" Value="Right" />
+  </Style>
+
+  <Style Selector="SplitView Panel.SearchIcon">
+    <Setter Property="Margin" Value="10 0" />
+  </Style>
+
+  <Style Selector="SplitView:open Panel.SearchIcon.Left">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="SplitView:closed Panel.SearchIcon.Left">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <Style Selector="SplitView:open Panel.SearchIcon.Right">
+    <Setter Property="Opacity" Value="0.5" />
+  </Style>
+
+  <Style Selector="SplitView:closed Panel.SearchIcon.Right">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="SplitView:open AutoCompleteBox">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <Style Selector="SplitView:closed AutoCompleteBox">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+  
+  <Style Selector="DrawingPresenter.Icon_Hamburger">
+    <Setter Property="Drawing" Value="{DynamicResource Icon_Hamburger}" />
+  </Style>
+
+  <Style Selector="DrawingPresenter.Icon_SearchRegular">
+    <Setter Property="Drawing" Value="{DynamicResource Icon_SearchRegular}" />
+  </Style>
+
+  <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector=":is(Button)#BackButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Back}" />
+  </Style>
+  <Style Selector=":is(Button)#FwdButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Forward}" />
+  </Style>
+  <Style Selector=":is(Button)#ShuffleButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Shuffle}" />
+  </Style>
+  <Style Selector=":is(Button)#LoopButton DrawingPresenter">
+    <Setter Property="Drawing" Value="{DynamicResource Loop}" />
+  </Style>
 </Styles>

@@ -7,6 +7,7 @@ using Avalonia.Media;
 
 namespace Synfonia.Converters
 {
+ 
     public class AlbumTitleToPlaceholderConverter : IValueConverter
     {
         private static readonly (Color StartColor, Color EndColor)[] placeholderColors =
@@ -26,8 +27,8 @@ namespace Synfonia.Converters
         {
             if (value is string s)
             {
-                var selector = s.Select(x => (uint) x)
-                    .Aggregate((x, y) => x ^ y) % (uint) placeholderColors.Length;
+                var selector = s.Select(x => (uint)x)
+                    .Aggregate((x, y) => x ^ y) % (uint)placeholderColors.Length;
 
                 return new LinearGradientBrush
                 {
