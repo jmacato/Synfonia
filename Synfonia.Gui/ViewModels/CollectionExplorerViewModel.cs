@@ -17,6 +17,7 @@ namespace Synfonia.ViewModels
         private ReadOnlyObservableCollection<AlbumViewModel> _albums;
         private SelectArtworkViewModel _selectArtwork;
         private AlbumViewModel _selectedAlbum;
+        private bool _isAlbumsEmpty = true;
 
         public CollectionExplorerViewModel(LibraryManager model, DiscChanger changer)
         {
@@ -35,8 +36,13 @@ namespace Synfonia.ViewModels
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await Task.Run(async ()=> await model.ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),   "Music")));
+                await Task.Run(async () => await model.ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Music")));
             });
+
+            model.Albums.ToObservableChangeSet()
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Select(x => model.Albums.Count == 0)
+                        .Subscribe(x => IsAlbumsEmpty = x);
 
             RxApp.MainThreadScheduler.Schedule(async () => { await model.LoadLibrary(); });
         }
@@ -45,6 +51,12 @@ namespace Synfonia.ViewModels
         {
             get => _selectArtwork;
             set => this.RaiseAndSetIfChanged(ref _selectArtwork, value);
+        }
+
+        public bool IsAlbumsEmpty
+        {
+            get => _isAlbumsEmpty;
+            set => this.RaiseAndSetIfChanged(ref _isAlbumsEmpty, value);
         }
 
         public ReadOnlyObservableCollection<AlbumViewModel> Albums
