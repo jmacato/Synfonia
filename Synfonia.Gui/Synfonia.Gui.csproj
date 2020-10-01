@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -20,7 +20,6 @@
 		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.0-preview5" />
     <PackageReference Include="DynamicData" Version="*" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="*" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <ProjectReference Include="..\Synfonia.Backend\Synfonia.Backend.csproj" />
   </ItemGroup>
 </Project>

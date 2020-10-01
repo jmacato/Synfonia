@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Synfonia.Gui/bin/Debug/netcoreapp3.0/Synfonia.Gui.dll",
+            "program": "${workspaceFolder}/Synfonia.Gui/bin/Debug/netcoreapp3.1/Synfonia.Gui.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "enableStepFiltering": false,

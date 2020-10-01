@@ -136,7 +136,7 @@ namespace Synfonia.Controls
 
                 var constraints = this.Bounds.Deflate(Padding);
                 var constraintsWidth = constraints.Width;
- 
+
                 _isConstrained = _textWidth >= constraintsWidth;
 
                 if (_isConstrained & !_waiting)
@@ -154,13 +154,16 @@ namespace Synfonia.Controls
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
 
                         if (nC.Intersects(nR))
-                            TextLayout.Draw(context, new Point(offset, padding.Top));
+                            using (context.PushPostTransform(Matrix.CreateTranslation(offset, padding.Top)))
+                                TextLayout.Draw(context);
                     }
                 }
                 else
                 {
                     _animate = false;
-                    TextLayout.Draw(context, new Point(padding.Left, padding.Top));
+                    
+                    using (context.PushPostTransform(Matrix.CreateTranslation(padding.Left, padding.Top)))
+                        TextLayout.Draw(context);
                 }
             }
         }
