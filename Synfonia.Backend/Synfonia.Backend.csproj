@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" Version="10.3.6" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="LiteDB" Version="5.0.7" />
+    <PackageReference Include="FuzzyString.Standard" Version="1.1.1" />
+    <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpAudio\src\SharpAudio.Codec\SharpAudio.Codec.csproj" />
+    <ProjectReference Include="..\iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj" />
+  </ItemGroup>
+
+</Project>

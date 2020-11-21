@@ -1,0 +1,34 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Synfonia.Views"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:b="clr-namespace:Synfonia.Behaviors"
+             xmlns:layout="clr-namespace:Synfonia.Layout"
+             mc:Ignorable="d"
+             d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.CollectionExplorerView">
+
+  <Panel MinWidth="100" MinHeight="100" Margin="0 0 0 100">
+    <TextBlock IsVisible="{Binding IsAlbumsEmpty}" VerticalAlignment="Center" HorizontalAlignment="Center">No music in your current library.&#13;Right click here to scan for your music.</TextBlock>
+    <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="40 0">
+        <ItemsRepeater.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
+          </ContextMenu>
+        </ItemsRepeater.ContextMenu>
+        <ItemsRepeater.Layout>
+          <UniformGridLayout ItemsJustification="SpaceEvenly" MinRowSpacing="20" Orientation="Horizontal"
+                             MaximumRowsOrColumns="6" />
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <local:AlbumView />
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
+    <local:SelectAlbumArtView DataContext="{Binding SelectArtwork}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0 0 0 50" />
+  </Panel>
+</UserControl>

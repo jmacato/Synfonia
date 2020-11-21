@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:b="clr-namespace:Synfonia.Behaviors"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
+             x:Class="Synfonia.Views.TrackStatusView">
+  <UserControl.Resources>
+    <b:TrackDropHandler x:Key="TrackDropHandler" />
+  </UserControl.Resources>
+  <i:Interaction.Behaviors>
+    <b:ContextDropBehavior Context="{Binding FallbackValue={x:Null}}" Handler="{StaticResource TrackDropHandler}" />
+  </i:Interaction.Behaviors>
+  <Panel DragDrop.AllowDrop="True">
+    <Panel>
+      <StackPanel DockPanel.Dock="Bottom" Margin="15">
+        <DockPanel Margin="0 5">
+          <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                     Text="{Binding CurrentTime}" Foreground="#C0C0C0" FontSize="12"
+                      />
+
+          <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                     Text="{Binding CurrentDuration}" Foreground="#C0C0C0" FontSize="12"
+                      />
+
+          <c:SeekSlider Margin="20 0" Height="12" Value="{Binding Position}" Maximum="1.0" Minimum="0"
+                IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}"
+                SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
+
+        </DockPanel>
+        <TextBlock Text="{Binding Status}" Margin="10 0 0 0" FontSize="10"
+                   VerticalAlignment="Bottom" Foreground="#C0C0C0" />
+      </StackPanel>
+    </Panel>
+  </Panel>
+</UserControl>

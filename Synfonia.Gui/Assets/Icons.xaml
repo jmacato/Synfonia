@@ -1,0 +1,83 @@
+<Styles xmlns="https://github.com/avaloniaui" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style>
+        <Style.Resources>
+            <SolidColorBrush x:Key="GlassBackgroundBrush" Color="#CCFFFFFF" />
+            
+            <DrawingGroup x:Key="VolumeEnable">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1673 1929q90 -90 160 -195t117.5 -220t72.5 -239t25 -251q0 -128 -25 -251.5t-72.5 -238.5t-117.5 -220t-160 -195l-91 91q81 81 144 175.5t106 198t65 214.5t22 226t-22 226t-65 214.5t-106 198t-144 175.5zM1664 1024q0 -180 -68 -343t-194 -291l-91 91
+q109 109 167 249t58 294t-58 294t-167 249l91 91q126 -128 194 -291t68 -343zM1130 1386q73 -73 111.5 -166t38.5 -196t-38.5 -196t-111.5 -166l-90 90q54 54 83 124.5t29 147.5t-29 147.5t-83 124.5zM677 1792h91v-1536h-90l-385 384h-293v768h293zM640 1573l-293 -293
+h-219v-512h219l293 -293v1098z" />
+            </DrawingGroup>
+
+            <DrawingGroup x:Key="Volume14">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M677 1792h91v-1536h-90l-385 384h-293v768h293zM640 475v1098l-293 -293h-219v-512h219z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Volume24">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1130 1386q73 -73 111.5 -166t38.5 -196t-38.5 -196t-111.5 -166l-90 90q54 54 83 124.5t29 147.5t-29 147.5t-83 124.5zM677 1792h91v-1536h-90l-385 384h-293v768h293zM640 1573l-293 -293h-219v-512h219l293 -293v1098z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Volume34">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1402 1658q126 -128 194 -291t68 -343t-68 -343t-194 -291l-91 91q109 109 167 249t58 294t-58 294t-167 249zM1130 1386q73 -73 111.5 -166t38.5 -196t-38.5 -196t-111.5 -166l-90 90q54 54 83 124.5t29 147.5t-29 147.5t-83 124.5zM677 1792h91v-1536h-90l-385 384
+h-293v768h293zM640 1573l-293 -293h-219v-512h219l293 -293v1098z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Volume44">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1673 1929q90 -90 160 -195t117.5 -220t72.5 -239t25 -251q0 -128 -25 -251.5t-72.5 -238.5t-117.5 -220t-160 -195l-91 91q81 81 144 175.5t106 198t65 214.5t22 226t-22 226t-65 214.5t-106 198t-144 175.5zM1664 1024q0 -180 -68 -343t-194 -291l-91 91
+q109 109 167 249t58 294t-58 294t-167 249l91 91q126 -128 194 -291t68 -343zM1130 1386q73 -73 111.5 -166t38.5 -196t-38.5 -196t-111.5 -166l-90 90q54 54 83 124.5t29 147.5t-29 147.5t-83 124.5zM677 1792h91v-1536h-90l-385 384h-293v768h293zM640 1573l-293 -293
+h-219v-512h219l293 -293v1098z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="VolumeMute">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M677 1792h91v-1536h-91l-384 384h-293v768h293zM640 1573l-293 -293h-219v-512h219l293 -293v1098zM1499 1024l274 -275l-90 -90l-275 274l-275 -274l-90 90l274 275l-274 275l90 90l275 -274l275 274l90 -90z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="WindowMaximize">
+                <GeometryDrawing Brush="Black" Geometry="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="WindowMinimize">
+                <GeometryDrawing Brush="Black" Geometry="M20,14H4V10H20" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="WindowClose">
+                <GeometryDrawing Brush="Black" Geometry="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="WindowRestore">
+                <GeometryDrawing Brush="Black" Geometry="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Play">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1792 1024l-1280 -896v1792zM640 374l929 650l-929 650v-1300z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Pause">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M640 1792h128v-1536h-128v1536zM1408 1792v-1536h-128v1536h128z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Forward">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1152 1669l806 -645l-806 -650v1295zM1280 1403v-762l474 383zM256 374v1295l806 -645zM384 1403v-762l474 383z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Back">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M896 374l-806 650l806 645v-1295zM768 641v762l-474 -379zM986 1024l806 645v-1295zM1664 641v762l-474 -379z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Shuffle">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1765 1408q-127 -4 -240.5 -35.5t-215 -87t-192.5 -132.5t-172 -170q-34 -39 -68 -76t-72 -72q-168 -153 -372 -238t-433 -85v128q131 0 248.5 30.5t222.5 86t198.5 134t177.5 174.5q35 41 70.5 79t75.5 74q81 72 170.5 130t187 99t202 63.5t213.5 25.5l-147 147l90 90 l302 -301l-302 -301l-90 90zM805 1212q-22 -24 -42.5 -48.5t-43.5 -48.5q-74 68 -157.5 122.5t-174.5 92.5t-188 58t-199 20v128q229 0 433 -85.5t372 -238.5zM1709 877l302 -301l-302 -301l-90 90l147 147q-110 3 -215.5 26t-203.5 64.5t-188.5 100.5t-171.5 133 q22 24 42.5 48.5t43.5 48.5q72 -66 152 -119t167.5 -91t181 -59t191.5 -24l-146 147z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Loop">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1297 2010q166 -45 304 -140.5t237.5 -226t154.5 -289t55 -330.5q0 -141 -36.5 -272t-103 -245t-160 -207.5t-207.5 -160t-245 -103t-272 -36.5t-272 36.5t-245 103t-207.5 160t-160 207.5t-103 244.5t-36.5 272.5q0 140 37 272t105.5 248.5t166.5 212t221 163.5h-274 v128h512v-512h-128v297q-117 -56 -211.5 -140.5t-161.5 -190t-103 -227.5t-36 -251q0 -123 32 -237.5t90.5 -214t140.5 -181.5t181.5 -140.5t213.5 -90.5t238 -32q123 0 237.5 32t214 90.5t181.5 140.5t140.5 181.5t90.5 213.5t32 238q0 150 -48.5 289t-135.5 253 t-207.5 197.5t-265.5 123.5l34 123v0z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="LoopOne">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M1408 1740q-29 -21 -61 -34.5t-67 -22.5v131q56 19 106.5 45.5t98.5 60.5h51v-768h-128v588zM2048 1024q0 -141 -36.5 -272t-103 -245t-160 -207.5t-207.5 -160t-245 -103t-272 -36.5t-272 36.5t-245 103t-207.5 160t-160 207.5t-103 244.5t-36.5 272.5q0 139 36.5 271 t105 249t166.5 213t220 163h-272v128h512v-512h-128v298q-117 -56 -211.5 -140.5t-161.5 -190.5t-103 -228t-36 -251q0 -123 32 -237.5t90.5 -214t140.5 -181.5t181.5 -140.5t213.5 -90.5t238 -32q123 0 237.5 32t214 90.5t181.5 140.5t140.5 181.5t90.5 213.5t32 238h128z" />
+            </DrawingGroup>
+            <DrawingGroup x:Key="Hamburger">
+                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
+                <GeometryDrawing Brush="#C5C5C5" Geometry="M2048 1408h-2048v128h2048v-128v0zM2048 384h-2048v128h2048v-128v0zM2048 897h-2048v127h2048v-127v0z" />
+            </DrawingGroup>
+        </Style.Resources>
+    </Style>
+</Styles>

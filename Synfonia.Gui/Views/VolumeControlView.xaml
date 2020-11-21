@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui" mc:Ignorable="d" d:DesignWidth="800"
+             d:DesignHeight="450" x:Class="Synfonia.Views.VolumeControlView">
+    <Panel Margin="10,0">
+        <Panel.Styles>
+            <Style Selector="ToggleButton.volumetoggle /template/ ContentPresenter">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Opacity" Value="0.5" />
+            </Style>
+            <Style Selector="ToggleButton.volumetoggle:checked DrawingPresenter">
+                <Setter Property="Drawing" Value="{DynamicResource VolumeMute}" />
+            </Style>
+            <Style Selector="ToggleButton.volumetoggle:unchecked DrawingPresenter">
+                <Setter Property="Drawing" Value="{DynamicResource VolumeEnable}" />
+            </Style>
+            <Style Selector="ToggleButton.volumetoggle:checked">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Opacity" Value="0.5" />
+            </Style>
+            <Style Selector="ToggleButton.volumetoggle:unchecked">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Opacity" Value="1" />
+            </Style>
+        </Panel.Styles>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <ToggleButton Classes="volumetoggle" IsChecked="{Binding IsMuted, Mode=OneWayToSource}">
+                <DrawingPresenter Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </ToggleButton>
+            <c:SeekSlider IsEnabled="{Binding !IsMuted}" IsSeeking="False" Value="{Binding Volume, Mode=TwoWay}" Width="100"
+                            VerticalAlignment="Center" Minimum="0" Maximum="1" />
+        </StackPanel>
+    </Panel>
+</UserControl>

@@ -7,6 +7,9 @@
 *.userosscache
 *.sln.docstates
 
+# Synfonia database files
+*.db
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
