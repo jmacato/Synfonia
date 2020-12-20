@@ -36,7 +36,11 @@ namespace Synfonia.ViewModels
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await Task.Run(async () => await model.ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Music")));
+                string musicFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+                if (string.IsNullOrWhiteSpace(musicFolder))
+                    musicFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Music");
+                
+                await Task.Run(async () => await model.ScanMusicFolder(musicFolder));
             });
 
             model.Albums.ToObservableChangeSet()
