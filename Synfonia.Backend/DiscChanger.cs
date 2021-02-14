@@ -279,29 +279,7 @@ namespace Synfonia.Backend
 
         private async Task<TrackContainer> LoadTrackAsync(Track track)
         {
-            var targetPath = track.Path;
-
-            if (targetPath.StartsWith("onedrive:"))
-            {
-                await OneDriveSession.Instance.Login();
-                
-                var drive = await OneDriveSession.Instance.Api.GetDrive();
-                var item = await OneDriveSession.Instance.Api.GetItemFromDriveById(targetPath.Replace("onedrive:", ""), drive.Id);
-                var itemStream = await OneDriveSession.Instance.Api.DownloadItem(item);
-
-                var soundStream = new SoundStream(itemStream, _soundSink);
-                return new TrackContainer(track, soundStream);
-            }
-            else
-            {
-                if (File.Exists(targetPath))
-                {
-                    var soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
-                    return new TrackContainer(track, soundStr);
-                }
-            }
-
-            return null;
+            return await track.LoadAsync(_soundSink);
         }
 
         public void Dispose()
