@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace Synfonia.Backend
 
             var spectrumProcessor = new SpectrumProcessor();
 
-            _soundSink = new SoundSink(audioEngine, receiver: spectrumProcessor);
+            _soundSink = new SoundSink(audioEngine, spectrumProcessor);
 
             _internalDisposables = new CompositeDisposable();
 
@@ -68,7 +69,7 @@ namespace Synfonia.Backend
                 _currentTrackIndex = -1;
                 _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
                 var track = _trackList.Tracks[_currentTrackIndex];
-                _currentTrackContainer = LoadTrack(track);
+                _currentTrackContainer = await LoadTrackAsync(track);
                 await TrackContainerPlay(_currentTrackContainer);
             }
         }
@@ -157,7 +158,7 @@ namespace Synfonia.Backend
         {
             if (InternalState == DiscChangerState.Paused)
             {
-                _currentTrackContainer?.SoundStream.Play();
+                _currentTrackContainer?.SoundStream.PlayPause();
                 InternalState = DiscChangerState.Playing;
             }
         }
@@ -166,7 +167,7 @@ namespace Synfonia.Backend
         {
             if (InternalState == DiscChangerState.Playing)
             {
-                _currentTrackContainer?.SoundStream.Play();
+                _currentTrackContainer?.SoundStream.PlayPause();
                 InternalState = DiscChangerState.Paused;
             }
         }
@@ -182,7 +183,7 @@ namespace Synfonia.Backend
 
             var track = _trackList.Tracks[_currentTrackIndex];
 
-            _currentTrackContainer = LoadTrack(track);
+            _currentTrackContainer = await LoadTrackAsync(track);
 
             await TrackContainerPlay(_currentTrackContainer);
         }
@@ -219,10 +220,10 @@ namespace Synfonia.Backend
 
         private async Task PreloadNext()
         {
-            await Task.Factory.StartNew(() =>
+            await Task.Factory.StartNew(async () =>
             {
                 _preloadedTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
-                _preloadedTrackContainer = LoadTrack(_trackList.Tracks[_preloadedTrackIndex]);
+                _preloadedTrackContainer = await LoadTrackAsync(_trackList.Tracks[_preloadedTrackIndex]);
             }).ConfigureAwait(false);
         }
 
@@ -276,14 +277,28 @@ namespace Synfonia.Backend
             await TrackContainerPlay(_currentTrackContainer);
         }
 
-        private TrackContainer LoadTrack(Track track)
+        private async Task<TrackContainer> LoadTrackAsync(Track track)
         {
             var targetPath = track.Path;
 
-            if (File.Exists(targetPath))
+            if (targetPath.StartsWith("onedrive:"))
             {
-                var soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
-                return new TrackContainer(track, soundStr);
+                await OneDriveSession.Instance.Login();
+                
+                var drive = await OneDriveSession.Instance.Api.GetDrive();
+                var item = await OneDriveSession.Instance.Api.GetItemFromDriveById(targetPath.Replace("onedrive:", ""), drive.Id);
+                var itemStream = await OneDriveSession.Instance.Api.DownloadItem(item);
+
+                var soundStream = new SoundStream(itemStream, _soundSink);
+                return new TrackContainer(track, soundStream);
+            }
+            else
+            {
+                if (File.Exists(targetPath))
+                {
+                    var soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
+                    return new TrackContainer(track, soundStr);
+                }
             }
 
             return null;
