@@ -24,19 +24,18 @@ namespace Synfonia.Backend
         {
             if (!LoggedIn)
             {
-            }
+                if (!string.IsNullOrEmpty(refreshToken))
+                {
+                    await _api.AuthenticateUsingRefreshToken(refreshToken);
+                }
+                else
+                {
+                    var authUri = _api.GetAuthenticationUri(); // get user to goto this address.
 
-            if (!string.IsNullOrEmpty(refreshToken))
-            {
-                await _api.AuthenticateUsingRefreshToken(refreshToken);
-            }
-            else
-            {
-                var authUri = _api.GetAuthenticationUri(); // get user to goto this address.
+                    var token = _api.GetAuthorizationTokenFromUrl(""); // call this api with the return url.
 
-                var token = _api.GetAuthorizationTokenFromUrl(""); // call this api with the return url.
-
-                await _api.GetAccessToken();
+                    await _api.GetAccessToken();
+                }
             }
         }
     }
