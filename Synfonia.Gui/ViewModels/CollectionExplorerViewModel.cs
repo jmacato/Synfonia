@@ -36,7 +36,13 @@ namespace Synfonia.ViewModels
 
             ScanLibraryCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await Task.Run(async () => await model.ScanMusicFolder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Music")));
+                await Task.Run(async () =>
+                {
+                    await model.ScanOneDrive();
+                    
+                    await model.ScanMusicFolder(
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Music"));
+                });
             });
 
             model.Albums.ToObservableChangeSet()

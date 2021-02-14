@@ -5,7 +5,7 @@ using SharpAudio.Codec;
 
 namespace Synfonia.Backend.SpectrumAnalysis
 {
-    public class SpectrumProcessor : ISoundSinkReceiver
+    public class SpectrumProcessor : SharpAudio.SpectrumAnalysis.SpectrumProcessor
     {
         private const double ShortDivisor = short.MaxValue;
         private const double MinDbValue = -90;
