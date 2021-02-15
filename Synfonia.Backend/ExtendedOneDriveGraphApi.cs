@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Espresso3389.HttpStream;
 using KoenZomers.OneDrive.Api;
 using KoenZomers.OneDrive.Api.Entities;
 using Microsoft.Identity.Client;
@@ -39,7 +41,9 @@ namespace Synfonia.Backend
 
         protected override async  Task<Stream> DownloadItemInternal(OneDriveItem item, string completeUrl)
         {
-            return new PartialHttpStream(completeUrl, (await this.GetAccessToken()).AccessToken, (int)item.Size);
+            var client = this.CreateHttpClient((await this.GetAccessToken()).AccessToken);
+            return new HttpStream(new Uri(completeUrl), new MemoryStream(), true, 32 * 1024, null, client);
+            //return new PartialHttpStream(completeUrl, (await this.GetAccessToken()).AccessToken, (int)item.Size);
         }
     }
 }

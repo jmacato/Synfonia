@@ -14,6 +14,7 @@
     <PackageReference Include="KoenZomers.OneDrive.Api" Version="2.3.2" />
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="2.16.8" />
     <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.6" />
+    <PackageReference Include="HttpStream" Version="2.0.50" />
   </ItemGroup>
 
   <ItemGroup>
