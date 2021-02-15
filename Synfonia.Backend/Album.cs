@@ -1,14 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using KoenZomers.OneDrive.Api.Entities;
 using LiteDB;
 using TagLib;
+using File = TagLib.File;
 
 namespace Synfonia.Backend
 {
+    public class OneDriveTagStreamFile : File.IFileAbstraction
+    {
+        public OneDriveTagStreamFile(string name, Stream stream)
+        {
+            ReadStream = stream;
+            WriteStream = null;
+
+            Name = name;
+        }
+        
+        public void CloseStream(Stream stream)
+        {
+            stream.Close();
+        }
+
+        public string Name { get; }
+        
+        public Stream ReadStream { get; }
+        
+        public Stream WriteStream { get; }
+    }
+    
     public class Album : ITrackList
     {
         public const string CollectionName = "albums";
@@ -38,22 +63,40 @@ namespace Synfonia.Backend
 
         IList<Track> ITrackList.Tracks => Tracks;
 
-        public byte[] LoadCoverArt()
+        public async Task<byte[]> LoadCoverArt()
         {
             var track = Tracks.FirstOrDefault();
 
             if (track != null)
             {
-                if(!System.IO.File.Exists(track.Path)) return null;
-                
-                using var tagFile = File.Create(track.Path);
+                if (track.Path.StartsWith("onedrive:"))
+                {
+                    /*using (var stream = await track.LoadAsync())
+                    {
+                        var tagFile = File.Create(new OneDriveTagStreamFile(track.Title, stream), track.MimeType,
+                            ReadStyle.None);
 
-                var tag = tagFile.Tag;
+                        var tag = tagFile.Tag;
 
-                var cover = tag.Pictures.Where(x => x.Type == PictureType.FrontCover).Concat(tag.Pictures)
-                    .FirstOrDefault();
+                        var cover = tag.Pictures.Where(x => x.Type == PictureType.FrontCover).Concat(tag.Pictures)
+                            .FirstOrDefault();
 
-                if (cover != null) return cover.Data.Data;
+                        if (cover != null) return cover.Data.Data;
+                    }*/
+                }
+                else
+                {
+                    if (!System.IO.File.Exists(track.Path)) return null;
+
+                    using var tagFile = File.Create(track.Path);
+
+                    var tag = tagFile.Tag;
+
+                    var cover = tag.Pictures.Where(x => x.Type == PictureType.FrontCover).Concat(tag.Pictures)
+                        .FirstOrDefault();
+
+                    if (cover != null) return cover.Data.Data;
+                }
             }
 
             return null;

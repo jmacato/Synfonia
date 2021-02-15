@@ -279,7 +279,9 @@ namespace Synfonia.Backend
 
         private async Task<TrackContainer> LoadTrackAsync(Track track)
         {
-            return await track.LoadAsync(_soundSink);
+            var stream = await track.LoadAsync();
+
+            return new TrackContainer(track, new SoundStream(stream, _soundSink));
         }
 
         public void Dispose()

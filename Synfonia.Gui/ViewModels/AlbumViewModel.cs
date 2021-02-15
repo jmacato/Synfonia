@@ -85,9 +85,9 @@ namespace Synfonia.ViewModels
         {
             using (await _loadAlbumLock.LockAsync())
             {
-                return await Task.Run(() =>
+                return await Task.Run(async () =>
                 {
-                    var coverBitmap = Model.LoadCoverArt();
+                    var coverBitmap = await Model.LoadCoverArt();
 
                     if (coverBitmap != null)
                         using (var ms = new MemoryStream(coverBitmap))

@@ -177,7 +177,8 @@ namespace Synfonia.Backend
                             Path = file,
                             Title = trackName,
                             Album = existingAlbum,
-                            TrackNumber = trackNumber
+                            TrackNumber = trackNumber,
+                            MimeType = item.File.MimeType
                         };
 
                         tracksCollection.Insert(existingTrack);
@@ -289,7 +290,8 @@ namespace Synfonia.Backend
                                     Path = new FileInfo(file).FullName,
                                     Title = trackName,
                                     Album = existingAlbum,
-                                    TrackNumber = trackNumber
+                                    TrackNumber = trackNumber,
+                                    MimeType = tagFile.MimeType
                                 };
 
                                 tracksCollection.Insert(existingTrack);

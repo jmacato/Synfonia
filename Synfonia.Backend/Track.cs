@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LiteDB;
@@ -25,9 +26,11 @@ namespace Synfonia.Backend
         public Album Album { get; set; }
 
         public string Path { get; set; }
+        
+        public string MimeType { get; set; }
 
         [BsonIgnore]
-        public async Task<TrackContainer> LoadAsync(SoundSink soundSink)
+        public async Task<Stream> LoadAsync()
         {
             var targetPath = Path;
 
@@ -37,17 +40,16 @@ namespace Synfonia.Backend
                 
                 var drive = await OneDriveSession.Instance.Api.GetDrive();
                 var item = await OneDriveSession.Instance.Api.GetItemFromDriveById(targetPath.Replace("onedrive:", ""), drive.Id);
+
                 var itemStream = await OneDriveSession.Instance.Api.DownloadItem(item);
 
-                var soundStream = new SoundStream(itemStream, soundSink);
-                return new TrackContainer(this, soundStream);
+                return itemStream;
             }
             else
             {
                 if (File.Exists(targetPath))
                 {
-                    var soundStr = new SoundStream(File.OpenRead(targetPath), soundSink);
-                    return new TrackContainer(this, soundStr);
+                    return File.OpenRead(targetPath);
                 }
             }
 

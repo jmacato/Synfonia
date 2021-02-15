@@ -12,6 +12,8 @@
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
     <PackageReference Include="KoenZomers.OneDrive.Api" Version="2.3.2" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="2.16.8" />
+    <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.6" />
   </ItemGroup>
 
   <ItemGroup>
