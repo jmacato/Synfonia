@@ -39,7 +39,7 @@ namespace Synfonia.Backend
 
         protected override async  Task<Stream> DownloadItemInternal(OneDriveItem item, string completeUrl)
         {
-            return new PartialHttpStream(completeUrl, (await this.GetAccessToken()).AccessToken);
+            return new PartialHttpStream(completeUrl, (await this.GetAccessToken()).AccessToken, (int)item.Size);
         }
     }
 }
