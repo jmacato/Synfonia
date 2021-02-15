@@ -91,7 +91,7 @@ namespace Synfonia.Backend
         {
             await OneDriveSession.Instance.Login();
             
-            var musicFolder = await OneDriveSession.Instance.Api.GetChildrenByPath("Music\\Music");
+            var musicFolder = await OneDriveSession.Instance.Api.GetChildrenByPath("Music");
 
             var albumDictionary = new Dictionary<int, Album>();
 
