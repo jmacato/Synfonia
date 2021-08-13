@@ -112,7 +112,9 @@ namespace Synfonia.Controls
                 {
                     _offset = 0;
                     _waiting = true;
-                };
+                }
+
+                ;
 
                 Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
             }
@@ -154,16 +156,14 @@ namespace Synfonia.Controls
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
 
                         if (nC.Intersects(nR))
-                            using (context.PushPostTransform(Matrix.CreateTranslation(offset, padding.Top)))
-                                TextLayout.Draw(context);
+                            TextLayout.Draw(context, new Point(offset, padding.Top));
                     }
                 }
                 else
                 {
                     _animate = false;
-                    
-                    using (context.PushPostTransform(Matrix.CreateTranslation(padding.Left, padding.Top)))
-                        TextLayout.Draw(context);
+
+                    TextLayout.Draw(context, new Point(padding.Left, padding.Top));
                 }
             }
         }
