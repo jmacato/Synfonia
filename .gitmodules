@@ -1,7 +1,6 @@
 [submodule "SharpAudio"]
 	path = SharpAudio
 	url = https://github.com/jmacato/SharpAudio
-	branch = x
 [submodule "iTunesSearch"]
 	path = iTunesSearch
 	url = https://github.com/danwalmsley/iTunesSearch.git
