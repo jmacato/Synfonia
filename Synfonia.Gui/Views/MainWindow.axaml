@@ -8,7 +8,7 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
         x:Name="MainWindow"
-        FontFamily="avares://Synfonia.Gui/Assets/Fonts#Lato"
+        FontFamily="avares://Synfonia.Gui/Assets/Fonts#Zegoe UI - U"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
   <Panel Margin="{Binding #MainWindow.OffScreenMargin}">
     <views:MainView />

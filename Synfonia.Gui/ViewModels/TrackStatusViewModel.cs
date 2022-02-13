@@ -55,6 +55,8 @@ namespace Synfonia.ViewModels
                 .Subscribe(x => Status = x.EventArgs);
         }
 
+        public string FullTrack => Artist + " " + TrackTitle;
+
         public object AlbumCover
         {
             get => _albumCover;

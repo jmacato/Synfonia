@@ -18,6 +18,7 @@
         <DockPanel Margin="0 60 0 0">
             <Panel DockPanel.Dock="Bottom">
                 <controls:SpectrumDisplay DataContext="{Binding TrackStatus}" FFTData="{Binding InFFTData}" Foreground="#EB4343" VerticalAlignment="Bottom" Height="100" />
+    
                 <views:AudioControlPanel  DataContext="{Binding DiscChanger}" Margin="15" HorizontalAlignment="Right" />
                 <views:TrackStatusView Margin="50 0" DataContext="{Binding TrackStatus}" HorizontalAlignment="Center" />
             </Panel>

@@ -3,36 +3,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:Synfonia.Controls"
-             xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:b="using:Synfonia.Behaviors"
+             xmlns:viewModels="clr-namespace:Synfonia.ViewModels"
+             x:DataType="viewModels:TrackStatusViewModel"
+             x:CompileBindings="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
              x:Class="Synfonia.Views.TrackStatusView">
-  <UserControl.Resources>
-    <b:TrackDropHandler x:Key="TrackDropHandler" />
-  </UserControl.Resources>
-  <i:Interaction.Behaviors>
-    <b:ContextDropBehavior Context="{Binding FallbackValue={x:Null}}" Handler="{StaticResource TrackDropHandler}" />
-  </i:Interaction.Behaviors>
   <Panel DragDrop.AllowDrop="True">
-    <Panel>
-      <StackPanel DockPanel.Dock="Bottom" Margin="15">
+    <DockPanel TextBlock.FontWeight="Bold">
+      <Image DockPanel.Dock="Left" Stretch="Uniform" Height="100"
+             Source="{Binding AlbumCover}" Margin="10" />
+      
+      <StackPanel VerticalAlignment="Center">
+        <c:ScrollingTextBlock HorizontalAlignment="Center" Width="250" Text="{Binding FullTrack}" Foreground="#6c6e70"
+                                     FontSize="12" />
+        
+        <c:SeekSlider Height="12" Value="{Binding Position}" Maximum="1.0" Minimum="0" Foreground="Red"
+                      IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}"
+                      SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
+        
         <DockPanel Margin="0 5">
           <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                     Text="{Binding CurrentTime}" Foreground="#C0C0C0" FontSize="12"
-                      />
+                     Text="{Binding CurrentTime}" Foreground="#6c6e70" FontSize="12"
+          />
 
           <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                     Text="{Binding CurrentDuration}" Foreground="#C0C0C0" FontSize="12"
-                      />
-
-          <c:SeekSlider Margin="20 0" Height="12" Value="{Binding Position}" Maximum="1.0" Minimum="0"
-                IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}"
-                SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
-
+                     Text="{Binding CurrentDuration}" Foreground="#6c6e70" FontSize="12"
+          />
+          
+          <Panel />
         </DockPanel>
-        <TextBlock Text="{Binding Status}" Margin="10 0 0 0" FontSize="10"
-                   VerticalAlignment="Bottom" Foreground="#C0C0C0" />
       </StackPanel>
-    </Panel>
+    </DockPanel>
   </Panel>
 </UserControl>

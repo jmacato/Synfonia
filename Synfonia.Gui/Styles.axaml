@@ -9,7 +9,7 @@
   </Design.PreviewWith>
   <Styles.Resources>
     <Thickness x:Key="PageMargin">40 20 40 100</Thickness>
-    <FontFamily x:Key="UiFontFamily">avares://Synfonia.Gui/Assets/Fonts#Lato</FontFamily>
+    <FontFamily x:Key="UiFontFamily">avares://Synfonia.Gui/Assets/Fonts#Zegoe UI - U</FontFamily>
      <StaticResource x:Key="ContentControlThemeFontFamily" ResourceKey="UiFontFamily" />
   </Styles.Resources>
 </Styles>
