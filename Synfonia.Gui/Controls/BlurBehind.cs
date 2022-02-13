@@ -10,42 +10,12 @@ using SkiaSharp;
 
 namespace Synfonia.Controls;
 
-public class CustomBlurBehind : Control
-{
-	public static readonly StyledProperty<ExperimentalAcrylicMaterial> MaterialProperty =
-		AvaloniaProperty.Register<CustomBlurBehind, ExperimentalAcrylicMaterial>(
-			"Material");
-
-	public ExperimentalAcrylicMaterial Material
+public class BlurBehindRenderOperation : ICustomDrawOperation
 	{
-		get => GetValue(MaterialProperty);
-		set => SetValue(MaterialProperty, value);
-	}
-
-	static ImmutableExperimentalAcrylicMaterial DefaultAcrylicMaterial =
-		(ImmutableExperimentalAcrylicMaterial)new ExperimentalAcrylicMaterial()
-		{
-			MaterialOpacity = 0.0,
-			TintColor = Colors.Azure,
-			TintOpacity = 0.0,
-			PlatformTransparencyCompensationLevel = 0
-		}.ToImmutable();
-
-	static CustomBlurBehind()
-	{
-		AffectsRender<CustomBlurBehind>(MaterialProperty);
-	}
-
-	[CanBeNull] private static SKShader s_acrylicNoiseShader;
-
-	class BlurBehindRenderOperation : ICustomDrawOperation
-	{
-		private readonly ImmutableExperimentalAcrylicMaterial _material;
 		private readonly Rect _bounds;
 
-		public BlurBehindRenderOperation(ImmutableExperimentalAcrylicMaterial material, Rect bounds)
+		public BlurBehindRenderOperation(Rect bounds)
 		{
-			_material = material;
 			_bounds = bounds;
 		}
 
@@ -95,7 +65,7 @@ public class CustomBlurBehind : Control
 			using var blurred = SKSurface.Create(skia.GrContext, false, new SKImageInfo(
 				(int)Math.Ceiling(_bounds.Width),
 				(int)Math.Ceiling(_bounds.Height), SKImageInfo.PlatformColorType, SKAlphaType.Premul));
-			using (var filter = SKImageFilter.CreateBlur(12, 12, SKShaderTileMode.Clamp))
+			using (var filter = SKImageFilter.CreateBlur(24, 24, SKShaderTileMode.Clamp))
 			using (var blurPaint = new SKPaint
 			       {
 				       Shader = backdropShader,
@@ -117,20 +87,18 @@ public class CustomBlurBehind : Control
 			}
 		}
 
-		public Rect Bounds => _bounds.Inflate(4);
+		public Rect Bounds => _bounds.Inflate(16);
 
 		public bool Equals(ICustomDrawOperation? other)
 		{
-			return other is BlurBehindRenderOperation op && op._bounds == _bounds && op._material.Equals(_material);
+			return other is BlurBehindRenderOperation op && op._bounds == _bounds;
 		}
 	}
 
-
+public class CustomBlurBehind : Control
+{
 	public override void Render(DrawingContext context)
 	{
-		var mat = Material != null
-			? (ImmutableExperimentalAcrylicMaterial)Material.ToImmutable()
-			: DefaultAcrylicMaterial;
-		context.Custom(new BlurBehindRenderOperation(mat, new Rect(default, Bounds.Size)));
+		context.Custom(new BlurBehindRenderOperation(new Rect(default, Bounds.Size)));
 	}
 }
