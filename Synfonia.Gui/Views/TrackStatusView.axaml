@@ -10,26 +10,21 @@
              x:Class="Synfonia.Views.TrackStatusView">
   <Panel DragDrop.AllowDrop="True">
     <DockPanel TextBlock.FontWeight="Bold">
-      <Image DockPanel.Dock="Left" Stretch="Uniform" Height="100"
+      <Image DockPanel.Dock="Left" Stretch="Uniform" Height="75"
              Source="{Binding AlbumCover}" Margin="10" />
       
-      <StackPanel VerticalAlignment="Center">
+      <StackPanel VerticalAlignment="Center" Spacing="15">
         <c:ScrollingTextBlock HorizontalAlignment="Center" Width="250" Text="{Binding FullTrack}" Foreground="#6c6e70"
                                      FontSize="12" />
-        
         <c:SeekSlider Height="12" Value="{Binding Position}" Maximum="1.0" Minimum="0" Foreground="Red"
                       IsSeeking="{Binding IsTrackSeeking, Mode=TwoWay}"
                       SeekValue="{Binding SeekPosition, Mode=TwoWay}" />
-        
-        <DockPanel Margin="0 5">
+        <DockPanel>
           <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                     Text="{Binding CurrentTime}" Foreground="#6c6e70" FontSize="12"
-          />
+                     Text="{Binding CurrentTime}" Foreground="#6c6e70" FontSize="12" />
 
           <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                     Text="{Binding CurrentDuration}" Foreground="#6c6e70" FontSize="12"
-          />
-          
+                     Text="{Binding CurrentDuration}" Foreground="#6c6e70" FontSize="12" />
           <Panel />
         </DockPanel>
       </StackPanel>

@@ -24,6 +24,7 @@ namespace Synfonia.ViewModels
         private double _seekPosition;
         private string _status;
         private string _trackTitle;
+        private string _albumTitle;
 
         public TrackStatusViewModel(DiscChanger discChanger, LibraryManager libraryManager)
         {
@@ -55,7 +56,7 @@ namespace Synfonia.ViewModels
                 .Subscribe(x => Status = x.EventArgs);
         }
 
-        public string FullTrack => Artist + " " + TrackTitle;
+        public string FullTrack => Artist + " - " + AlbumTitle + " - "  + TrackTitle;
 
         public object AlbumCover
         {
@@ -80,6 +81,13 @@ namespace Synfonia.ViewModels
             get => _trackTitle;
             set => this.RaiseAndSetIfChanged(ref _trackTitle, value);
         }
+
+        public string AlbumTitle
+        {
+            get => _albumTitle;
+            set => this.RaiseAndSetIfChanged(ref _albumTitle, value);
+        }
+
 
         public TimeSpan Duration
         {
@@ -179,11 +187,15 @@ namespace Synfonia.ViewModels
 
             Artist = track.Album.Artist.Name;
 
+            AlbumTitle = track.Album.Title;
+
             TrackTitle = track.Title;
 
             Duration = Model.CurrentTrackDuration;
 
             CurrentDuration = FormatTimeSpan(Duration);
+            
+            this.RaisePropertyChanged(nameof(FullTrack));
         }
     }
 }
