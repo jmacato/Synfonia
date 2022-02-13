@@ -43,7 +43,7 @@ namespace Synfonia.ViewModels
                         _coverLoaded = true;
                         try
                         {
-                            Cover = await LoadCoverAsync();
+                            //Cover = await LoadCoverAsync();
                         }
                         catch (Exception e)
                         {
@@ -89,11 +89,20 @@ namespace Synfonia.ViewModels
                 {
                     var coverBitmap = Model.LoadCoverArt();
 
-                    if (coverBitmap != null)
-                        using (var ms = new MemoryStream(coverBitmap))
+                    try
+                    {
+                        if (coverBitmap != null)
                         {
-                            return Bitmap.DecodeToWidth(ms, 200);
+                            using (var ms = new MemoryStream(coverBitmap))
+                            {
+                                return Bitmap.DecodeToWidth(ms, 200);
+                            }
                         }
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
 
                     return null;
                 });

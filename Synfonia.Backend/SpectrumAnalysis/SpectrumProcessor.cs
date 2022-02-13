@@ -13,7 +13,7 @@ namespace Synfonia.Backend.SpectrumAnalysis
         private const double DbScale = MaxDbValue - MinDbValue;
         private readonly int _binaryExp;
 
-        private readonly int _fftLength = 128;
+        private readonly int _fftLength = 256;
         private readonly object _latesSampleLock = new object();
         private readonly TimeSpan _sampleWait = TimeSpan.FromMilliseconds(20);
         private readonly int _totalCh = 2;

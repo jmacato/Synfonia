@@ -60,61 +60,51 @@ namespace Synfonia.Controls
 
             _isRenderFinished = false;
 
-            if (FFTData != null)
             {
-                if (_averagedData is null || FFTData.GetLength(1) != _averagedData.GetLength(1))
-                    _averagedData = new double[2, FFTData.GetLength(1)];
+                if (FFTData != null)
+                {
+                    if (_averagedData is null || FFTData.GetLength(1) != _averagedData.GetLength(1))
+                        _averagedData = new double[2, FFTData.GetLength(1)];
 
-                for (var channel = 0; channel < 2; channel++)
+                    for (var channel = 0; channel < 2; channel++)
                     for (var i = 0; i < FFTData.GetLength(1); i++)
                     {
                         _averagedData[channel, i] -= _averagedData[channel, i] / _averageLevel;
                         _averagedData[channel, i] += Math.Abs(FFTData[channel, i]) / _averageLevel;
                     }
 
-                var length = FFTData.GetLength(1);
-                var gaps = length * 2 + 1;
+                    var length = FFTData.GetLength(1);
+                    var gaps = length * 2 + 1;
 
-                var gapSize = 1.0;
+                    var gapSize = 1.0;
 
-                if ((gaps * gapSize) > Bounds.Width)
-                {
-                    gapSize = 0.25;
-                }
+                    var binStroke = (Bounds.Width - gaps * gapSize) / (length * 2);
 
-                gapSize = Math.Floor(gapSize);
+                    if (_lastStrokeThickness != binStroke)
+                    {
+                        _lastStrokeThickness = binStroke;
+                        _linePen = new Pen(Foreground, _lastStrokeThickness);
+                    }
 
-                var binStroke = (Bounds.Width - gaps * gapSize) / (length * 2);
-                binStroke = Math.Floor(binStroke);
+                    var x = binStroke / 2 + gapSize;
 
-                if (_lastStrokeThickness != binStroke)
-                {
-                    _lastStrokeThickness = binStroke;
-                    _linePen = new Pen(Foreground, _lastStrokeThickness);
-                }
+                    var center = Bounds.Width / 2;
 
-                var x = binStroke / 2 + gapSize;
-
-                if (_center)
                     for (var channel = 0; channel < 2; channel++)
-                        for (var i = 0; i < length; i++)
-                        {
-                            var value = Bounds.Height / 2 * _averagedData[channel, channel == 0 ? length - 1 - i : i];
-                            var center = Bounds.Height / 2;
-
-                            context.DrawLine(_linePen, new Point(x, center - value), new Point(x, center + value));
-                            x += binStroke + gapSize;
-                        }
-                else
-                    for (var channel = 0; channel < 2; channel++)
-                        for (var i = 0; i < length; i++)
+                    for (var i = 0; i < length; i++)
+                    {
+                        var dCenter = Math.Abs(x - center);
+                        var multiplier = 1 - (dCenter / center);
+                        
+                        using (context.PushOpacity(multiplier))
                         {
                             context.DrawLine(_linePen, new Point(x, Bounds.Height),
                                 new Point(x,
                                     Bounds.Height * (1 - _averagedData[channel, channel == 0 ? length - 1 - i : i])));
                             x += binStroke + gapSize;
                         }
-
+                    }
+                }
             }
 
             _isRenderFinished = true;

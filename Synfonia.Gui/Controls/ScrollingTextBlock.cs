@@ -155,15 +155,15 @@ namespace Synfonia.Controls
                         var nR = new Rect(offset, padding.Top, _textWidth, _textHeight);
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
 
-                        if (nC.Intersects(nR))
-                            TextLayout.Draw(context, new Point(offset, padding.Top));
+                        //if (nC.Intersects(nR))
+                          //  TextLayout.Draw(context, new Point(offset, padding.Top));
                     }
                 }
                 else
                 {
                     _animate = false;
 
-                    TextLayout.Draw(context, new Point(padding.Left, padding.Top));
+                    //TextLayout.Draw(context, new Point(padding.Left, padding.Top));
                 }
             }
         }
