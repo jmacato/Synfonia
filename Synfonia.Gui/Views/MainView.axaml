@@ -11,8 +11,9 @@
              x:Class="Synfonia.Gui.Views.MainView">
     <Panel>
         <Border IsHitTestVisible="False" BorderThickness="2 0 2 2" >
-            
-            <!-- TODO Xune backdrop here -->
+            <Panel>
+                <Image Source="/Assets/backdrop.png" Opacity="0.15" Stretch="UniformToFill" />
+            </Panel>
         </Border>
         
         <DockPanel Margin="0 60 0 0">
