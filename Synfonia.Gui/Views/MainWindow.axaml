@@ -7,6 +7,9 @@
         x:Class="Synfonia.Views.MainWindow"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
+        TransparencyLevelHint="Mica"
+        WindowStartupLocation="CenterScreen"
+        Width="1120" Height="735"
         x:Name="MainWindow"
         FontFamily="avares://Synfonia.Gui/Assets/Fonts#Zegoe UI - U"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia">

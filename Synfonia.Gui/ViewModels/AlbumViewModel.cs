@@ -14,6 +14,18 @@ using Synfonia.Backend;
 
 namespace Synfonia.ViewModels
 {
+    public class ArtistViewModel : ViewModelBase
+    {
+        private readonly Artist _artist;
+        
+        public ArtistViewModel(Artist artist)
+        {
+            _artist = artist;
+        }
+
+        public string Name => _artist.Name;
+    }
+    
     public class AlbumViewModel : ViewModelBase, IComparable<AlbumViewModel>
     {
         private static readonly AsyncLock _loadAlbumLock = new AsyncLock();

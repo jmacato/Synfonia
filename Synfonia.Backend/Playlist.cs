@@ -18,5 +18,10 @@ namespace Synfonia.Backend
         {
             foreach (var track in tracks.Tracks) Tracks.Add(track);
         }
+
+        public void Clear()
+        {
+            Tracks.Clear();
+        }
     }
 }

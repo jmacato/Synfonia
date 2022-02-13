@@ -28,9 +28,12 @@ namespace Synfonia.Backend
             Database = new LiteDatabase(Path.Combine(Path.GetDirectoryName(typeof(LibraryManager).Assembly.Location), "library.db"));
             _dbLock = new AsyncLock();
             Albums = new ObservableCollection<Album>();
+            Artists = new ObservableCollection<Artist>();
         }
 
         public ObservableCollection<Album> Albums { get; }
+        
+        public ObservableCollection<Artist> Artists { get; }
 
         private LiteDatabase Database { get; }
 
@@ -51,16 +54,20 @@ namespace Synfonia.Backend
                 var albumsCollection = db.GetCollection<Album>(Album.CollectionName);
                 var tracksCollection = db.GetCollection<Track>(Track.CollectionName);
 
-                foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll().OrderBy(x=>x.Name))
-                foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
+                foreach (var artistEntry in artistsCollection.Include(x => x.Albums).FindAll().OrderBy(x => x.Name))
                 {
-                    var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
+                    Artists.Add(artistEntry);
+                    
+                    foreach (var albumId in artistEntry.Albums.Select(x => x.AlbumId))
+                    {
+                        var albumEntry = albumsCollection.Include(x => x.Tracks).FindById(albumId);
 
-                    albumEntry.Artist = artistEntry;
+                        albumEntry.Artist = artistEntry;
 
-                    foreach (var track in albumEntry.Tracks) track.Album = albumEntry;
+                        foreach (var track in albumEntry.Tracks) track.Album = albumEntry;
 
-                    Albums.Add(albumEntry);
+                        Albums.Add(albumEntry);
+                    }
                 }
             }
         }

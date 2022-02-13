@@ -12,11 +12,10 @@ namespace Synfonia.Backend
 {
     public class DiscChanger : ReactiveObject, IDisposable
     {
-        private readonly SoundSink _soundSink;
         private DiscChangerState _internalState;
         private Playlist _trackList;
         private TrackContainer _currentTrackContainer;
-        private TrackContainer _preloadedTrackContainer;
+       // private TrackContainer _preloadedTrackContainer;
         private CompositeDisposable _trackDisposables;
         private CompositeDisposable _internalDisposables;
         private Track _currentTrack;
@@ -25,24 +24,24 @@ namespace Synfonia.Backend
         private double[,] _currentSpectrumData;
         private volatile bool IsBusy = false;
         private int _currentTrackIndex;
-        private int _preloadedTrackIndex;
+       // private int _preloadedTrackIndex;
         private bool _IsPlaying;
+        private readonly SpectrumProcessor _spectrumProcessor;
+        private readonly AudioEngine _engine;
 
         public DiscChanger()
         {
             _trackList = new Playlist();
 
-            var audioEngine = AudioEngine.CreateDefault();
+            _engine = AudioEngine.CreateDefault();
 
-            if (audioEngine == null) throw new Exception("Failed to create an audio backend!");
+            if (_engine == null) throw new Exception("Failed to create an audio backend!");
 
-            var spectrumProcessor = new SpectrumProcessor();
-
-            _soundSink = new SoundSink(audioEngine, receiver: spectrumProcessor);
+            _spectrumProcessor = new SpectrumProcessor();
 
             _internalDisposables = new CompositeDisposable();
 
-            Observable.FromEventPattern<double[,]>(spectrumProcessor, nameof(spectrumProcessor.FftDataReady))
+            Observable.FromEventPattern<double[,]>(_spectrumProcessor, nameof(_spectrumProcessor.FftDataReady))
                 .Subscribe(x =>
                 {
                     CurrentSpectrumData = x.EventArgs;
@@ -59,18 +58,13 @@ namespace Synfonia.Backend
 
         public async Task LoadTrackList(ITrackList trackList)
         {
-            var wasEmpty = _trackList.Tracks.Count == 0;
+            await ReplaceTrackList(trackList);
 
-            await AppendTrackList(trackList);
-
-            if (wasEmpty)
-            {
-                _currentTrackIndex = -1;
-                _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
-                var track = _trackList.Tracks[_currentTrackIndex];
-                _currentTrackContainer = LoadTrack(track);
-                await TrackContainerPlay(_currentTrackContainer);
-            }
+            _currentTrackIndex = -1;
+            _currentTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
+            var track = _trackList.Tracks[_currentTrackIndex];
+            _currentTrackContainer = LoadTrack(track);
+            await TrackContainerPlay(_currentTrackContainer);
         }
 
         private DiscChangerState InternalState
@@ -130,8 +124,15 @@ namespace Synfonia.Backend
 
             _trackList.AddTracks(trackList);
 
-            if (isLast)
-                await PreloadNext();
+           // if (isLast)
+               // await PreloadNext();
+        }
+
+        public async Task ReplaceTrackList(ITrackList trackList)
+        {
+            _trackList.Clear();
+            
+            _trackList.AddTracks(trackList);
         }
 
         private void CommandLock(Action CoreMethod)
@@ -176,7 +177,9 @@ namespace Synfonia.Backend
             if (_trackList.Tracks.Count == 0) return;
 
             _currentTrackContainer?.SoundStream.Stop();
-            _preloadedTrackContainer?.Dispose();
+            _currentTrackContainer?.SoundStream.Dispose();
+            _currentTrackContainer?.Dispose();
+            //_preloadedTrackContainer?.Dispose();
 
             _currentTrackIndex = GetNextTrackIndex(dir);
 
@@ -221,8 +224,8 @@ namespace Synfonia.Backend
         {
             await Task.Factory.StartNew(() =>
             {
-                _preloadedTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
-                _preloadedTrackContainer = LoadTrack(_trackList.Tracks[_preloadedTrackIndex]);
+               // _preloadedTrackIndex = GetNextTrackIndex(TrackIndexDirection.Forward);
+              //  _preloadedTrackContainer = LoadTrack(_trackList.Tracks[_preloadedTrackIndex]);
             }).ConfigureAwait(false);
         }
 
@@ -264,15 +267,15 @@ namespace Synfonia.Backend
 
             CurrentTrack = trackContainer.Track;
 
-            await PreloadNext();
+            //await PreloadNext();
 
             PlayCore();
         }
 
         private async void CurrentTrackFinished(SoundStreamState obj)
         {
-            _currentTrackContainer = _preloadedTrackContainer;
-            _currentTrackIndex = _preloadedTrackIndex;
+           // _currentTrackContainer = _preloadedTrackContainer;
+           // _currentTrackIndex = _preloadedTrackIndex;
             await TrackContainerPlay(_currentTrackContainer);
         }
 
@@ -282,7 +285,7 @@ namespace Synfonia.Backend
 
             if (File.Exists(targetPath))
             {
-                var soundStr = new SoundStream(File.OpenRead(targetPath), _soundSink);
+                var soundStr = new SoundStream(File.OpenRead(targetPath), new SoundSink(_engine, receiver: _spectrumProcessor));
                 return new TrackContainer(track, soundStr);
             }
 
@@ -294,10 +297,9 @@ namespace Synfonia.Backend
             try
             {
                 _currentTrackContainer?.Dispose();
-                _preloadedTrackContainer?.Dispose();
+               // _preloadedTrackContainer?.Dispose();
                 _trackDisposables?.Dispose();
                 _internalDisposables?.Dispose();
-                _soundSink?.Dispose();
             }
             catch (Exception)
             {

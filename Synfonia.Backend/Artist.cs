@@ -24,7 +24,6 @@ namespace Synfonia.Backend
         }
 
 
-        [BsonRef(Album.CollectionName)]
-public List<Album> Albums { get; set; } = new List<Album>();
+        [BsonRef(Album.CollectionName)] public List<Album> Albums { get; set; } = new List<Album>();
     }
 }

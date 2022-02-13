@@ -6,18 +6,17 @@
              mc:Ignorable="d"
              d:DesignWidth="800" d:DesignHeight="450" x:Class="Synfonia.Views.CollectionExplorerView">
 
-  <Panel MinWidth="100" MinHeight="100" Margin="0 0 0 100">
+  <Panel MinWidth="100" MinHeight="100">
     <TextBlock IsVisible="{Binding IsAlbumsEmpty}" VerticalAlignment="Center" HorizontalAlignment="Center">No music in your current library.&#13;Right click here to scan for your music.</TextBlock>
     <ScrollViewer Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" Margin="40 0">
+      <ItemsRepeater Name="repeater" Background="Transparent" Items="{Binding Albums}" >
         <ItemsRepeater.ContextMenu>
           <ContextMenu>
             <MenuItem Header="Scan for Music" Command="{Binding ScanLibraryCommand}" />
           </ContextMenu>
         </ItemsRepeater.ContextMenu>
         <ItemsRepeater.Layout>
-          <UniformGridLayout ItemsJustification="SpaceEvenly" MinRowSpacing="20" Orientation="Horizontal"
-                             MaximumRowsOrColumns="6" />
+          <UniformGridLayout ItemsJustification="Start" MinRowSpacing="5" Orientation="Horizontal" />
         </ItemsRepeater.Layout>
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>

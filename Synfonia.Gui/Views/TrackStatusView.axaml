@@ -10,8 +10,10 @@
              x:Class="Synfonia.Views.TrackStatusView">
   <Panel DragDrop.AllowDrop="True">
     <DockPanel TextBlock.FontWeight="Bold">
-      <Image DockPanel.Dock="Left" Stretch="Uniform" Height="75"
-             Source="{Binding AlbumCover}" Margin="10" />
+      <Border BoxShadow="2 2 5 #55000000" DockPanel.Dock="Left" Margin="10" VerticalAlignment="Center">
+        <Image Stretch="UniformToFill" Height="75" Width="75"
+               Source="{Binding AlbumCover}" />
+      </Border>
       
       <StackPanel VerticalAlignment="Center" Spacing="15">
         <c:ScrollingTextBlock HorizontalAlignment="Center" Width="250" Text="{Binding FullTrack}" Foreground="#6c6e70"

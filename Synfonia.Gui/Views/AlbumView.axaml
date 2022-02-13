@@ -6,19 +6,22 @@
              xmlns:b="using:Synfonia.Behaviors"
              xmlns:converters="using:Synfonia.Converters"
              xmlns:c="using:Synfonia.Controls"
+             xmlns:viewModels="clr-namespace:Synfonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:CompileBindings="True"
+             x:DataType="viewModels:AlbumViewModel"
              x:Class="Synfonia.Views.AlbumView">
     <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
         <converters:AlbumTitleToPlaceholderConverter x:Key="AlbumTitleToPlaceholderConverter" />
     </UserControl.Resources>
-    <StackPanel Margin="20" Spacing="8">
+    <StackPanel Margin="20" Spacing="8"  Width="100" x:Name="PART_Container">
         <i:Interaction.Behaviors>
             <b:ContextDragBehavior Context="{Binding}" />
         </i:Interaction.Behaviors>
         <DockPanel LastChildFill="True">
             <Border DockPanel.Dock="Top" BoxShadow="2 2 5 #55000000">
-                <Panel Width="200">
+                <Panel>
                     <i:Interaction.Behaviors>
                         <b:CommandOnDoubleClickBehavior Command="{Binding LoadAlbumCommand}" />
                     </i:Interaction.Behaviors>
@@ -28,8 +31,8 @@
                             <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
                         </ContextMenu>
                     </Panel.ContextMenu>
-                    <Image Width="200" Stretch="Uniform" Source="{Binding Cover}" />
-                    <Panel Height="200"
+                    <Image Width="{Binding #PART_Container.Width}" Stretch="Uniform" Source="{Binding Cover}" />
+                    <Panel Height="{Binding #PART_Container.Width}"
                            Background="{Binding Title, Converter={StaticResource AlbumTitleToPlaceholderConverter}}"
                            IsVisible="{Binding Cover, Converter={StaticResource IsNullConverter}}">
                         <DrawingPresenter Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -47,7 +50,7 @@
             </Border>
         </DockPanel>
  
-        <c:ScrollingTextBlock Width="200" Text="{Binding Title}" FontSize="12" FontWeight="Bold" Foreground="#F9F9F9" />
-        <c:ScrollingTextBlock Width="200" Text="{Binding Artist}" FontSize="10" Foreground="#A1A1A1" />
+        <TextBlock Text="{Binding Title}" FontSize="12" Foreground="#6c6e70" TextTrimming="CharacterEllipsis" />
+        <TextBlock Text="{Binding Artist}" FontSize="10" Foreground="#9d9d9d" TextTrimming="CharacterEllipsis" />
     </StackPanel>
 </UserControl>

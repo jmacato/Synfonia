@@ -14,6 +14,7 @@ namespace Synfonia.ViewModels
 {
     public class CollectionExplorerViewModel : ViewModelBase
     {
+        private ReadOnlyObservableCollection<ArtistViewModel> _artists;
         private ReadOnlyObservableCollection<AlbumViewModel> _albums;
         private SelectArtworkViewModel _selectArtwork;
         private AlbumViewModel _selectedAlbum;
@@ -31,6 +32,13 @@ namespace Synfonia.ViewModels
                 {
                     if (SelectedAlbum is null) SelectedAlbum = x;
                 })
+                .DisposeMany()
+                .Subscribe();
+
+            model.Artists.ToObservableChangeSet()
+                .Transform(album => new ArtistViewModel(album))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _artists)
                 .DisposeMany()
                 .Subscribe();
 
@@ -63,6 +71,12 @@ namespace Synfonia.ViewModels
         {
             get => _albums;
             set => this.RaiseAndSetIfChanged(ref _albums, value);
+        }
+        
+        public ReadOnlyObservableCollection<ArtistViewModel> Artists
+        {
+            get => _artists;
+            set => this.RaiseAndSetIfChanged(ref _artists, value);
         }
 
         public AlbumViewModel SelectedAlbum
