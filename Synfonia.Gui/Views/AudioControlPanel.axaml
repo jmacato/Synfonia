@@ -12,39 +12,31 @@
             <Style Selector=":is(Button):not(:pointerover):not(:pressed)">
                 <Setter Property="Background" Value="Transparent" />
             </Style>
-            <Style Selector=":is(Button)#BackButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Back}" />
-            </Style>
-            <Style Selector=":is(Button)#FwdButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Forward}" />
-            </Style>
-            <Style Selector=":is(Button)#ShuffleButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Shuffle}" />
-            </Style>
-            <Style Selector=":is(Button)#LoopButton DrawingPresenter">
-                <Setter Property="Drawing" Value="{DynamicResource Loop}" />
-            </Style>
         </Panel.Styles>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <ToggleButton Name="ShuffleButton" Width="36">
-                <DrawingPresenter Width="20" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Image Source="{StaticResource Shuffle}" Width="20" Height="15" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
             </ToggleButton>
             <Button Name="BackButton" HorizontalAlignment="Center" Width="36" Command="{Binding BackCommand}">
-                <DrawingPresenter Width="20" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Image Source="{StaticResource Back}" Width="20" Height="10" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
             </Button>
             <Button Name="PlayButton" HorizontalAlignment="Center" Width="36" Command="{Binding PlayCommand}">
                 <Panel>
-                    <DrawingPresenter Drawing="{DynamicResource Play}" IsVisible="{Binding !IsPlaying}" Width="20"
-                                      Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    <DrawingPresenter Drawing="{DynamicResource Pause}" IsVisible="{Binding IsPlaying}" Width="20"
-                                      Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Image Source="{StaticResource Play}" IsVisible="{Binding !IsPlaying}" Width="20"
+                           Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Image Source="{StaticResource Pause}" IsVisible="{Binding IsPlaying}" Width="20"
+                           Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Panel>
             </Button>
             <Button Name="FwdButton" HorizontalAlignment="Center" Width="36" Command="{Binding ForwardCommand}">
-                <DrawingPresenter Width="20" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Image Source="{StaticResource Forward}" Width="20" Height="10" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
             </Button>
             <ToggleButton Name="LoopButton" Width="36">
-                <DrawingPresenter Width="20" Height="15" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Image Source="{StaticResource Loop}" Width="20" Height="15" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
             </ToggleButton>
             <Panel Width="14" />
         </StackPanel>
