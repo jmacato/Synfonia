@@ -3,14 +3,12 @@
     <Style>
         <Style.Resources>
             <SolidColorBrush x:Key="GlassBackgroundBrush" Color="#CCFFFFFF" />
-            
             <DrawingGroup x:Key="VolumeEnable">
                 <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
                 <GeometryDrawing Brush="#C5C5C5" Geometry="M1673 1929q90 -90 160 -195t117.5 -220t72.5 -239t25 -251q0 -128 -25 -251.5t-72.5 -238.5t-117.5 -220t-160 -195l-91 91q81 81 144 175.5t106 198t65 214.5t22 226t-22 226t-65 214.5t-106 198t-144 175.5zM1664 1024q0 -180 -68 -343t-194 -291l-91 91
 q109 109 167 249t58 294t-58 294t-167 249l91 91q126 -128 194 -291t68 -343zM1130 1386q73 -73 111.5 -166t38.5 -196t-38.5 -196t-111.5 -166l-90 90q54 54 83 124.5t29 147.5t-29 147.5t-83 124.5zM677 1792h91v-1536h-90l-385 384h-293v768h293zM640 1573l-293 -293
 h-219v-512h219l293 -293v1098z" />
             </DrawingGroup>
-
             <DrawingGroup x:Key="Volume14">
                 <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M2048,2048L0,2048 0,0 2048,0z" />
                 <GeometryDrawing Brush="#C5C5C5" Geometry="M677 1792h91v-1536h-90l-385 384h-293v768h293zM640 475v1098l-293 -293h-219v-512h219z" />

@@ -5,18 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <AvaloniaResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-    <AvaloniaResource Include="Assets\**" />
-    <Compile Update="App.axaml.cs">
-      <DependentUpon>App.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" /> 
     <PackageReference Include="Avalonia.Desktop" Version="0.10.12" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.12" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.12" />

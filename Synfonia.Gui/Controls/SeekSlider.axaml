@@ -1,4 +1,5 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui">
+<Styles xmlns="https://github.com/avaloniaui" 
+        xmlns:c="using:Synfonia.Controls">
   <Design.PreviewWith>
     <Border Background="Black" Padding="20" Width="100">
       <c:SeekSlider Value="0" Maximum="1" />

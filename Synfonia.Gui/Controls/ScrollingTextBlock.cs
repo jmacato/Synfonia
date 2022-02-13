@@ -2,9 +2,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using System;
-using System.Reactive;
 using Avalonia.Media;
-using Avalonia.Animation.Animators;
 using Avalonia.Threading;
 using ReactiveUI;
 
@@ -136,7 +134,7 @@ namespace Synfonia.Controls
                 _textWidth = TextLayout.Size.Width;
                 _textHeight = TextLayout.Size.Height;
 
-                var constraints = this.Bounds.Deflate(Padding);
+                var constraints = Bounds.Deflate(Padding);
                 var constraintsWidth = constraints.Width;
 
                 _isConstrained = _textWidth >= constraintsWidth;
@@ -147,25 +145,36 @@ namespace Synfonia.Controls
                     var tOffset = padding.Left - _offset;
 
                     _offsets[0] = tOffset;
-                    _offsets[1] = tOffset + _textWidth + this.TextGap;
-                    _offsets[2] = tOffset + (_textWidth + this.TextGap) * 2;
+                    _offsets[1] = tOffset + _textWidth + TextGap;
+                    _offsets[2] = tOffset + (_textWidth + TextGap) * 2;
 
                     foreach (var offset in _offsets)
                     {
                         var nR = new Rect(offset, padding.Top, _textWidth, _textHeight);
                         var nC = new Rect(0, padding.Top, constraintsWidth, constraints.Height);
 
-                        //if (nC.Intersects(nR))
-                          //  TextLayout.Draw(context, new Point(offset, padding.Top));
+                        if (!nC.Intersects(nR))
+                        {
+                            continue;
+                        }
+
+                        using (context.PushSetTransform(Matrix.CreateTranslation(nR.Left, nR.Top)))
+                        {
+                            TextLayout.Draw(context);
+                        }
                     }
                 }
                 else
                 {
                     _animate = false;
 
-                    //TextLayout.Draw(context, new Point(padding.Left, padding.Top));
+                    using (context.PushSetTransform(Matrix.CreateTranslation(padding.Left, padding.Top)))
+                    {
+                        TextLayout.Draw(context);
+                    }
                 }
             }
         }
+
     }
 }

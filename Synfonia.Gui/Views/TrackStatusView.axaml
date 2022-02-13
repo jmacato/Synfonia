@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui"
-             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:b="clr-namespace:Synfonia.Behaviors"
+             xmlns:c="using:Synfonia.Controls"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:b="using:Synfonia.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
              x:Class="Synfonia.Views.TrackStatusView">
   <UserControl.Resources>
