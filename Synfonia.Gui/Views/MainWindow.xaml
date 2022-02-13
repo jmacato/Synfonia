@@ -1,33 +1,18 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:Synfonia.ViewModels;assembly=Synfonia.Gui"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:c="clr-namespace:Synfonia.Controls;assembly=Synfonia.Gui"
-        xmlns:local="clr-namespace:Synfonia.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Synfonia.Gui.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Synfonia.Views.MainWindow"
         ExtendClientAreaToDecorationsHint="True"
-        TransparencyLevelHint="AcrylicBlur"
+        TransparencyLevelHint="Mica" 
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="{x:Null}"
+        x:Name="MainWindow"
         FontFamily="avares://Synfonia.Gui/Assets/Fonts#Lato"
         Icon="/Assets/avalonia-logo.ico" Title="Synfonia">
-  <Panel>
-      <ExperimentalAcrylicBorder IsHitTestVisible="False">
-        <ExperimentalAcrylicBorder.Material>
-          <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="Black" TintOpacity="1" MaterialOpacity="0.6" />
-        </ExperimentalAcrylicBorder.Material>
-      </ExperimentalAcrylicBorder>
-      <DockPanel>
-        <Panel DockPanel.Dock="Top" Margin="20">
-          <AutoCompleteBox Watermark="Search" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" />
-        </Panel>
-        <Panel DockPanel.Dock="Bottom" Height="100">
-          <c:SpectrumDisplay DataContext="{Binding TrackStatus}" FFTData="{Binding InFFTData}" Foreground="#F96824" />
-         <c:CustomBlurBehind />
-        </Panel>
-        <local:CollectionExplorerView DataContext="{Binding CollectionExplorer}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-      </DockPanel>
-    </Panel>
+  <Panel Margin="{Binding #MainWindow.OffScreenMargin}">
+    <views:MainView />
+  </Panel>
 </Window>
