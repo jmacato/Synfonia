@@ -4,3 +4,6 @@
 [submodule "iTunesSearch"]
 	path = iTunesSearch
 	url = https://github.com/danwalmsley/iTunesSearch.git
+[submodule "Avalonia.ProControls"]
+	path = Avalonia.ProControls
+	url = git@github.com:AvaloniaUI/Avalonia.ProControls.git
