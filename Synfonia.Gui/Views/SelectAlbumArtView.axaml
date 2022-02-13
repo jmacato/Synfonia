@@ -9,41 +9,36 @@
     <i:Interaction.Behaviors>
         <behaviors:HideWhenClickedOutsideBehavior HitTarget="{Binding #PART_MainPanel}" />
     </i:Interaction.Behaviors>
-    <Panel>
-      <ExperimentalAcrylicBorder IsHitTestVisible="False">
-        <ExperimentalAcrylicBorder.Material>
-          <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="Black" TintOpacity="1" MaterialOpacity="0.9" />
-        </ExperimentalAcrylicBorder.Material>
-      </ExperimentalAcrylicBorder>
-        <ListBox x:Name="PART_MainPanel" Height="345" BorderThickness="0" Items="{Binding Covers}" SelectedItem="{Binding SelectedCover}"
-                 VerticalAlignment="Bottom" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="8" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="15" Spacing="8">
-                        <Panel Width="200" MinHeight="200">
+    <ListBox x:Name="PART_MainPanel" Height="345" BorderThickness="0" Items="{Binding Covers}"
+             SelectedItem="{Binding SelectedCover}"
+             VerticalAlignment="Bottom" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+             ScrollViewer.VerticalScrollBarVisibility="Hidden">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="8" />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Margin="15" Spacing="8">
+                    <Panel Width="200" MinHeight="200">
 
-                            <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
+                        <Image Width="200" Stretch="UniformToFill" Source="{Binding Cover}" />
 
-                            <Panel Background="Transparent">
-                                <Panel.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
-                                    </ContextMenu>
-                                </Panel.ContextMenu>
-                            </Panel>
+                        <Panel Background="Transparent">
+                            <Panel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Get Album Artwork" Command="{Binding GetArtworkCommand}" />
+                                </ContextMenu>
+                            </Panel.ContextMenu>
                         </Panel>
-                        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12"
-                                   FontWeight="Bold" />
-                        <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10"
-                                   Foreground="#686858" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </Panel>
+                    </Panel>
+                    <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Title}" FontSize="12"
+                               FontWeight="Bold" />
+                    <TextBlock MaxWidth="200" TextWrapping="Wrap" Text="{Binding Artist}" FontSize="10"
+                               Foreground="#686858" />
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
 </UserControl>

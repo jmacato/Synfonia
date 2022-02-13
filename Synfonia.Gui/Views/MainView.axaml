@@ -10,15 +10,14 @@
              x:CompileBindings="True"
              x:Class="Synfonia.Gui.Views.MainView">
     <Panel>
-        <Border IsHitTestVisible="False" BorderThickness="2 0 2 2" BorderBrush="#ED3451" >
+        <Border IsHitTestVisible="False" BorderThickness="2 0 2 2" >
             
             <!-- TODO Xune backdrop here -->
         </Border>
         
         <DockPanel Margin="0 60 0 0">
             <Panel DockPanel.Dock="Bottom">
-                <controls:SpectrumDisplay DataContext="{Binding TrackStatus}" DockPanel.Dock="Left" FFTData="{Binding InFFTData}" Foreground="#EB4343" VerticalAlignment="Bottom" Height="100" />
-                
+                <controls:SpectrumDisplay DataContext="{Binding TrackStatus}" FFTData="{Binding InFFTData}" Foreground="#EB4343" VerticalAlignment="Bottom" Height="100" />
                 <views:AudioControlPanel  DataContext="{Binding DiscChanger}" Margin="15" HorizontalAlignment="Right" />
                 <views:TrackStatusView Margin="50 0" DataContext="{Binding TrackStatus}" HorizontalAlignment="Center" />
             </Panel>
