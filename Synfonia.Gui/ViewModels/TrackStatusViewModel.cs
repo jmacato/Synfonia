@@ -171,7 +171,7 @@ namespace Synfonia.ViewModels
 
             if (track is null) return;
 
-            //RxApp.MainThreadScheduler.Schedule(async () => { AlbumCover = await LoadCoverAsync(track); });
+            RxApp.MainThreadScheduler.Schedule(async () => { AlbumCover = await LoadCoverAsync(track); });
 
             AlbumCoverVisible = true;
 

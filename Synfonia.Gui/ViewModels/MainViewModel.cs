@@ -3,14 +3,14 @@ using Synfonia.Backend;
 
 namespace Synfonia.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         private CollectionExplorerViewModel _collectionExplorer;
         private DiscChangerViewModel _discChanger;
         private TrackStatusViewModel _trackStatus;
         private VolumeControlViewModel _volumeControl;
 
-        public MainWindowViewModel(DiscChanger discChanger, LibraryManager libraryManager)
+        public MainViewModel(DiscChanger discChanger, LibraryManager libraryManager)
         {
             DiscChanger = new DiscChangerViewModel(discChanger);
             TrackStatus = new TrackStatusViewModel(discChanger, libraryManager);
@@ -18,7 +18,7 @@ namespace Synfonia.ViewModels
             VolumeControl = new VolumeControlViewModel(discChanger);
         }
 
-        public static MainWindowViewModel Instance { get; set; }
+        public static MainViewModel Instance { get; set; }
 
         public DiscChangerViewModel DiscChanger
         {

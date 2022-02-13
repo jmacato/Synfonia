@@ -3,23 +3,35 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:Synfonia.Controls"
+             xmlns:views="clr-namespace:Synfonia.Views"
+             xmlns:viewModels="clr-namespace:Synfonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="viewModels:MainViewModel"
+             x:CompileBindings="True"
              x:Class="Synfonia.Gui.Views.MainView">
     <Panel>
-        <ExperimentalAcrylicBorder IsHitTestVisible="False">
-            <ExperimentalAcrylicBorder.Material>
-                <ExperimentalAcrylicMaterial BackgroundSource="Digger" TintColor="White" TintOpacity="1" MaterialOpacity="0.6" />
-            </ExperimentalAcrylicBorder.Material>
+        <Border IsHitTestVisible="False" BorderThickness="2 0 2 2" BorderBrush="#ED3451" >
+            
             <!-- TODO Xune backdrop here -->
-        </ExperimentalAcrylicBorder>
+        </Border>
         
-        <DockPanel>
+        <DockPanel Margin="0 60 0 0">
             <Panel DockPanel.Dock="Bottom">
-                <controls:SpectrumDisplay VerticalAlignment="Bottom" Height="100" />
-                <TextBlock Text="Music Controls" />
+                <controls:SpectrumDisplay DataContext="{Binding TrackStatus}" DockPanel.Dock="Left" FFTData="{Binding InFFTData}" Foreground="#EB4343" VerticalAlignment="Bottom" Height="100" />
+                
+                <views:AudioControlPanel  DataContext="{Binding DiscChanger}" Margin="15" HorizontalAlignment="Right" />
+                <views:TrackStatusView Margin="50 0" DataContext="{Binding TrackStatus}" HorizontalAlignment="Center" />
             </Panel>
             <Panel>
-                <TextBlock Text="Main Content" />
+                <DockPanel>
+                    <Panel DockPanel.Dock="Left">
+                        <TextBlock Text="Artists" />
+                    </Panel>
+                    <Panel DockPanel.Dock="Right">
+                        <TextBlock Text="Songs" />
+                    </Panel>
+                    <views:CollectionExplorerView DataContext="{Binding CollectionExplorer}" />
+                </DockPanel>
             </Panel>
         </DockPanel>
     </Panel>

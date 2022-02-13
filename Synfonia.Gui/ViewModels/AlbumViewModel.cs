@@ -27,7 +27,7 @@ namespace Synfonia.ViewModels
 
             GetArtworkCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                await MainWindowViewModel.Instance.CollectionExplorer.SelectArtwork.QueryAlbumCoverAsync(this);
+                await MainViewModel.Instance.CollectionExplorer.SelectArtwork.QueryAlbumCoverAsync(this);
             });
 
             LoadAlbumCommand = ReactiveCommand.CreateFromTask(async () => { await changer.LoadTrackList(album); });
@@ -43,7 +43,7 @@ namespace Synfonia.ViewModels
                         _coverLoaded = true;
                         try
                         {
-                            //Cover = await LoadCoverAsync();
+                            Cover = await LoadCoverAsync();
                         }
                         catch (Exception e)
                         {

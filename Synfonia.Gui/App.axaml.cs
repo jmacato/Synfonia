@@ -21,10 +21,10 @@ namespace Synfonia
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var dc = new DiscChanger();
-                MainWindowViewModel.Instance = new MainWindowViewModel(dc, new LibraryManager());
+                MainViewModel.Instance = new MainViewModel(dc, new LibraryManager());
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = MainWindowViewModel.Instance
+                    DataContext = MainViewModel.Instance
                 };
 
                 desktop.MainWindow.Closing += (sender, e) =>
