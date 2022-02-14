@@ -62,46 +62,23 @@ namespace Synfonia.Controls
 
         private void RenderBars(IDrawingContextImpl context)
         {
+            if (FFTData != null)
             {
-                if (FFTData != null)
+                var length = FFTData.GetLength(1);
+                var gaps = length * 2 + 1;
+                var gapSize = 0.0;
+                var binStroke = (Bounds.Width - gaps * gapSize) / (length * 2);
+                
+                var x = binStroke / 2 + gapSize;
+
+                for (var channel = 0; channel < 2; channel++)
+                for (var i = 0; i < length; i++)
                 {
-                    if (_averagedData is null || FFTData.GetLength(1) != _averagedData.GetLength(1))
-                        _averagedData = new double[2, FFTData.GetLength(1)];
-
-                    for (var channel = 0; channel < 2; channel++)
-                    for (var i = 0; i < FFTData.GetLength(1); i++)
-                    {
-                        _averagedData[channel, i] -= _averagedData[channel, i] / _averageLevel;
-                        _averagedData[channel, i] += Math.Abs(FFTData[channel, i]) / _averageLevel;
-                    }
-
-                    var length = FFTData.GetLength(1);
-                    var gaps = length * 2 + 1;
-
-                    var gapSize = 0.0;
-
-                    var binStroke = (Bounds.Width - gaps * gapSize) / (length * 2);
-
-
-                    var x = binStroke / 2 + gapSize;
-
-                    var center = Bounds.Width / 2;
-
-                    for (var channel = 0; channel < 2; channel++)
-                    for (var i = 0; i < length; i++)
-                    {
-                        var dCenter = Math.Abs(x - center);
-                        var multiplier = 1 - (dCenter / center);
-
-
-                        {
-                            context.DrawLine(_linePen, new Point(x, Bounds.Height),
-                                new Point(x,
-                                    Bounds.Height * ((1 - (Math.Min(1,
-                                        _averagedData[channel, channel == 0 ? length - 1 - i : i])) * 0.9))));
-                            x += binStroke + gapSize;
-                        }
-                    }
+                    context.DrawLine(_linePen, new Point(x, Bounds.Height),
+                        new Point(x,
+                            Bounds.Height * ((1 - (Math.Min(1,
+                                _averagedData[channel, channel == 0 ? length - 1 - i : i])) * 0.8))));
+                    x += binStroke + gapSize;
                 }
             }
         }
@@ -125,6 +102,15 @@ namespace Synfonia.Controls
                     _linePen = new ImmutablePen(Foreground.ToImmutable(), _lastStrokeThickness);
                 }
 
+                if (_averagedData is null || FFTData.GetLength(1) != _averagedData.GetLength(1))
+                    _averagedData = new double[2, FFTData.GetLength(1)];
+
+                for (var channel = 0; channel < 2; channel++)
+                for (var i = 0; i < FFTData.GetLength(1); i++)
+                {
+                    _averagedData[channel, i] -= _averagedData[channel, i] / _averageLevel;
+                    _averagedData[channel, i] += Math.Abs(FFTData[channel, i]) / _averageLevel;
+                }
 
                 context.Custom(this);
             }
