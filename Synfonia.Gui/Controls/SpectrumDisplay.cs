@@ -164,16 +164,13 @@ namespace Synfonia.Controls
         private static void PaintRenderLayer(ISkiaDrawingContextImpl source, ISkiaDrawingContextImpl destination,
             Size size, SKImageFilter imageFilter = null)
         {
-            using (var blurSnap = source.SkSurface.Snapshot())
-            using (var blurSnapShader = SKShader.CreateImage(blurSnap))
             using (var blurSnapPaint = new SKPaint
                    {
-                       Shader = blurSnapShader,
                        ImageFilter = imageFilter,
                        IsAntialias = true
                    })
             {
-                destination.SkCanvas.DrawRect(0, 0, (float)size.Width, (float)size.Height, blurSnapPaint);
+                destination.SkCanvas.DrawSurface(source.SkSurface, new SKPoint(0, 0), blurSnapPaint);
             }
         }
 
