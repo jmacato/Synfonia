@@ -6,20 +6,12 @@
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" /> 
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.12" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.12" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.12" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0018686-beta" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0018686-beta" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.999-cibuild0018686-beta" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.11" />
     <PackageReference Include="DynamicData" Version="*" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="*" />
     <ProjectReference Include="..\Synfonia.Backend\Synfonia.Backend.csproj" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <InternalsAssemblyNames>Avalonia.Skia</InternalsAssemblyNames>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="IgnoresAccessChecksToGenerator" Version="0.5.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@ using Avalonia.Skia;
 using Avalonia.Threading;
 using ReactiveUI;
 using SkiaSharp;
+using Avalonia.Skia.Helpers;
 using Disposable = System.Reactive.Disposables.Disposable;
 
 namespace Synfonia.Controls
@@ -143,59 +144,25 @@ namespace Synfonia.Controls
         }
 
         public bool HitTest(Point p) => Bounds.Contains(p);
-
-        private static ISkiaDrawingContextImpl CreateRenderLayer(GRContext grContext, Size size)
-        {
-            var surface = SKSurface.Create(grContext, false, new SKImageInfo(
-                (int)Math.Ceiling(size.Width),
-                (int)Math.Ceiling(size.Height), SKImageInfo.PlatformColorType, SKAlphaType.Premul));
-
-            return new Avalonia.Skia.DrawingContextImpl(new DrawingContextImpl.CreateInfo
-            {
-                Canvas = surface.Canvas,
-                Surface = surface,
-                Dpi = new Vector(96, 96),
-                VisualBrushRenderer = null,
-                DisableTextLcdRendering = false,
-                GrContext = grContext
-            }, Disposable.Create(() => surface.Dispose()));
-        }
-
-        private static void PaintRenderLayer(ISkiaDrawingContextImpl source, ISkiaDrawingContextImpl destination,
-            Size size, SKImageFilter imageFilter = null)
-        {
-            using (var blurSnapPaint = new SKPaint
-                   {
-                       ImageFilter = imageFilter,
-                       IsAntialias = true
-                   })
-            {
-                destination.SkCanvas.DrawSurface(source.SkSurface, new SKPoint(0, 0), blurSnapPaint);
-            }
-        }
+        
 
         public void Render(IDrawingContextImpl context)
         {
-            var _bounds = Bounds;
+            var bounds = Bounds;
 
             if (context is not ISkiaDrawingContextImpl skia)
             {
                 return;
             }
-
-            if (!skia.SkCanvas.TotalMatrix.TryInvert(out var currentInvertedTransform))
-            {
-                return;
-            }
-
-
-            using (var barsLayer = CreateRenderLayer(skia.GrContext, _bounds.Size))
+            
+            using (var barsLayer = DrawingContextHelper.CreateDrawingContext(bounds.Size, new Vector(96,96), skia.GrContext))
             {
                 RenderBars(barsLayer);
-
+                
                 using (var filter = SKImageFilter.CreateBlur(24, 24, SKShaderTileMode.Clamp))
+                using(var paint = new SKPaint{ ImageFilter = filter})    
                 {
-                    PaintRenderLayer(barsLayer, skia, _bounds.Size, filter);
+                    barsLayer.DrawTo(skia, paint);
                 }
             }
         }
