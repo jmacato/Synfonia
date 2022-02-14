@@ -10,9 +10,9 @@ using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.Skia;
 using Avalonia.Threading;
-using Nito.Disposables;
 using ReactiveUI;
 using SkiaSharp;
+using Disposable = System.Reactive.Disposables.Disposable;
 
 namespace Synfonia.Controls
 {
@@ -27,7 +27,6 @@ namespace Synfonia.Controls
         private double[,] _averagedData;
         private readonly int _averageLevel = 5;
         private bool _center = false;
-        private volatile bool _isRenderFinished = false;
 
         private double[,] _fftData;
         private double _lastStrokeThickness;
@@ -49,7 +48,7 @@ namespace Synfonia.Controls
 
         private void Tick(TimeSpan obj)
         {
-            if (!_isRenderFinished) return;
+            //if (!_isRenderFinished) return;
 
             Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
         }
@@ -93,7 +92,6 @@ namespace Synfonia.Controls
                         var dCenter = Math.Abs(x - center);
                         var multiplier = 1 - (dCenter / center);
 
-                        context.PushOpacity(multiplier);
 
                         {
                             context.DrawLine(_linePen, new Point(x, Bounds.Height),
@@ -102,8 +100,6 @@ namespace Synfonia.Controls
                                         _averagedData[channel, channel == 0 ? length - 1 - i : i])) * 0.9))));
                             x += binStroke + gapSize;
                         }
-
-                        context.PopOpacity();
                     }
                 }
             }
@@ -115,7 +111,6 @@ namespace Synfonia.Controls
 
             if (FFTData != null)
             {
-
                 var length = FFTData.GetLength(1);
                 var gaps = length * 2 + 1;
 
@@ -130,19 +125,10 @@ namespace Synfonia.Controls
                 }
 
 
-
                 context.Custom(this);
             }
-            /*
-            _isRenderFinished = false;
-
-            
-            
-            context.Custom(new BlurBehindRenderOperation(new Rect(default, Bounds.Size)));*/
 
             InvalidateVisual();
-
-            _isRenderFinished = true;
         }
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -154,39 +140,36 @@ namespace Synfonia.Controls
 
         public void Dispose()
         {
-
         }
 
         public bool HitTest(Point p) => Bounds.Contains(p);
 
-        private ISkiaDrawingContextImpl CreateRenderLayer(ISkiaDrawingContextImpl skiaContext, Size size,
-            out SKSurface bars1)
+        private static ISkiaDrawingContextImpl CreateRenderLayer(GRContext grContext, Size size)
         {
-            var bars = SKSurface.Create(skiaContext.GrContext, false, new SKImageInfo(
+            var surface = SKSurface.Create(grContext, false, new SKImageInfo(
                 (int)Math.Ceiling(size.Width),
                 (int)Math.Ceiling(size.Height), SKImageInfo.PlatformColorType, SKAlphaType.Premul));
 
-            bars1 = bars;
-
-
             return new Avalonia.Skia.DrawingContextImpl(new DrawingContextImpl.CreateInfo
             {
-                Canvas = bars.Canvas,
-                Surface = bars,
+                Canvas = surface.Canvas,
+                Surface = surface,
                 Dpi = new Vector(96, 96),
                 VisualBrushRenderer = null,
                 DisableTextLcdRendering = false,
-                GrContext = skiaContext.GrContext
-            });
+                GrContext = grContext
+            }, Disposable.Create(() => surface.Dispose()));
         }
 
-        void PaintRenderLayer(ISkiaDrawingContextImpl source, ISkiaDrawingContextImpl destination, Size size)
+        private static void PaintRenderLayer(ISkiaDrawingContextImpl source, ISkiaDrawingContextImpl destination,
+            Size size, SKImageFilter imageFilter = null)
         {
             using (var blurSnap = source.SkSurface.Snapshot())
             using (var blurSnapShader = SKShader.CreateImage(blurSnap))
             using (var blurSnapPaint = new SKPaint
                    {
                        Shader = blurSnapShader,
+                       ImageFilter = imageFilter,
                        IsAntialias = true
                    })
             {
@@ -209,32 +192,15 @@ namespace Synfonia.Controls
             }
 
 
-
-            var tmpContext = CreateRenderLayer(skia, _bounds.Size, out var bars);
-
-            RenderBars(tmpContext);
-
-            var blurContext = CreateRenderLayer(skia, _bounds.Size, out var blurred);
-
-            using var backgroundSnapshot = bars.Snapshot();
-
-            using var backdropShader = SKShader.CreateImage(backgroundSnapshot);
-
-            using (var filter = SKImageFilter.CreateBlur(24, 24, SKShaderTileMode.Clamp))
-            using (var blurPaint = new SKPaint
-                   {
-                       Shader = backdropShader,
-                       ImageFilter = filter
-                   })
+            using (var barsLayer = CreateRenderLayer(skia.GrContext, _bounds.Size))
             {
-                blurred.Canvas.DrawRect(0, 0, (float)_bounds.Width, (float)_bounds.Height, blurPaint);
-            }
-            
-            PaintRenderLayer(blurContext, skia, _bounds.Size);
+                RenderBars(barsLayer);
 
-            tmpContext.Dispose();
-            blurContext.Dispose();
-           
+                using (var filter = SKImageFilter.CreateBlur(24, 24, SKShaderTileMode.Clamp))
+                {
+                    PaintRenderLayer(barsLayer, skia, _bounds.Size, filter);
+                }
+            }
         }
 
         public bool Equals(ICustomDrawOperation? other) => false;

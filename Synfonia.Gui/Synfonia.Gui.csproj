@@ -14,4 +14,12 @@
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="*" />
     <ProjectReference Include="..\Synfonia.Backend\Synfonia.Backend.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <InternalsAssemblyNames>Avalonia.Skia</InternalsAssemblyNames>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IgnoresAccessChecksToGenerator" Version="0.5.0" PrivateAssets="All" />
+  </ItemGroup>
 </Project>
