@@ -33,7 +33,9 @@ namespace SharpAudio.ALBinding
                 names = new[]
                 {
                     "libopenal.dylib",
-                    "soft_oal.so"
+                    "soft_oal.so",
+                    // HACK TODO: This tries to look up the openal-soft installed from homebrew. 
+                    "/opt/homebrew/Cellar/openal-soft/1.21.1/lib/libopenal.1.dylib"
                 };
             }
             else

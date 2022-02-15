@@ -48,6 +48,15 @@ namespace SharpAudio.Codec.FFmpeg
             // But when we pack application with MSIX or self-contained for specific architecture, it has another structure:
             // - runtime/*.dll
 
+            // HACK TODO: This tries to look up the ffmpeg installed from homebrew. 
+            // Should be removed later!
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
+                RuntimeInformation.OSArchitecture == Architecture.Arm64)
+            {
+                ffmpeg.RootPath = "/opt/homebrew/Cellar/ffmpeg/4.4.1_3/lib";
+                return;
+            }
+            
             string runtimeId = null;
 
             // Just use the system-wide ffmpeg libraries when on linux.
