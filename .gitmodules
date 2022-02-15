@@ -1,6 +1,3 @@
-[submodule "SharpAudio"]
-	path = SharpAudio
-	url = https://github.com/jmacato/SharpAudio
 [submodule "iTunesSearch"]
 	path = iTunesSearch
 	url = https://github.com/danwalmsley/iTunesSearch.git
