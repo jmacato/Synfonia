@@ -26,7 +26,7 @@ namespace Synfonia.Controls
                 (o, v) => o.FFTData = v);
 
         private double[,] _averagedData;
-        private readonly int _averageLevel = 5;
+        private readonly int _averageLevel = 10;
         private bool _center = false;
 
         private double[,] _fftData;
