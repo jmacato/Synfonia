@@ -15,6 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\iTunesSearch\iTunesSearch.Library\iTunesSearch.Library.csproj" />
-    <ProjectReference Include="..\SharpAudio\src\SharpAudio.Codec\SharpAudio.Codec.csproj" />
+    <ProjectReference Include="..\SharpAudio\SharpAudio.Codec\SharpAudio.Codec.csproj" />
   </ItemGroup>
 </Project>
