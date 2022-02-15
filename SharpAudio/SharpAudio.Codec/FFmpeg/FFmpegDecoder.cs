@@ -97,6 +97,12 @@ namespace SharpAudio.Codec.FFmpeg
         public FFmpegDecoder(Stream src)
         {
             targetStream = src;
+            
+            if (targetStream.CanSeek)
+            {
+                targetStream.Seek(0, SeekOrigin.Begin);
+            }
+            
             sampleByteSize = _DESIRED_SAMPLE_RATE * _DESIRED_CHANNEL_COUNT * sizeof(ushort);
 
             FFmpeg_Initialize();

@@ -47,16 +47,8 @@ namespace SharpAudio.Codec
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            if (!stream.CanSeek)
-            {
-                _decoder = new FFmpegDecoder(stream);
-                IsStreamed = true;
-            }
-            else
-            {
-                throw new InvalidOperationException("Cannot support playing Stream objects at this time.");
-            }
-
+            _decoder = new FFmpegDecoder(stream);
+            
             _streamThread = new Thread(MainLoop)
             {
                 Name = "SoundStream"
@@ -72,11 +64,6 @@ namespace SharpAudio.Codec
         /// Whether or not the audio is finished
         /// </summary>
         public bool IsPlaying => State == SoundStreamState.Playing;
-
-        /// <summary>
-        /// Whether or not the audio is streamed
-        /// </summary>
-        public bool IsStreamed { get; }
 
         public AudioFormat Format => _decoder.Format;
 
