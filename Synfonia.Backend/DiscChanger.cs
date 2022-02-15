@@ -305,9 +305,10 @@ namespace Synfonia.Backend
             try
             {
                 _currentTrackContainer?.Dispose();
-               // _preloadedTrackContainer?.Dispose();
+                _spectrumProcessor.Dispose();
                 _trackDisposables?.Dispose();
                 _internalDisposables?.Dispose();
+                _engine.Dispose();
             }
             catch (Exception)
             {
