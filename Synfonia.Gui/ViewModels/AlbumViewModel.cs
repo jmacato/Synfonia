@@ -107,7 +107,7 @@ namespace Synfonia.ViewModels
                         {
                             using (var ms = new MemoryStream(coverBitmap))
                             {
-                                return Bitmap.DecodeToWidth(ms, 200);
+                                return new Bitmap(ms);//Bitmap.DecodeToWidth(ms, 200));
                             }
                         }
                     }

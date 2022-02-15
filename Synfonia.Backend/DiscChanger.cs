@@ -28,6 +28,7 @@ namespace Synfonia.Backend
         private bool _IsPlaying;
         private readonly SpectrumProcessor _spectrumProcessor;
         private readonly AudioEngine _engine;
+        
 
         public DiscChanger()
         {
@@ -71,6 +72,11 @@ namespace Synfonia.Backend
         {
             get => _internalState;
             set => this.RaiseAndSetIfChanged(ref _internalState, value, nameof(InternalState));
+        }
+
+        public ITrackList TrackList
+        {
+            get => _trackList;
         }
 
         public Track CurrentTrack
@@ -133,6 +139,8 @@ namespace Synfonia.Backend
             _trackList.Clear();
             
             _trackList.AddTracks(trackList);
+            
+            this.RaisePropertyChanged(nameof(TrackList));
         }
 
         private void CommandLock(Action CoreMethod)

@@ -39,7 +39,7 @@
                         </ListBox>
                     </Panel>
                     <Panel DockPanel.Dock="Right" DataContext="{Binding CollectionExplorer}" Width="250">
-                        <ListBox Items="{Binding Artists}" Background="Transparent">
+                        <ListBox Items="{Binding Tracks}" Background="Transparent">
                             <ListBox.Styles>
                                 <Style Selector="ListBoxItem">
                                     <Setter Property="Padding" Value="0" />
@@ -47,7 +47,7 @@
                             </ListBox.Styles>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock FontSize="12" Text="{Binding  Name}" Margin="40 5" />
+                                    <TextBlock FontSize="12" Text="{Binding  Title}" Margin="40 5" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

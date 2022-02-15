@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -16,6 +17,7 @@ namespace Synfonia.ViewModels
     {
         private ReadOnlyObservableCollection<ArtistViewModel> _artists;
         private ReadOnlyObservableCollection<AlbumViewModel> _albums;
+
         private SelectArtworkViewModel _selectArtwork;
         private AlbumViewModel _selectedAlbum;
         private bool _isAlbumsEmpty = true;
@@ -23,6 +25,19 @@ namespace Synfonia.ViewModels
         public CollectionExplorerViewModel(LibraryManager model, DiscChanger changer)
         {
             SelectArtwork = new SelectArtworkViewModel();
+            Tracks = new ObservableCollection<TrackViewModel>();
+
+            Observable.FromEventPattern<PropertyChangedEventArgs>(changer, nameof(changer.PropertyChanged))
+                .Where(x => x.EventArgs.PropertyName == nameof(changer.TrackList))
+                .Subscribe(x =>
+                {
+                    Tracks.Clear();
+
+                    foreach (var track in changer.TrackList.Tracks)
+                    {
+                        Tracks.Add(new TrackViewModel(track));
+                    }
+                });
 
             model.Albums.ToObservableChangeSet()
                 .Transform(album => new AlbumViewModel(album, changer))
@@ -54,6 +69,8 @@ namespace Synfonia.ViewModels
 
             RxApp.MainThreadScheduler.Schedule(async () => { await model.LoadLibrary(); });
         }
+        
+        public ObservableCollection<TrackViewModel> Tracks { get; } 
 
         public SelectArtworkViewModel SelectArtwork
         {
